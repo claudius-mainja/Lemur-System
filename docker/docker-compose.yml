@@ -1,0 +1,104 @@
+version: '3.9'
+
+services:
+  # API Gateway & Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: lemursystem-nginx
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./uploads:/uploads:rw
+    depends_on:
+      - api
+      - frontend
+    networks:
+      - lemur-network
+
+  # Backend API
+  api:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: lemursystem-api
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=postgresql://erpuser:erppassword@db:5432/erp
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=erpuser
+      - DATABASE_PASSWORD=erppassword
+      - DATABASE_DATABASE=erp
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=lemursystem-super-secret-jwt-key-2024
+      - JWT_EXPIRES_IN=15m
+      - JWT_REFRESH_EXPIRES_IN=7d
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - lemur-network
+    restart: unless-stopped
+
+  # Frontend Web App
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: lemursystem-frontend
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+    depends_on:
+      - api
+    networks:
+      - lemur-network
+    restart: unless-stopped
+
+  # Primary Database
+  db:
+    image: postgres:15-alpine
+    container_name: lemursystem-db
+    environment:
+      - POSTGRES_DB=erp
+      - POSTGRES_USER=erpuser
+      - POSTGRES_PASSWORD=erppassword
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql:ro
+      - ./postgres/crm-billing.sql:/docker-entrypoint-initdb.d/2-crm-billing.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - lemur-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U erpuser -d erp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Cache & Session Store
+  redis:
+    image: redis:7-alpine
+    container_name: lemursystem-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redisdata:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - lemur-network
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:
+
+networks:
+  lemur-network:
+    driver: bridge
