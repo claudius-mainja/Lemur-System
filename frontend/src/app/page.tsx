@@ -107,7 +107,7 @@ export default function HomePage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      router.push('/dashboard');
+      router.push('/dashboard/hr');
     }
   }, [isAuthenticated, router]);
 
@@ -137,6 +137,7 @@ export default function HomePage() {
               <Link href="/features" className="text-slate-600 hover:text-primary transition-all duration-300 hover:scale-105">Features</Link>
               <Link href="/pricing" className="text-slate-600 hover:text-primary transition-all duration-300 hover:scale-105">Pricing</Link>
               <Link href="/industries" className="text-slate-600 hover:text-primary transition-all duration-300 hover:scale-105">Industries</Link>
+              <Link href="/docs" className="text-slate-600 hover:text-primary transition-all duration-300 hover:scale-105">Docs</Link>
               <Link href="/about" className="text-slate-600 hover:text-primary transition-all duration-300 hover:scale-105">About</Link>
               <Link href="/contact" className="text-slate-600 hover:text-primary transition-all duration-300 hover:scale-105">Contact</Link>
             </div>
@@ -161,6 +162,7 @@ export default function HomePage() {
             <Link href="/features" className="block text-slate-600 py-2">Features</Link>
             <Link href="/pricing" className="block text-slate-600 py-2">Pricing</Link>
             <Link href="/industries" className="block text-slate-600 py-2">Industries</Link>
+            <Link href="/docs" className="block text-slate-600 py-2">Documentation</Link>
             <Link href="/about" className="block text-slate-600 py-2">About</Link>
             <Link href="/contact" className="block text-slate-600 py-2">Contact</Link>
             <Link href="/login" className="block text-slate-700 py-2">Log in</Link>

@@ -1,18 +1,9 @@
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
-  register: true,
-  scope: '/',
-  sw: 'service-worker.js',
-});
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   transpilePackages: ['lucide-react'],
   images: {
-    domains: ['localhost', 'erp.example.com'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -20,6 +11,7 @@ const nextConfig = {
       },
     ],
   },
+  turbopack: {},
   async headers() {
     return [
       {
@@ -43,4 +35,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withPWA(nextConfig);
+module.exports = nextConfig;

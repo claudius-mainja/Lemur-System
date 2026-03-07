@@ -38,7 +38,7 @@
     "@nestjs/event-emitter": "^2.0.3",
     "typeorm": "^0.3.19",
     "pg": "^8.11.3",
-    "better-sqlite3": "^9.3.0",
+    "sql.js": "^1.10.2",
     "redis": "^4.6.12",
     "amqplib": "^0.10.3",
     "amqp-connection-manager": "^4.1.14",

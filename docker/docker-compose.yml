@@ -25,6 +25,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
+      - DATABASE_TYPE=postgres
       - DATABASE_URL=postgresql://erpuser:erppassword@db:5432/erp
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
@@ -52,7 +53,7 @@ services:
     container_name: lemursystem-frontend
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://localhost:3001
+      - NEXT_PUBLIC_API_URL=/api/v1
     depends_on:
       - api
     networks:

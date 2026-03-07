@@ -9,6 +9,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 
 import { AuthModule } from './auth/auth.module';
 import { TenantsModule } from './tenants/tenants.module';
+import { HrModule } from './hr/hr.module';
 
 @Module({
   imports: [
@@ -19,37 +20,38 @@ import { TenantsModule } from './tenants/tenants.module';
     
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('DATABASE_HOST') || 'localhost',
-        port: configService.get('DATABASE_PORT') || 5432,
-        username: configService.get('DATABASE_USERNAME') || 'erpuser',
-        password: configService.get('DATABASE_PASSWORD') || 'erppassword',
-        database: configService.get('DATABASE_DATABASE') || 'erp',
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true,
-        logging: configService.get('NODE_ENV') === 'development',
-        extra: {
-          max: 20,
-          min: 5,
-          idleTimeoutMillis: 30000,
-          connectionTimeoutMillis: 2000,
-        },
-        ssl: false,
-      }),
+      useFactory: (configService: ConfigService) => {
+        const databaseType = configService.get('DATABASE_TYPE') || 'postgres';
+        
+        if (databaseType === 'postgres') {
+          return {
+            type: 'postgres',
+            host: configService.get('DATABASE_HOST') || 'localhost',
+            port: parseInt(configService.get('DATABASE_PORT') || '5432'),
+            username: configService.get('DATABASE_USERNAME') || 'erpuser',
+            password: configService.get('DATABASE_PASSWORD') || 'erppassword',
+            database: configService.get('DATABASE_DATABASE') || 'erp',
+            entities: [__dirname + '/**/*.entity{.ts,.js}'],
+            synchronize: configService.get('NODE_ENV') !== 'production',
+            logging: configService.get('NODE_ENV') === 'development',
+          };
+        }
+        
+        return {
+          type: 'sqljs',
+          autoSave: true,
+          location: configService.get('DATABASE_PATH') || 'lemursystem.db',
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: true,
+          logging: configService.get('NODE_ENV') === 'development',
+        };
+      },
       inject: [ConfigService],
     }),
 
-    CacheModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        store: 'redis',
-        host: configService.get('REDIS_HOST') || 'localhost',
-        port: configService.get('REDIS_PORT') || 6379,
-        ttl: 300,
-        max: 100,
-      }),
-      inject: [ConfigService],
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 300,
     }),
 
     ThrottlerModule.forRoot([{
@@ -63,6 +65,7 @@ import { TenantsModule } from './tenants/tenants.module';
 
     AuthModule,
     TenantsModule,
+    HrModule,
   ],
   providers: [
     {
