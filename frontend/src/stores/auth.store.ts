@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export type Industry = 'healthcare' | 'retail' | 'manufacturing' | 'technology' | 'finance' | 'education' | 'logistics' | 'hospitality';
+export type SubscriptionPlan = 'starter' | 'professional' | 'enterprise';
+
 interface User {
   id: string;
   email: string;
@@ -9,6 +12,10 @@ interface User {
   role: string;
   avatarUrl?: string;
   organizationId: string;
+  organizationName: string;
+  industry: Industry;
+  subscription: SubscriptionPlan;
+  modules: string[];
 }
 
 interface AuthState {

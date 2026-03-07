@@ -3,7 +3,6 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { WsAdapter } from '@nestjs/platform-socket.io';
 import helmet from 'helmet';
 
 async function bootstrap() {
@@ -41,8 +40,6 @@ async function bootstrap() {
   }));
 
   app.setGlobalPrefix('api/v1');
-
-  app.useWebSocketAdapter(new WsAdapter(app));
 
   const port = configService.get('PORT') || 3001;
   

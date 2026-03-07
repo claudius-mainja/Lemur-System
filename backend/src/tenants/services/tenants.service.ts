@@ -2,7 +2,7 @@ import { Injectable, ConflictException, NotFoundException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { Tenant } from './entities/tenant.entity';
+import { Tenant } from '../entities/tenant.entity';
 
 @Injectable()
 export class TenantsService {
