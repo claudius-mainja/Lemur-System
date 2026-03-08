@@ -10,6 +10,10 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { AuthModule } from './auth/auth.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { HrModule } from './hr/hr.module';
+import { FinanceModule } from './finance/finance.module';
+import { CrmModule } from './crm/crm.module';
+import { PayrollModule } from './payroll/payroll.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -66,6 +70,10 @@ import { HrModule } from './hr/hr.module';
     AuthModule,
     TenantsModule,
     HrModule,
+    FinanceModule,
+    CrmModule,
+    PayrollModule,
+    EmailModule,
   ],
   providers: [
     {
