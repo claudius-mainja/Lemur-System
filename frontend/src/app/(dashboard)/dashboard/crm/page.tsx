@@ -1,683 +1,573 @@
 'use client';
 
-import { useState } from 'react';
-import { useDataStore, Customer, Lead } from '@/stores/data.store';
+import { useState, useEffect, useCallback } from 'react';
+import { crmApi } from '@/services/api';
 import { 
   BarChart3, Users, UserPlus, Plus, Search, MoreHorizontal, Phone, Mail, MapPin,
   TrendingUp, DollarSign, Star, Edit, Trash2, CheckCircle, XCircle, Clock,
-  FileSpreadsheet, Eye, X, Printer, Building2
+  FileSpreadsheet, Eye, X, Printer, Building2, RefreshCw, Target, Send
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-type ViewTab = 'customers' | 'leads' | 'analytics';
+type ViewTab = 'contacts' | 'deals' | 'social' | 'analytics';
+
+interface Contact {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  company?: string;
+  position?: string;
+  status: string;
+  source?: string;
+  assignedTo?: string;
+  createdAt: string;
+}
+
+interface Deal {
+  id: string;
+  title: string;
+  value: number;
+  stage: string;
+  contactName: string;
+  expectedCloseDate: string;
+  probability: number;
+  createdAt: string;
+}
+
+interface SocialAccount {
+  id: string;
+  platform: string;
+  accountName: string;
+  isConnected: boolean;
+  followers: number;
+}
+
+interface ScheduledPost {
+  id: string;
+  content: string;
+  scheduledDate: string;
+  platform: string;
+  status: string;
+}
+
+interface DashboardStats {
+  totalContacts: number;
+  totalDeals: number;
+  totalPipeline: number;
+  conversionRate: number;
+}
 
 export default function CRMDashboard() {
-  const { customers, leads, addCustomer, updateCustomer, addLead, updateLead, employees } = useDataStore();
-  const [activeView, setActiveView] = useState<ViewTab>('customers');
+  const [activeView, setActiveView] = useState<ViewTab>('contacts');
   const [searchQuery, setSearchQuery] = useState('');
-  const [showAddCustomer, setShowAddCustomer] = useState(false);
-  const [showAddLead, setShowAddLead] = useState(false);
-  const [showViewCustomer, setShowViewCustomer] = useState<Customer | null>(null);
-  const [showViewLead, setShowViewLead] = useState<Lead | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [stats, setStats] = useState<DashboardStats>({
+    totalContacts: 0,
+    totalDeals: 0,
+    totalPipeline: 0,
+    conversionRate: 0,
+  });
+  
+  // Data states
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [deals, setDeals] = useState<Deal[]>([]);
+  const [socialAccounts, setSocialAccounts] = useState<SocialAccount[]>([]);
+  const [scheduledPosts, setScheduledPosts] = useState<ScheduledPost[]>([]);
+
+  // Modal states
+  const [showAddContact, setShowAddContact] = useState(false);
+  const [showAddDeal, setShowAddDeal] = useState(false);
+  const [showViewContact, setShowViewContact] = useState<Contact | null>(null);
+
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
-  const filteredCustomers = customers.filter(c => {
+  const loadDashboardStats = useCallback(async () => {
+    try {
+      const response = await crmApi.getDashboardStats();
+      setStats(response.data);
+    } catch (error) {
+      console.error('Failed to load stats:', error);
+    }
+  }, []);
+
+  const loadContacts = useCallback(async (page = 1, limit = 50) => {
+    setIsLoading(true);
+    try {
+      const response = await crmApi.getContacts(page, limit);
+      setContacts(response.data.data || response.data || []);
+    } catch (error) {
+      console.error('Failed to load contacts:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const loadDeals = useCallback(async (page = 1, limit = 50) => {
+    setIsLoading(true);
+    try {
+      const response = await crmApi.getDeals(page, limit);
+      setDeals(response.data.data || response.data || []);
+    } catch (error) {
+      console.error('Failed to load deals:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const loadSocialAccounts = useCallback(async () => {
+    try {
+      const response = await crmApi.getSocialAccounts();
+      setSocialAccounts(response.data.data || response.data || []);
+    } catch (error) {
+      console.error('Failed to load social accounts:', error);
+    }
+  }, []);
+
+  const loadScheduledPosts = useCallback(async () => {
+    try {
+      const response = await crmApi.getScheduledPosts();
+      setScheduledPosts(response.data.data || response.data || []);
+    } catch (error) {
+      console.error('Failed to load scheduled posts:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadDashboardStats();
+  }, [loadDashboardStats]);
+
+  useEffect(() => {
+    if (activeView === 'contacts') loadContacts();
+    if (activeView === 'deals') loadDeals();
+    if (activeView === 'social') {
+      loadSocialAccounts();
+      loadScheduledPosts();
+    }
+  }, [activeView, loadContacts, loadDeals, loadSocialAccounts, loadScheduledPosts]);
+
+  const getStatusBadge = (status: string) => {
+    const styles: Record<string, string> = {
+      customer: 'bg-green-100 text-green-800',
+      lead: 'bg-blue-100 text-blue-800',
+      prospect: 'bg-yellow-100 text-yellow-800',
+      inactive: 'bg-gray-100 text-gray-800',
+      new: 'bg-blue-100 text-blue-800',
+      contacted: 'bg-yellow-100 text-yellow-800',
+      qualified: 'bg-purple-100 text-purple-800',
+      proposal: 'bg-orange-100 text-orange-800',
+      won: 'bg-green-100 text-green-800',
+      lost: 'bg-red-100 text-red-800',
+      scheduled: 'bg-blue-100 text-blue-800',
+      published: 'bg-green-100 text-green-800',
+      failed: 'bg-red-100 text-red-800',
+    };
+    return (
+      <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[status] || 'bg-gray-100 text-gray-800'}`}>
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </span>
+    );
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(amount);
+  };
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
+  };
+
+  const filteredContacts = contacts.filter(c => {
     const matchesSearch = 
-      c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.email.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || c.status === filterStatus;
-    return matchesSearch && matchesStatus;
+      `${c.firstName} ${c.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (c.company?.toLowerCase().includes(searchQuery.toLowerCase()) || '');
+    return matchesSearch;
   });
 
-  const filteredLeads = leads.filter(l => 
-    l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    l.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    l.email.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredDeals = deals.filter(d => {
+    const matchesSearch = 
+      d.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      d.contactName.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesSearch;
+  });
+
+  // Dashboard View
+  const renderDashboard = () => (
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">Total Contacts</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{stats.totalContacts}</p>
+            </div>
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Users className="w-6 h-6 text-blue-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">Active Deals</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{stats.totalDeals}</p>
+            </div>
+            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <Target className="w-6 h-6 text-green-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">Pipeline Value</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{formatCurrency(stats.totalPipeline)}</p>
+            </div>
+            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <DollarSign className="w-6 h-6 text-purple-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">Conversion Rate</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{stats.conversionRate}%</p>
+            </div>
+            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-orange-600" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <button
+          onClick={() => { setActiveView('contacts'); setShowAddContact(true); }}
+          className="bg-primary text-white p-4 rounded-xl flex items-center gap-3 hover:bg-primary/90 transition"
+        >
+          <UserPlus className="w-5 h-5" />
+          <span>Add Contact</span>
+        </button>
+        <button
+          onClick={() => { setActiveView('deals'); setShowAddDeal(true); }}
+          className="bg-white text-gray-700 p-4 rounded-xl flex items-center gap-3 border border-gray-200 hover:bg-gray-50 transition"
+        >
+          <Target className="w-5 h-5" />
+          <span>New Deal</span>
+        </button>
+        <button
+          onClick={() => setActiveView('social')}
+          className="bg-white text-gray-700 p-4 rounded-xl flex items-center gap-3 border border-gray-200 hover:bg-gray-50 transition"
+        >
+          <Send className="w-5 h-5" />
+          <span>Social Media</span>
+        </button>
+        <button
+          onClick={() => setActiveView('analytics')}
+          className="bg-white text-gray-700 p-4 rounded-xl flex items-center gap-3 border border-gray-200 hover:bg-gray-50 transition"
+        >
+          <BarChart3 className="w-5 h-5" />
+          <span>Analytics</span>
+        </button>
+      </div>
+
+      {/* Recent Contacts */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-gray-900">Recent Contacts</h3>
+          <button onClick={() => setActiveView('contacts')} className="text-primary text-sm hover:underline">
+            View All
+          </button>
+        </div>
+        <div className="p-6">
+          {contacts.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">No contacts yet. Add your first contact!</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-left text-sm text-gray-500 border-b border-gray-100">
+                    <th className="pb-3 font-medium">Name</th>
+                    <th className="pb-3 font-medium">Email</th>
+                    <th className="pb-3 font-medium">Company</th>
+                    <th className="pb-3 font-medium">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {contacts.slice(0, 5).map((contact) => (
+                    <tr key={contact.id} className="border-b border-gray-50 hover:bg-gray50">
+                      <td className="py-3 text-sm font-medium">{contact.firstName} {contact.lastName}</td>
+                      <td className="py-3 text-sm text-gray-500">{contact.email}</td>
+                      <td className="py-3 text-sm">{contact.company || '-'}</td>
+                      <td className="py-3">{getStatusBadge(contact.status)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 
-  const stats = {
-    totalCustomers: customers.filter(c => c.status === 'customer').length,
-    totalLeads: leads.length,
-    totalRevenue: customers.reduce((sum, c) => sum + c.totalSpent, 0),
-    conversionRate: leads.length > 0 ? Math.round((leads.filter(l => l.status === 'won').length / leads.length) * 100) : 0,
-  };
+  // Contacts View
+  const renderContacts = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold text-gray-900">Contacts</h2>
+        <button
+          onClick={() => setShowAddContact(true)}
+          className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90"
+        >
+          <Plus className="w-4 h-4" /> Add Contact
+        </button>
+      </div>
 
-  const exportCustomersCSV = () => {
-    const headers = ['Name', 'Company', 'Email', 'Phone', 'City', 'Country', 'Status', 'Total Spent', 'Last Contact'];
-    const rows = customers.map(c => [
-      c.name, c.company, c.email, c.phone, c.city, c.country, c.status, c.totalSpent, c.lastContact
-    ]);
-    
-    const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `customers_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    toast.success('Customers exported to CSV!');
-  };
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="p-4 border-b border-gray-100 flex gap-4">
+          <div className="flex-1 relative">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search contacts..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm"
+            />
+          </div>
+        </div>
 
-  const exportLeadsCSV = () => {
-    const headers = ['Name', 'Company', 'Email', 'Phone', 'Source', 'Status', 'Value', 'Assigned To', 'Created'];
-    const rows = leads.map(l => [
-      l.name, l.company, l.email, l.phone, l.source, l.status, l.value, l.assignedTo, l.createdAt
-    ]);
-    
-    const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `leads_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    toast.success('Leads exported to CSV!');
-  };
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="text-left text-sm text-gray-500 border-b border-gray-100 bg-gray50">
+                <th className="p-4 font-medium">Name</th>
+                <th className="p-4 font-medium">Email</th>
+                <th className="p-4 font-medium">Phone</th>
+                <th className="p-4 font-medium">Company</th>
+                <th className="p-4 font-medium">Status</th>
+                <th className="p-4 font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <tr><td colSpan={6} className="p-8 text-center text-gray-500">Loading...</td></tr>
+              ) : filteredContacts.length === 0 ? (
+                <tr><td colSpan={6} className="p-8 text-center text-gray-500">No contacts found</td></tr>
+              ) : (
+                filteredContacts.map((contact) => (
+                  <tr key={contact.id} className="border-b border-gray-50 hover:bg-gray50">
+                    <td className="p-4 text-sm font-medium">{contact.firstName} {contact.lastName}</td>
+                    <td className="p-4 text-sm text-gray-500">{contact.email}</td>
+                    <td className="p-4 text-sm text-gray-500">{contact.phone}</td>
+                    <td className="p-4 text-sm">{contact.company || '-'}</td>
+                    <td className="p-4">{getStatusBadge(contact.status)}</td>
+                    <td className="p-4">
+                      <div className="flex gap-2">
+                        <button onClick={() => setShowViewContact(contact)} className="p-1 hover:bg-gray-100 rounded">
+                          <Eye className="w-4 h-4 text-gray-500" />
+                        </button>
+                        <button className="p-1 hover:bg-gray-100 rounded">
+                          <Edit className="w-4 h-4 text-gray-500" />
+                        </button>
+                        <button className="p-1 hover:bg-gray-100 rounded">
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
 
-  const printCustomerCard = (customer: Customer) => {
-    const printWindow = window.open('', '_blank');
-    if (printWindow) {
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Customer Card - ${customer.name}</title>
-            <style>
-              body { font-family: Arial, sans-serif; padding: 20px; }
-              .card { border: 2px solid #333; border-radius: 10px; padding: 20px; max-width: 400px; margin: 0 auto; }
-              .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
-              .photo { width: 80px; height: 80px; background: #EC4899; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; margin: 0 auto 15px; }
-              .name { font-size: 20px; font-weight: bold; text-align: center; }
-              .company { font-size: 14px; color: #666; text-align: center; margin-bottom: 15px; }
-              .info { margin: 8px 0; }
-              .label { font-weight: bold; color: #666; font-size: 12px; }
-              .status { display: inline-block; padding: 4px 12px; border-radius: 9999px; font-size: 12px; margin-top: 10px; }
-              .footer { text-align: center; margin-top: 20px; padding-top: 10px; border-top: 1px solid #ccc; font-size: 10px; color: #666; }
-            </style>
-          </head>
-          <body>
-            <div class="card">
-              <div class="header">
-                <div class="photo">${customer.name[0]}</div>
-                <div class="name">${customer.name}</div>
-                <div class="company">${customer.company}</div>
-                <span class="status" style="background: #d1fae5; color: #065f46;">${customer.status}</span>
+  // Deals View
+  const renderDeals = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold text-gray-900">Deals Pipeline</h2>
+        <button
+          onClick={() => setShowAddDeal(true)}
+          className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90"
+        >
+          <Plus className="w-4 h-4" /> New Deal
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {['new', 'contacted', 'qualified', 'proposal', 'won', 'lost'].map((stage) => {
+          const stageDeals = deals.filter(d => d.stage === stage);
+          const stageTotal = stageDeals.reduce((sum, d) => sum + d.value, 0);
+          return (
+            <div key={stage} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="font-semibold text-gray-900 capitalize">{stage}</h3>
+                <span className="text-xs text-gray-500">{stageDeals.length} deals</span>
               </div>
-              <div class="info"><span class="label">Email:</span> ${customer.email}</div>
-              <div class="info"><span class="label">Phone:</span> ${customer.phone}</div>
-              <div class="info"><span class="label">Location:</span> ${customer.city}, ${customer.country}</div>
-              <div class="info"><span class="label">Total Spent:</span> $${customer.totalSpent.toLocaleString()}</div>
-              <div class="info"><span class="label">Source:</span> ${customer.source}</div>
-              <div class="footer">LemurSystem CRM | Generated ${new Date().toLocaleDateString()}</div>
+              <p className="text-lg font-bold text-gray-900">{formatCurrency(stageTotal)}</p>
+              <div className="mt-3 space-y-2">
+                {stageDeals.slice(0, 3).map((deal) => (
+                  <div key={deal.id} className="p-2 bg-gray-50 rounded-lg">
+                    <p className="text-sm font-medium truncate">{deal.title}</p>
+                    <p className="text-xs text-gray-500">{formatCurrency(deal.value)}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </body>
-        </html>
-      `);
-      printWindow.document.close();
-      printWindow.print();
-    }
-  };
+          );
+        })}
+      </div>
+    </div>
+  );
 
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      customer: 'bg-green-100 text-green-700',
-      prospect: 'bg-blue-100 text-blue-700',
-      lead: 'bg-purple-100 text-purple-700',
-      inactive: 'bg-slate-100 text-slate-700',
-      new: 'bg-blue-100 text-blue-700',
-      contacted: 'bg-amber-100 text-amber-700',
-      qualified: 'bg-purple-100 text-purple-700',
-      proposal: 'bg-orange-100 text-orange-700',
-      won: 'bg-green-100 text-green-700',
-      lost: 'bg-red-100 text-red-700',
-    };
-    return colors[status] || 'bg-slate-100 text-slate-700';
-  };
+  // Social View
+  const renderSocial = () => (
+    <div className="space-y-6">
+      <h2 className="text-xl font-semibold text-gray-900">Social Media Management</h2>
 
-  const handleAddCustomer = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    addCustomer({
-      name: formData.get('name') as string,
-      email: formData.get('email') as string,
-      phone: formData.get('phone') as string,
-      company: formData.get('company') as string,
-      address: formData.get('address') as string,
-      city: formData.get('city') as string,
-      country: formData.get('country') as string,
-      status: 'lead' as const,
-      source: formData.get('source') as string,
-      totalSpent: 0,
-      lastContact: new Date().toISOString().split('T')[0],
-      assignedTo: formData.get('assignedTo') as string,
-    });
-    setShowAddCustomer(false);
-    toast.success('Customer added!');
-  };
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {socialAccounts.length === 0 ? (
+          <div className="col-span-full text-center py-8 text-gray-500">
+            No social accounts connected
+          </div>
+        ) : (
+          socialAccounts.map((account) => (
+            <div key={account.id} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                    account.platform === 'facebook' ? 'bg-blue-100' :
+                    account.platform === 'twitter' ? 'bg-sky-100' :
+                    account.platform === 'instagram' ? 'bg-pink-100' :
+                    account.platform === 'linkedin' ? 'bg-blue-100' : 'bg-gray-100'
+                  }`}>
+                    <span className="text-lg">{account.platform[0].toUpperCase()}</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{account.platform}</h3>
+                    <p className="text-sm text-gray-500">{account.accountName}</p>
+                  </div>
+                </div>
+                {getStatusBadge(account.isConnected ? 'active' : 'inactive')}
+              </div>
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <p className="text-sm text-gray-500">{account.followers.toLocaleString()} followers</p>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
 
-  const handleAddLead = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    addLead({
-      name: formData.get('name') as string,
-      email: formData.get('email') as string,
-      phone: formData.get('phone') as string,
-      company: formData.get('company') as string,
-      source: formData.get('source') as string,
-      status: 'new' as const,
-      value: parseFloat(formData.get('value') as string) || 0,
-      assignedTo: formData.get('assignedTo') as string,
-      notes: formData.get('notes') as string,
-    });
-    setShowAddLead(false);
-    toast.success('Lead added!');
-  };
+      {/* Scheduled Posts */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-gray-900">Scheduled Posts</h3>
+          <button className="text-primary text-sm hover:underline">
+            Schedule New
+          </button>
+        </div>
+        <div className="p-6">
+          {scheduledPosts.length === 0 ? (
+            <p className="text-gray-500 text-center py-4">No scheduled posts</p>
+          ) : (
+            <div className="space-y-3">
+              {scheduledPosts.map((post) => (
+                <div key={post.id} className="p-4 border border-gray-100 rounded-lg">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-sm text-gray-900">{post.content}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {post.platform} • {formatDate(post.scheduledDate)}
+                      </p>
+                    </div>
+                    {getStatusBadge(post.status)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 
-  const handleUpdateLeadStatus = (id: string, status: string) => {
-    updateLead(id, { status: status as any });
-    toast.success(`Lead status updated to ${status}!`);
-  };
+  const navItems = [
+    { id: 'contacts', label: 'Contacts', icon: Users },
+    { id: 'deals', label: 'Deals', icon: Target },
+    { id: 'social', label: 'Social Media', icon: Send },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+  ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">CRM</h1>
-          <p className="text-slate-500">Manage customers, leads, and sales pipeline</p>
-        </div>
-        <div className="flex gap-2">
-          <button onClick={() => setActiveView('customers')} className={`px-4 py-2 rounded-lg font-medium ${activeView === 'customers' ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 border border-slate-200'}`}>
-            Customers
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div className="px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+              <Users className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">CRM</h1>
+              <p className="text-sm text-gray-500">Manage contacts, deals & social media</p>
+            </div>
+          </div>
+          <button onClick={() => loadDashboardStats()} className="p-2 hover:bg-gray-100 rounded-lg">
+            <RefreshCw className="w-5 h-5 text-gray-500" />
           </button>
-          <button onClick={() => setActiveView('leads')} className={`px-4 py-2 rounded-lg font-medium ${activeView === 'leads' ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 border border-slate-200'}`}>
-            Leads
-          </button>
-          <button onClick={() => setActiveView('analytics')} className={`px-4 py-2 rounded-lg font-medium ${activeView === 'analytics' ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 border border-slate-200'}`}>
-            Analytics
-          </button>
         </div>
-      </div>
+      </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 border border-slate-200">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-900">{stats.totalCustomers}</p>
-              <p className="text-sm text-slate-500">Customers</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl p-5 border border-slate-200">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <UserPlus className="w-5 h-5 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-900">{stats.totalLeads}</p>
-              <p className="text-sm text-slate-500">Total Leads</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl p-5 border border-slate-200">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-green-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-900">${stats.totalRevenue.toLocaleString()}</p>
-              <p className="text-sm text-slate-500">Total Revenue</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl p-5 border border-slate-200">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-amber-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-900">{stats.conversionRate}%</p>
-              <p className="text-sm text-slate-500">Conversion Rate</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {activeView === 'customers' && (
-        <div className="bg-white rounded-xl border border-slate-200">
-          <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="flex gap-2 flex-1">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Search customers..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
-              <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                <option value="all">All Status</option>
-                <option value="customer">Customer</option>
-                <option value="prospect">Prospect</option>
-                <option value="lead">Lead</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={exportCustomersCSV} className="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center gap-2">
-                <FileSpreadsheet className="w-4 h-4" /> Export
-              </button>
-              <button onClick={() => setShowAddCustomer(true)} className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2">
-                <Plus className="w-4 h-4" /> Add Customer
-              </button>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Customer</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Company</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Contact</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Total Spent</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Status</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
-                {filteredCustomers.map((customer) => (
-                  <tr key={customer.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center text-white font-medium">
-                          {customer.name[0]}
-                        </div>
-                        <div>
-                          <p className="font-medium text-slate-900">{customer.name}</p>
-                          <p className="text-xs text-slate-500">{customer.city}, {customer.country}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-slate-600">{customer.company}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-col gap-1">
-                        <a href={`mailto:${customer.email}`} className="text-sm text-blue-600 hover:underline flex items-center gap-1">
-                          <Mail className="w-3 h-3" /> {customer.email}
-                        </a>
-                        <span className="text-sm text-slate-500 flex items-center gap-1">
-                          <Phone className="w-3 h-3" /> {customer.phone}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 font-medium text-slate-900">${customer.totalSpent.toLocaleString()}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(customer.status)}`}>
-                        {customer.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex justify-end gap-1">
-                        <button onClick={() => setShowViewCustomer(customer)} className="p-1 hover:bg-slate-100 rounded" title="View">
-                          <Eye className="w-4 h-4 text-slate-400" />
-                        </button>
-                        <button onClick={() => printCustomerCard(customer)} className="p-1 hover:bg-slate-100 rounded" title="Print Card">
-                          <Printer className="w-4 h-4 text-slate-400" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {activeView === 'leads' && (
-        <div className="bg-white rounded-xl border border-slate-200">
-          <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search leads..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-            <div className="flex gap-2">
-              <button onClick={exportLeadsCSV} className="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center gap-2">
-                <FileSpreadsheet className="w-4 h-4" /> Export
-              </button>
-              <button onClick={() => setShowAddLead(true)} className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center gap-2">
-                <Plus className="w-4 h-4" /> Add Lead
-              </button>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Lead</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Company</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Value</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Source</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Status</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
-                {filteredLeads.map((lead) => (
-                  <tr key={lead.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-medium">
-                          {lead.name[0]}
-                        </div>
-                        <div>
-                          <p className="font-medium text-slate-900">{lead.name}</p>
-                          <p className="text-xs text-slate-500">{lead.email}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-slate-600">{lead.company}</td>
-                    <td className="px-4 py-3 font-medium text-slate-900">${lead.value.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-sm text-slate-600">{lead.source}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(lead.status)}`}>
-                        {lead.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex justify-end gap-1">
-                        <button onClick={() => setShowViewLead(lead)} className="p-1 hover:bg-slate-100 rounded" title="View">
-                          <Eye className="w-4 h-4 text-slate-400" />
-                        </button>
-                        {lead.status === 'new' && (
-                          <button onClick={() => handleUpdateLeadStatus(lead.id, 'contacted')} className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
-                            Contact
-                          </button>
-                        )}
-                        {lead.status === 'contacted' && (
-                          <button onClick={() => handleUpdateLeadStatus(lead.id, 'qualified')} className="px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded hover:bg-purple-200">
-                            Qualify
-                          </button>
-                        )}
-                        {lead.status === 'qualified' && (
-                          <button onClick={() => handleUpdateLeadStatus(lead.id, 'proposal')} className="px-2 py-1 text-xs bg-orange-100 text-orange-700 rounded hover:bg-orange-200">
-                            Proposal
-                          </button>
-                        )}
-                        {lead.status === 'proposal' && (
-                          <button onClick={() => handleUpdateLeadStatus(lead.id, 'won')} className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200">
-                            Won
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {activeView === 'analytics' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h3 className="text-lg font-semibold mb-4">Lead Sources</h3>
-            <div className="space-y-3">
-              {['Website', 'Referral', 'LinkedIn', 'Cold Call', 'Advertisement'].map((source) => {
-                const count = leads.filter(l => l.source === source).length;
-                const percentage = leads.length > 0 ? Math.round((count / leads.length) * 100) : 0;
-                return (
-                  <div key={source} className="flex items-center gap-3">
-                    <div className="flex-1">
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm text-slate-600">{source}</span>
-                        <span className="text-sm font-medium">{count} ({percentage}%)</span>
-                      </div>
-                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-primary rounded-full" style={{ width: `${percentage}%` }}></div>
-                    </div>
-                      </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h3 className="text-lg font-semibold mb-4">Pipeline Overview</h3>
-            <div className="space-y-3">
-              {['new', 'contacted', 'qualified', 'proposal', 'won'].map((stage) => {
-                const count = leads.filter(l => l.status === stage).length;
-                const value = leads.filter(l => l.status === stage).reduce((sum, l) => sum + l.value, 0);
-                const colors: Record<string, string> = {
-                  new: 'bg-blue-500',
-                  contacted: 'bg-amber-500',
-                  qualified: 'bg-purple-500',
-                  proposal: 'bg-orange-500',
-                  won: 'bg-green-500',
-                };
-                return (
-                  <div key={stage} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
-                    <div className={`w-3 h-3 rounded-full ${colors[stage]}`}></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium capitalize">{stage}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium">{count}</p>
-                      <p className="text-xs text-slate-500">${value.toLocaleString()}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showViewCustomer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl w-full max-w-lg">
-            <div className="p-6 border-b border-slate-200 flex justify-between items-center">
-              <h2 className="text-xl font-bold">Customer Details</h2>
-              <button onClick={() => setShowViewCustomer(null)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            <div className="p-6 space-y-4">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
-                  {showViewCustomer.name[0]}
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold">{showViewCustomer.name}</h3>
-                  <p className="text-slate-500">{showViewCustomer.company}</p>
-                  <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(showViewCustomer.status)}`}>
-                    {showViewCustomer.status}
-                  </span>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <p className="text-sm text-slate-500">Email</p>
-                  <p className="font-medium">{showViewCustomer.email}</p>
-                </div>
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <p className="text-sm text-slate-500">Phone</p>
-                  <p className="font-medium">{showViewCustomer.phone}</p>
-                </div>
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <p className="text-sm text-slate-500">Location</p>
-                  <p className="font-medium">{showViewCustomer.city}, {showViewCustomer.country}</p>
-                </div>
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <p className="text-sm text-slate-500">Total Spent</p>
-                  <p className="font-medium">${showViewCustomer.totalSpent.toLocaleString()}</p>
-                </div>
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <p className="text-sm text-slate-500">Source</p>
-                  <p className="font-medium">{showViewCustomer.source}</p>
-                </div>
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <p className="text-sm text-slate-500">Last Contact</p>
-                  <p className="font-medium">{showViewCustomer.lastContact}</p>
-                </div>
-              </div>
-              <div className="flex gap-2 mt-4">
-                <button onClick={() => printCustomerCard(showViewCustomer)} className="flex-1 px-4 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-2">
-                  <Printer className="w-4 h-4" /> Print Card
+      <div className="flex">
+        {/* Sidebar */}
+        <aside className="w-64 bg-white border-r border-gray-200 min-h-screen">
+          <nav className="p-4 space-y-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveView(item.id as ViewTab)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition ${
+                    activeView === item.id
+                      ? 'bg-primary text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  {item.label}
                 </button>
-                <button onClick={() => setShowViewCustomer(null)} className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700">
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+              );
+            })}
+          </nav>
+        </aside>
 
-      {showAddCustomer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl w-full max-w-lg">
-            <div className="p-6 border-b border-slate-200">
-              <h2 className="text-xl font-bold">Add Customer</h2>
+        {/* Main Content */}
+        <main className="flex-1 p-6">
+          {renderDashboard()}
+          {activeView === 'contacts' && renderContacts()}
+          {activeView === 'deals' && renderDeals()}
+          {activeView === 'social' && renderSocial()}
+          {activeView === 'analytics' && (
+            <div className="text-center py-12 text-gray-500">
+              Analytics coming soon
             </div>
-            <form onSubmit={handleAddCustomer} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
-                <input name="name" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                  <input name="email" type="email" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Phone</label>
-                  <input name="phone" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Company</label>
-                  <input name="company" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Source</label>
-                  <select name="source" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
-                    <option value="Website">Website</option>
-                    <option value="Referral">Referral</option>
-                    <option value="LinkedIn">LinkedIn</option>
-                    <option value="Cold Call">Cold Call</option>
-                    <option value="Advertisement">Advertisement</option>
-                  </select>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">City</label>
-                  <input name="city" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Country</label>
-                  <input name="country" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Address</label>
-                <input name="address" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Assigned To</label>
-                <select name="assignedTo" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
-                  {employees.map(e => <option key={e.id} value={`${e.firstName} ${e.lastName}`}>{e.firstName} {e.lastName}</option>)}
-                </select>
-              </div>
-              <div className="flex justify-end gap-3 pt-4">
-                <button type="button" onClick={() => setShowAddCustomer(false)} className="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700">Add Customer</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {showAddLead && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl w-full max-w-lg">
-            <div className="p-6 border-b border-slate-200">
-              <h2 className="text-xl font-bold">Add Lead</h2>
-            </div>
-            <form onSubmit={handleAddLead} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
-                <input name="name" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                  <input name="email" type="email" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Phone</label>
-                  <input name="phone" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Company</label>
-                  <input name="company" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Lead Value</label>
-                  <input name="value" type="number" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Source</label>
-                  <select name="source" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
-                    <option value="Website">Website</option>
-                    <option value="Referral">Referral</option>
-                    <option value="LinkedIn">LinkedIn</option>
-                    <option value="Cold Call">Cold Call</option>
-                    <option value="Advertisement">Advertisement</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Assigned To</label>
-                  <select name="assignedTo" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
-                    {employees.map(e => <option key={e.id} value={`${e.firstName} ${e.lastName}`}>{e.firstName} {e.lastName}</option>)}
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Notes</label>
-                <textarea name="notes" rows={3} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"></textarea>
-              </div>
-              <div className="flex justify-end gap-3 pt-4">
-                <button type="button" onClick={() => setShowAddLead(false)} className="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700">Add Lead</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+          )}
+        </main>
+      </div>
     </div>
   );
 }
