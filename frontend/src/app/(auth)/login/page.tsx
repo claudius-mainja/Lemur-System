@@ -87,6 +87,7 @@ export default function LoginPage() {
         lastName: data.lastName,
         timezone: 'Africa/Johannesburg',
         currency: 'ZAR',
+        plan: data.plan,
       });
       const { user, accessToken, refreshToken } = response.data;
       setAuth(user, accessToken, refreshToken);

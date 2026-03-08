@@ -19,6 +19,7 @@ export class TenantsController {
     timezone?: string;
     currency?: string;
     language?: string;
+    plan?: string;
   }) {
     return this.tenantsService.register(data);
   }

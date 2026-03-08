@@ -96,6 +96,7 @@ export const tenantsApi = {
     timezone?: string;
     currency?: string;
     language?: string;
+    plan?: string;
   }) => api.post('/tenants/register', data),
 
   getAll: () => api.get('/tenants'),
