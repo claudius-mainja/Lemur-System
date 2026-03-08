@@ -195,7 +195,7 @@ export default function HomePage() {
               <ArrowRight className="w-5 h-5 animate-bounce-slow" />
             </Link>
             <Link href="/contact" className="w-full sm:w-auto px-8 py-4 border-2 border-slate-200 text-slate-700 font-semibold rounded-xl hover:border-primary hover:text-primary transition-all duration-300 hover:-translate-y-1">
-              Schedule Demo
+              Contact Sales
             </Link>
           </div>
 
