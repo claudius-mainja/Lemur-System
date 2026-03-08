@@ -20,6 +20,7 @@ export class TenantsService {
     timezone?: string;
     currency?: string;
     language?: string;
+    plan?: string;
   }) {
     const existingTenant = await this.tenantRepository.findOne({
       where: { email: data.email },
@@ -29,6 +30,9 @@ export class TenantsService {
       throw new ConflictException('Organization with this email already exists');
     }
 
+    const validPlans = ['starter', 'professional', 'enterprise'];
+    const selectedPlan = validPlans.includes(data.plan) ? data.plan : 'starter';
+
     const tenant = this.tenantRepository.create({
       name: data.name,
       email: data.email,
@@ -37,10 +41,10 @@ export class TenantsService {
       city: '',
       country: '',
       status: 'active',
-      timezone: data.timezone || 'UTC',
-      currency: data.currency || 'USD',
+      timezone: data.timezone || 'Africa/Johannesburg',
+      currency: data.currency || 'ZAR',
       language: data.language || 'en',
-      plan: 'starter',
+      plan: selectedPlan,
       isOnTrial: true,
       trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
     });
