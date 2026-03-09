@@ -14,6 +14,7 @@ import { FinanceModule } from './finance/finance.module';
 import { CrmModule } from './crm/crm.module';
 import { PayrollModule } from './payroll/payroll.module';
 import { EmailModule } from './email/email.module';
+import { DocumentsModule } from './documents/documents.module';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { EmailModule } from './email/email.module';
     CrmModule,
     PayrollModule,
     EmailModule,
+    DocumentsModule,
   ],
   providers: [
     {

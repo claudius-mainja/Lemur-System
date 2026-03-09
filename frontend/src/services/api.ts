@@ -279,3 +279,27 @@ export const emailApi = {
   getTemplates: () => api.get('/email/templates'),
   createTemplate: (data: any) => api.post('/email/templates', data),
 };
+
+export const documentsApi = {
+  getDocuments: (folder?: string) => 
+    api.get(`/documents${folder ? `?folder=${folder}` : ''}`),
+  getDocument: (id: string) => api.get(`/documents/${id}`),
+  uploadDocument: (file: File, data: {
+    name?: string;
+    description?: string;
+    type?: string;
+    folder?: string;
+  }) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (data.name) formData.append('name', data.name);
+    if (data.description) formData.append('description', data.description);
+    if (data.type) formData.append('type', data.type);
+    if (data.folder) formData.append('folder', data.folder);
+    return api.post('/documents/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  downloadDocument: (id: string) => api.get(`/documents/${id}/download`, { responseType: 'blob' }),
+  deleteDocument: (id: string) => api.delete(`/documents/${id}`),
+};
