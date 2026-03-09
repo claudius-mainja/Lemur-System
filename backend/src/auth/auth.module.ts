@@ -11,10 +11,11 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { User } from './entities/user.entity';
 import { UserSession } from './entities/user-session.entity';
 import { MfaConfiguration, LoginAttempt, PasswordReset } from './entities/all-auth.entities';
+import { Tenant } from '../tenants/entities/tenant.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserSession, MfaConfiguration, LoginAttempt, PasswordReset]),
+    TypeOrmModule.forFeature([User, UserSession, MfaConfiguration, LoginAttempt, PasswordReset, Tenant]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

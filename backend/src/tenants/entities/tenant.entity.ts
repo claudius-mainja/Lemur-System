@@ -50,6 +50,9 @@ export class Tenant {
   @Column({ nullable: true })
   plan: string;
 
+  @Column({ type: 'simple-array', nullable: true })
+  modules: string[];
+
   @Column({ default: false })
   isOnTrial: boolean;
 

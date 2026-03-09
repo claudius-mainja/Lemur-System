@@ -4,6 +4,12 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Tenant } from '../entities/tenant.entity';
 
+const PLAN_MODULES: Record<string, string[]> = {
+  starter: ['hr', 'finance', 'payroll'],
+  professional: ['hr', 'finance', 'payroll', 'crm', 'supply-chain'],
+  enterprise: ['hr', 'finance', 'payroll', 'crm', 'supply-chain', 'email', 'documents', 'settings'],
+};
+
 @Injectable()
 export class TenantsService {
   constructor(
@@ -32,6 +38,7 @@ export class TenantsService {
 
     const validPlans = ['starter', 'professional', 'enterprise'];
     const selectedPlan = validPlans.includes(data.plan) ? data.plan : 'starter';
+    const modules = PLAN_MODULES[selectedPlan] || PLAN_MODULES['starter'];
 
     const tenant = this.tenantRepository.create({
       name: data.name,
@@ -45,6 +52,7 @@ export class TenantsService {
       currency: data.currency || 'ZAR',
       language: data.language || 'en',
       plan: selectedPlan,
+      modules,
       isOnTrial: true,
       trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
     });
@@ -53,10 +61,10 @@ export class TenantsService {
 
     return {
       id: tenant.id,
-      name: tenant.name,
-      email: tenant.email,
+      name: tenant.email,
       status: tenant.status,
       plan: tenant.plan,
+      modules: tenant.modules,
     };
   }
 
@@ -87,14 +95,17 @@ export class TenantsService {
   }
 
   async getModules(id: string) {
+    const tenant = await this.findById(id);
+    const plan = tenant.plan || 'starter';
+    const availableModules = PLAN_MODULES[plan] || PLAN_MODULES['starter'];
+    const enabledModules = tenant.modules || availableModules;
+    
     return {
-      modules: [
-        { name: 'HR', enabled: true },
-        { name: 'Payroll', enabled: true },
-        { name: 'Finance', enabled: true },
-        { name: 'Supply Chain', enabled: true },
-        { name: 'CRM', enabled: true },
-      ],
+      modules: availableModules.map(name => ({
+        name,
+        enabled: enabledModules.includes(name),
+      })),
+      plan,
     };
   }
 }

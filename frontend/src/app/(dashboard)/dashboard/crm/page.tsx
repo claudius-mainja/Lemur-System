@@ -511,6 +511,66 @@ export default function CRMDashboard() {
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
   ];
 
+  const [newContact, setNewContact] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    company: '',
+    position: '',
+    status: 'active',
+    source: 'website',
+  });
+
+  const [newDeal, setNewDeal] = useState({
+    title: '',
+    value: 0,
+    stage: 'new',
+    contactId: '',
+    expectedCloseDate: '',
+    probability: 10,
+  });
+
+  const handleCreateContact = async () => {
+    try {
+      await crmApi.createContact(newContact);
+      toast.success('Contact created successfully');
+      setShowAddContact(false);
+      setNewContact({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        company: '',
+        position: '',
+        status: 'active',
+        source: 'website',
+      });
+      loadContacts();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to create contact');
+    }
+  };
+
+  const handleCreateDeal = async () => {
+    try {
+      await crmApi.createDeal(newDeal);
+      toast.success('Deal created successfully');
+      setShowAddDeal(false);
+      setNewDeal({
+        title: '',
+        value: 0,
+        stage: 'new',
+        contactId: '',
+        expectedCloseDate: '',
+        probability: 10,
+      });
+      loadDeals();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to create deal');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -568,6 +628,226 @@ export default function CRMDashboard() {
           )}
         </main>
       </div>
+
+      {/* Add Contact Modal */}
+      {showAddContact && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Add New Contact</h3>
+              <button onClick={() => setShowAddContact(false)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                  <input
+                    type="text"
+                    value={newContact.firstName}
+                    onChange={(e) => setNewContact({ ...newContact, firstName: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                  <input
+                    type="text"
+                    value={newContact.lastName}
+                    onChange={(e) => setNewContact({ ...newContact, lastName: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  value={newContact.email}
+                  onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <input
+                  type="tel"
+                  value={newContact.phone}
+                  onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                  <input
+                    type="text"
+                    value={newContact.company}
+                    onChange={(e) => setNewContact({ ...newContact, company: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Position</label>
+                  <input
+                    type="text"
+                    value={newContact.position}
+                    onChange={(e) => setNewContact({ ...newContact, position: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <select
+                    value={newContact.status}
+                    onChange={(e) => setNewContact({ ...newContact, status: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Source</label>
+                  <select
+                    value={newContact.source}
+                    onChange={(e) => setNewContact({ ...newContact, source: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  >
+                    <option value="website">Website</option>
+                    <option value="referral">Referral</option>
+                    <option value="social">Social Media</option>
+                    <option value="advertising">Advertising</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button
+                  onClick={() => setShowAddContact(false)}
+                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleCreateContact}
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                >
+                  Create Contact
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Deal Modal */}
+      {showAddDeal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-lg">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Create New Deal</h3>
+              <button onClick={() => setShowAddDeal(false)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Deal Title</label>
+                <input
+                  type="text"
+                  value={newDeal.title}
+                  onChange={(e) => setNewDeal({ ...newDeal, title: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Value (ZAR)</label>
+                  <input
+                    type="number"
+                    value={newDeal.value}
+                    onChange={(e) => setNewDeal({ ...newDeal, value: parseFloat(e.target.value) || 0 })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Stage</label>
+                  <select
+                    value={newDeal.stage}
+                    onChange={(e) => setNewDeal({ ...newDeal, stage: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  >
+                    <option value="new">New</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="qualified">Qualified</option>
+                    <option value="proposal">Proposal</option>
+                    <option value="won">Won</option>
+                    <option value="lost">Lost</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Contact</label>
+                <select
+                  value={newDeal.contactId}
+                  onChange={(e) => setNewDeal({ ...newDeal, contactId: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                >
+                  <option value="">Select Contact</option>
+                  {contacts.map((contact) => (
+                    <option key={contact.id} value={contact.id}>{contact.firstName} {contact.lastName}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Expected Close Date</label>
+                  <input
+                    type="date"
+                    value={newDeal.expectedCloseDate}
+                    onChange={(e) => setNewDeal({ ...newDeal, expectedCloseDate: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Probability (%)</label>
+                  <input
+                    type="number"
+                    value={newDeal.probability}
+                    onChange={(e) => setNewDeal({ ...newDeal, probability: parseInt(e.target.value) || 0 })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    min="0"
+                    max="100"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button
+                  onClick={() => setShowAddDeal(false)}
+                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleCreateDeal}
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                >
+                  Create Deal
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

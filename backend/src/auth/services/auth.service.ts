@@ -8,7 +8,14 @@ import * as bcrypt from 'bcrypt';
 
 import { User } from '../entities/user.entity';
 import { UserSession } from '../entities/user-session.entity';
+import { Tenant } from '../../tenants/entities/tenant.entity';
 import { LoginDto, RegisterDto, RefreshTokenDto, ForgotPasswordDto, ResetPasswordDto, ChangePasswordDto } from '../dto/auth.dto';
+
+const PLAN_MODULES: Record<string, string[]> = {
+  starter: ['hr', 'finance', 'payroll'],
+  professional: ['hr', 'finance', 'payroll', 'crm', 'supply-chain'],
+  enterprise: ['hr', 'finance', 'payroll', 'crm', 'supply-chain', 'email', 'documents', 'settings'],
+};
 
 @Injectable()
 export class AuthService {
@@ -17,6 +24,8 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(UserSession)
     private readonly sessionRepository: Repository<UserSession>,
+    @InjectRepository(Tenant)
+    private readonly tenantRepository: Repository<Tenant>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
@@ -65,6 +74,10 @@ export class AuthService {
     const tokens = await this.generateTokens(user);
     await this.createSession(user.id, tokens.accessToken, ipAddress);
 
+    const tenant = await this.tenantRepository.findOne({ where: { id: user.organizationId } });
+    const plan = tenant?.plan || 'starter';
+    const modules = tenant?.modules || PLAN_MODULES[plan] || PLAN_MODULES['starter'];
+
     return {
       ...tokens,
       user: {
@@ -74,6 +87,10 @@ export class AuthService {
         lastName: user.lastName,
         role: user.role,
         avatarUrl: user.avatarUrl,
+        organizationId: user.organizationId,
+        organizationName: tenant?.name || 'Organization',
+        subscription: plan,
+        modules,
       },
     };
   }
