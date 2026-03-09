@@ -453,3 +453,95 @@ export class AttendanceRecord {
   @UpdateDateColumn()
   updatedAt: Date;
 }
+
+export enum ContractStatus {
+  DRAFT = 'draft',
+  PENDING_SIGNATURE = 'pending_signature',
+  SIGNED = 'signed',
+  ACTIVE = 'active',
+  EXPIRED = 'expired',
+  TERMINATED = 'terminated',
+}
+
+@Entity('contracts')
+export class Contract {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column()
+  title: string;
+
+  @Column({ nullable: true })
+  description: string;
+
+  @Column({ type: 'enum', enum: ContractType })
+  contractType: ContractType;
+
+  @Column({ type: 'enum', enum: ContractStatus, default: ContractStatus.DRAFT })
+  status: ContractStatus;
+
+  @Column({ type: 'date' })
+  startDate: Date;
+
+  @Column({ type: 'date', nullable: true })
+  endDate: Date;
+
+  @Column({ type: 'decimal', precision: 15, scale: 2, nullable: true })
+  salary: number;
+
+  @Column({ nullable: true })
+  currency: string;
+
+  @ManyToOne(() => Employee)
+  @JoinColumn({ name: 'employeeId' })
+  employee: Employee;
+
+  @Column()
+  employeeId: string;
+
+  @Column({ nullable: true })
+  employeeName: string;
+
+  @Column({ nullable: true })
+  employeeEmail: string;
+
+  @Column({ type: 'jsonb', nullable: true })
+  signatories: Array<{
+    name: string;
+    role: string;
+    email: string;
+    signedDate?: Date;
+    signature?: string;
+  }>;
+
+  @Column({ type: 'jsonb', nullable: true })
+  witnesses: Array<{
+    name: string;
+    role: string;
+    email: string;
+    signedDate?: Date;
+    signature?: string;
+  }>;
+
+  @Column({ type: 'text', nullable: true })
+  terms: string;
+
+  @Column({ type: 'text', nullable: true })
+  notes: string;
+
+  @Column({ nullable: true })
+  documentUrl: string;
+
+  @ManyToOne(() => Tenant)
+  @JoinColumn({ name: 'tenantId' })
+  tenant: Tenant;
+
+  @Column()
+  tenantId: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+}
