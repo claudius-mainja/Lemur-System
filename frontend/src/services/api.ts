@@ -137,6 +137,13 @@ export const hrApi = {
 
   getLeaveTypes: () => api.get('/hr/leave-types'),
 
+  getContracts: () => api.get('/hr/contracts'),
+  getContract: (id: string) => api.get(`/hr/contracts/${id}`),
+  createContract: (data: any) => api.post('/hr/contracts', data),
+  updateContract: (id: string, data: any) => api.put(`/hr/contracts/${id}`, data),
+  deleteContract: (id: string) => api.delete(`/hr/contracts/${id}`),
+  signContract: (id: string, data: any) => api.post(`/hr/contracts/${id}/sign`, data),
+
   getDashboardStats: () => api.get('/hr/dashboard/stats'),
 };
 
