@@ -31,22 +31,22 @@ const subscriptionFeatures = {
     name: 'Starter',
     color: 'bg-slate-100 text-slate-700',
     icon: Star,
-    features: ['HR Module', 'Basic Invoicing', 'Employee Directory', 'Leave Management'],
-    limits: { employees: 10 }
+    features: ['HR Module', 'Finance', 'Payroll', '3 Modules Total'],
+    limits: { employees: 10, modules: 3 }
   },
   professional: {
     name: 'Professional',
     color: 'bg-blue-100 text-blue-700',
     icon: Zap,
-    features: ['Full HR Suite', 'Advanced Finance', 'CRM', 'Payroll', 'Priority Support'],
-    limits: { employees: 100 }
+    features: ['Full HR Suite', 'Finance & Invoicing', 'CRM', 'Payroll', 'Supply Chain', '5 Modules Total'],
+    limits: { employees: 50, modules: 5 }
   },
   enterprise: {
     name: 'Enterprise',
     color: 'bg-amber-100 text-amber-700',
     icon: Crown,
-    features: ['Full Suite', 'Supply Chain', 'Custom Integrations', 'Dedicated Support', 'API Access'],
-    limits: { employees: 'Unlimited' }
+    features: ['Full Suite', 'Supply Chain', 'Email', 'Documents', 'Custom Integrations', 'Unlimited Modules'],
+    limits: { employees: 'Unlimited', modules: 'Unlimited' }
   },
 };
 
