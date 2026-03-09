@@ -86,6 +86,34 @@ export const authApi = {
     api.post('/auth/password/reset', { token, newPassword }),
 };
 
+export const usersApi = {
+  getCurrent: () => api.get('/users/me'),
+
+  getAll: (page = 1, limit = 50) =>
+    api.get(`/users?page=${page}&limit=${limit}`),
+
+  getById: (id: string) => api.get(`/users/${id}`),
+
+  update: (id: string, data: any) => api.put(`/users/${id}`, data),
+
+  create: (data: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    role?: string;
+    department?: string;
+  }) => api.post('/users', data),
+
+  delete: (id: string) => api.delete(`/users/${id}`),
+
+  invite: (data: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+  }) => api.post('/users/invite', data),
+};
+
 export const tenantsApi = {
   register: (data: {
     name: string;
@@ -145,17 +173,6 @@ export const hrApi = {
   signContract: (id: string, data: any) => api.post(`/hr/contracts/${id}/sign`, data),
 
   getDashboardStats: () => api.get('/hr/dashboard/stats'),
-};
-
-export const usersApi = {
-  getCurrent: () => api.get('/users/me'),
-
-  getAll: (page = 1, limit = 10) =>
-    api.get(`/users?page=${page}&limit=${limit}`),
-
-  getById: (id: string) => api.get(`/users/${id}`),
-
-  update: (id: string, data: any) => api.put(`/users/${id}`, data),
 };
 
 export const financeApi = {
