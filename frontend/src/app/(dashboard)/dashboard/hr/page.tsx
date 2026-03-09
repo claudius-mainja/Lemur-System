@@ -6,7 +6,7 @@ import {
   Users, UserPlus, Calendar, Building2, Plus, Search, MoreHorizontal,
   Download, Upload, Edit, Trash2, CheckCircle, XCircle, Clock,
   Filter, Mail, Phone, MapPin, FileText, Eye, Printer, X,
-  Briefcase, UserCheck, UserX, RefreshCw, TrendingUp
+  Briefcase, UserCheck, UserX, RefreshCw, TrendingUp, FileSignature
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -57,6 +57,35 @@ interface LeaveRequest {
   createdAt: string;
 }
 
+interface Contract {
+  id: string;
+  title: string;
+  description?: string;
+  contractType: string;
+  status: string;
+  startDate: string;
+  endDate?: string;
+  salary?: number;
+  currency?: string;
+  employeeId: string;
+  employeeName: string;
+  employeeEmail?: string;
+  signatories?: Array<{
+    name: string;
+    role: string;
+    email: string;
+    signedDate?: string;
+  }>;
+  witnesses?: Array<{
+    name: string;
+    role: string;
+    email: string;
+    signedDate?: string;
+  }>;
+  terms?: string;
+  createdAt: string;
+}
+
 interface DashboardStats {
   totalEmployees: number;
   activeEmployees: number;
@@ -79,6 +108,7 @@ export default function HRDashboard() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>([]);
+  const [contracts, setContracts] = useState<Contract[]>([]);
 
   // Modal states
   const [showAddEmployee, setShowAddEmployee] = useState(false);
@@ -134,6 +164,18 @@ export default function HRDashboard() {
     }
   }, []);
 
+  const loadContracts = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await hrApi.getContracts();
+      setContracts(response.data.data || response.data || []);
+    } catch (error) {
+      console.error('Failed to load contracts:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     loadDashboardStats();
   }, [loadDashboardStats]);
@@ -142,7 +184,8 @@ export default function HRDashboard() {
     if (activeView === 'employees') loadEmployees();
     if (activeView === 'departments') loadDepartments();
     if (activeView === 'leave') loadLeaveRequests();
-  }, [activeView, loadEmployees, loadDepartments, loadLeaveRequests]);
+    if (activeView === 'contracts') loadContracts();
+  }, [activeView, loadEmployees, loadDepartments, loadLeaveRequests, loadContracts]);
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
@@ -162,6 +205,10 @@ export default function HRDashboard() {
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(amount);
   };
 
   const filteredEmployees = employees.filter(e => {
@@ -515,9 +562,76 @@ export default function HRDashboard() {
     </div>
   );
 
+  // Contracts View
+  const renderContracts = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold text-gray-900">Employee Contracts</h2>
+        <button
+          onClick={() => {}}
+          className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90"
+        >
+          <Plus className="w-4 h-4" /> New Contract
+        </button>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="text-left text-sm text-gray-500 border-b border-gray-100 bg-gray50">
+                <th className="p-4 font-medium">Contract</th>
+                <th className="p-4 font-medium">Employee</th>
+                <th className="p-4 font-medium">Type</th>
+                <th className="p-4 font-medium">Start Date</th>
+                <th className="p-4 font-medium">End Date</th>
+                <th className="p-4 font-medium">Salary</th>
+                <th className="p-4 font-medium">Status</th>
+                <th className="p-4 font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <tr><td colSpan={8} className="p-8 text-center text-gray-500">Loading...</td></tr>
+              ) : contracts.length === 0 ? (
+                <tr><td colSpan={8} className="p-8 text-center text-gray-500">No contracts found. Create your first contract!</td></tr>
+              ) : (
+                contracts.map((contract) => (
+                  <tr key={contract.id} className="border-b border-gray-50 hover:bg-gray50">
+                    <td className="p-4 text-sm font-medium">{contract.title}</td>
+                    <td className="p-4 text-sm">{contract.employeeName}</td>
+                    <td className="p-4 text-sm capitalize">{contract.contractType}</td>
+                    <td className="p-4 text-sm text-gray-500">{formatDate(contract.startDate)}</td>
+                    <td className="p-4 text-sm text-gray-500">{contract.endDate ? formatDate(contract.endDate) : 'Permanent'}</td>
+                    <td className="p-4 text-sm font-medium">{contract.salary ? formatCurrency(contract.salary) : '-'}</td>
+                    <td className="p-4">{getStatusBadge(contract.status)}</td>
+                    <td className="p-4">
+                      <div className="flex gap-2">
+                        <button className="p-1 hover:bg-gray-100 rounded">
+                          <Eye className="w-4 h-4 text-gray-500" />
+                        </button>
+                        <button className="p-1 hover:bg-gray-100 rounded">
+                          <FileText className="w-4 h-4 text-gray-500" />
+                        </button>
+                        <button className="p-1 hover:bg-gray-100 rounded">
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+
   const navItems = [
     { id: 'employees', label: 'Employees', icon: Users },
     { id: 'departments', label: 'Departments', icon: Building2 },
+    { id: 'contracts', label: 'Contracts', icon: FileSignature },
     { id: 'leave', label: 'Leave', icon: Calendar },
   ];
 
@@ -570,6 +684,7 @@ export default function HRDashboard() {
           {renderDashboard()}
           {activeView === 'employees' && renderEmployees()}
           {activeView === 'departments' && renderDepartments()}
+          {activeView === 'contracts' && renderContracts()}
           {activeView === 'leave' && renderLeave()}
         </main>
       </div>
