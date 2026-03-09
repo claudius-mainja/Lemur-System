@@ -558,7 +558,7 @@ export default function DocumentationPage() {
                     <p className="text-sm text-slate-500">Business Hours Only</p>
                   </div>
                 </div>
-                <p className="text-slate-600">+1 (555) 000-1234</p>
+                <p className="text-slate-600">+27 61 580 8228</p>
               </div>
 
               <div className="bg-slate-50 rounded-xl p-6">
@@ -583,10 +583,9 @@ export default function DocumentationPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-slate-900">Headquarters</h3>
-                    <p className="text-sm text-slate-500">New York, USA</p>
+                    <p className="text-sm text-slate-500">South Africa</p>
                   </div>
                 </div>
-                <p className="text-slate-600">123 Business Street<br />New York, NY 10001</p>
               </div>
             </div>
           </section>
