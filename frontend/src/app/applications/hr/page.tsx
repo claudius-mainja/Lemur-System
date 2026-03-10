@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useThemeStore } from '@/stores/theme.store';
 import { ArrowLeft, Users, UserCheck, UserPlus, GraduationCap, FileText, Calendar, CheckCircle, Clock, Star } from 'lucide-react';
 
 const features = [
@@ -46,66 +47,69 @@ const benefits = [
 ];
 
 export default function HRPage() {
+  const { theme } = useThemeStore();
+  const isDark = theme === 'dark';
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-dark-bg' : 'bg-light-bg'}`}>
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+      <nav className={`fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-md ${isDark ? 'bg-dark-bg/90 border-dark-border' : 'bg-light-bg/90 border-light-border'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
               <Link href="/" className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-primary to-blue-700 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-orange-500 rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-lg">L</span>
                 </div>
-                <span className="font-bold text-xl text-slate-900">LemurSystem</span>
+                <span className={`font-bold text-xl ${isDark ? 'text-dark-text' : 'text-light-text'}`}>LemurSystem</span>
               </Link>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              <Link href="/" className="text-slate-600 hover:text-slate-900">Home</Link>
-              <Link href="/features" className="text-slate-600 hover:text-slate-900">Features</Link>
-              <Link href="/pricing" className="text-slate-600 hover:text-slate-900">Pricing</Link>
-              <Link href="/industries" className="text-slate-600 hover:text-slate-900">Industries</Link>
+              <Link href="/" className={`font-medium transition ${isDark ? 'text-dark-text-secondary hover:text-dark-text' : 'text-light-text-secondary hover:text-light-text'}`}>Home</Link>
+              <Link href="/features" className={`font-medium transition ${isDark ? 'text-dark-text-secondary hover:text-dark-text' : 'text-light-text-secondary hover:text-light-text'}`}>Features</Link>
+              <Link href="/pricing" className={`font-medium transition ${isDark ? 'text-dark-text-secondary hover:text-dark-text' : 'text-light-text-secondary hover:text-light-text'}`}>Pricing</Link>
+              <Link href="/industries" className={`font-medium transition ${isDark ? 'text-dark-text-secondary hover:text-dark-text' : 'text-light-text-secondary hover:text-light-text'}`}>Industries</Link>
             </div>
             <div className="hidden md:flex items-center gap-3">
-              <Link href="/login" className="px-4 py-2 text-slate-700 font-medium hover:text-slate-900">Log in</Link>
-              <Link href="/login" className="px-5 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-blue-700">Start Free Trial</Link>
+              <Link href="/login" className={`px-4 py-2 font-medium transition ${isDark ? 'text-dark-text-secondary hover:text-dark-text' : 'text-light-text-secondary hover:text-light-text'}`}>Log in</Link>
+              <Link href="/login" className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-orange-500 text-white font-medium rounded-lg hover:shadow-lg hover:shadow-orange-500/25 transition">Start Free Trial</Link>
             </div>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 via-white to-slate-50">
+      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-600/20 via-dark-bg to-orange-600/10">
         <div className="max-w-7xl mx-auto">
-          <Link href="/" className="inline-flex items-center gap-2 text-slate-600 hover:text-primary mb-8">
+          <Link href="/" className={`inline-flex items-center gap-2 font-medium mb-8 ${isDark ? 'text-dark-text-secondary hover:text-dark-text' : 'text-light-text-secondary hover:text-light-text'}`}>
             <ArrowLeft className="w-4 h-4" /> Back to Home
           </Link>
           
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-orange-500/20 text-blue-400 rounded-full text-sm font-medium mb-6 border border-blue-500/30">
                 Application
               </div>
-              <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-6 uppercase">
+              <h1 className={`text-4xl sm:text-5xl font-bold mb-6 uppercase tracking-wide ${isDark ? 'text-dark-text' : 'text-light-text'}`}>
                 Human Resources
               </h1>
-              <p className="text-lg text-slate-600 mb-8">
+              <p className={`text-lg mb-8 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
                 Complete HR management solution to handle the entire employee lifecycle from hiring to retirement. Streamline HR processes, improve employee experience, and ensure compliance.
               </p>
               <div className="flex flex-wrap gap-3">
                 {['Employee Management', 'Leave Tracking', 'Recruitment', 'Performance'].map((tag, i) => (
-                  <span key={i} className="px-3 py-1 bg-slate-100 text-slate-600 text-sm rounded-full">{tag}</span>
+                  <span key={i} className={`px-3 py-1 text-sm rounded-full ${isDark ? 'bg-dark-bg-tertiary text-dark-text-secondary' : 'bg-light-bg-tertiary text-light-text-secondary'}`}>{tag}</span>
                 ))}
               </div>
             </div>
-            <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl p-8 text-white">
+            <div className="bg-gradient-to-br from-blue-500 to-orange-500 rounded-2xl p-8 text-white shadow-2xl shadow-blue-500/20">
               <Users className="w-16 h-16 mb-6" />
               <h3 className="text-2xl font-bold mb-4">Manage Your Workforce Effectively</h3>
-              <p className="text-blue-100 mb-6">From recruitment to retirement, LemurSystem HR handles it all.</p>
+              <p className="text-white/80 mb-6">From recruitment to retirement, LemurSystem HR handles it all.</p>
               <ul className="space-y-3">
                 {benefits.slice(0, 4).map((benefit, i) => (
                   <li key={i} className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-blue-200" />
+                    <CheckCircle className="w-5 h-5 text-white/60" />
                     {benefit}
                   </li>
                 ))}
@@ -119,18 +123,18 @@ export default function HRPage() {
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 mb-4 uppercase">Key Features</h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">Everything you need to manage your human resources effectively</p>
+            <h2 className={`text-3xl font-bold mb-4 uppercase tracking-wide ${isDark ? 'text-dark-text' : 'text-light-text'}`}>Key Features</h2>
+            <p className={`max-w-2xl mx-auto ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Everything you need to manage your human resources effectively</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, i) => (
-              <div key={i} className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-xl transition-shadow">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
-                  <feature.icon className="w-6 h-6 text-blue-600" />
+              <div key={i} className={`backdrop-blur-sm rounded-xl p-6 border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${isDark ? 'bg-dark-card/80 border-dark-border hover:border-blue-500/50' : 'bg-light-card/80 border-light-border hover:border-orange-500/50'}`}>
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-orange-500/20 rounded-xl flex items-center justify-center mb-4 border border-blue-500/30">
+                  <feature.icon className="w-6 h-6 text-blue-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">{feature.title}</h3>
-                <p className="text-slate-600 text-sm">{feature.description}</p>
+                <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{feature.title}</h3>
+                <p className={`text-sm ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{feature.description}</p>
               </div>
             ))}
           </div>
@@ -138,16 +142,16 @@ export default function HRPage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600/10 to-orange-600/10">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-slate-900 mb-6 uppercase">Why Choose LemurSystem HR?</h2>
+              <h2 className={`text-3xl font-bold mb-6 uppercase tracking-wide ${isDark ? 'text-dark-text' : 'text-light-text'}`}>Why Choose LemurSystem HR?</h2>
               <ul className="space-y-4">
                 {benefits.map((benefit, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-600">{benefit}</span>
+                    <span className={isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>{benefit}</span>
                   </li>
                 ))}
               </ul>
@@ -159,9 +163,9 @@ export default function HRPage() {
                 { label: 'Countries', value: '15+' },
                 { label: 'Satisfaction', value: '98%' },
               ].map((stat, i) => (
-                <div key={i} className="bg-white rounded-xl p-6 text-center">
-                  <div className="text-3xl font-bold text-primary mb-1">{stat.value}</div>
-                  <div className="text-slate-500 text-sm">{stat.label}</div>
+                <div key={i} className={`backdrop-blur-sm rounded-xl p-6 text-center border ${isDark ? 'bg-dark-card/80 border-dark-border' : 'bg-light-card/80 border-light-border'}`}>
+                  <div className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-orange-500 bg-clip-text text-transparent mb-1">{stat.value}</div>
+                  <div className={`text-sm ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -170,21 +174,21 @@ export default function HRPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary to-blue-700">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-orange-600">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-white mb-6 uppercase">Start Your Free Trial</h2>
-          <p className="text-blue-100 mb-8">Experience the power of LemurSystem HR today. No credit card required.</p>
+          <p className="text-white/80 mb-8">Experience the power of LemurSystem HR today. No credit card required.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/login" className="px-8 py-4 bg-white text-primary font-semibold rounded-xl hover:bg-blue-50 transition">Start Free Trial</Link>
+            <Link href="/login" className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl hover:bg-white/90 transition shadow-lg">Start Free Trial</Link>
             <Link href="/contact" className="px-8 py-4 border-2 border-white text-white font-semibold rounded-xl hover:bg-white/10 transition">Contact Sales</Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-12 px-4">
+      <footer className={`py-12 px-4 ${isDark ? 'bg-dark-bg border-t border-dark-border' : 'bg-light-bg-secondary border-t border-light-border'}`}>
         <div className="max-w-7xl mx-auto text-center">
-          <p className="text-slate-400">© 2026 LemurSystem. A product of Blacklemur Innovations. All rights reserved.</p>
+          <p className={isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}>© 2026 LemurSystem. A product of Blacklemur Innovations. All rights reserved.</p>
         </div>
       </footer>
     </div>
