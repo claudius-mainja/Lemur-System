@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { hrApi } from '@/services/api';
+import { useDataStore } from '@/stores/data.store';
 import { 
   Users, UserPlus, Calendar, Building2, Plus, Search, MoreHorizontal,
   Download, Upload, Edit, Trash2, CheckCircle, XCircle, Clock,
@@ -94,6 +95,7 @@ interface DashboardStats {
 }
 
 export default function HRDashboard() {
+  const { employees: storeEmployees, leaveRequests: storeLeaveRequests, departments: storeDepartments, addEmployee, addLeaveRequest, updateLeaveRequest, addDepartment } = useDataStore();
   const [activeView, setActiveView] = useState<ViewTab>('employees');
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -105,9 +107,9 @@ export default function HRDashboard() {
   });
   
   // Data states
-  const [employees, setEmployees] = useState<Employee[]>([]);
-  const [departments, setDepartments] = useState<Department[]>([]);
-  const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>([]);
+  const [employees, setEmployees] = useState(storeEmployees as unknown as Employee[]);
+  const [departments, setDepartments] = useState(storeDepartments as unknown as Department[]);
+  const [leaveRequests, setLeaveRequests] = useState(storeLeaveRequests as unknown as LeaveRequest[]);
   const [contracts, setContracts] = useState<Contract[]>([]);
 
   // Modal states
@@ -181,11 +183,20 @@ export default function HRDashboard() {
   }, [loadDashboardStats]);
 
   useEffect(() => {
-    if (activeView === 'employees') loadEmployees();
-    if (activeView === 'departments') loadDepartments();
-    if (activeView === 'leave') loadLeaveRequests();
+    if (activeView === 'employees') {
+      setEmployees(storeEmployees);
+      loadEmployees().catch(() => {});
+    }
+    if (activeView === 'departments') {
+      setDepartments(storeDepartments as unknown as Department[]);
+      loadDepartments().catch(() => {});
+    }
+    if (activeView === 'leave') {
+      setLeaveRequests(storeLeaveRequests);
+      loadLeaveRequests().catch(() => {});
+    }
     if (activeView === 'contracts') loadContracts();
-  }, [activeView, loadEmployees, loadDepartments, loadLeaveRequests, loadContracts]);
+  }, [activeView, storeEmployees, storeDepartments, storeLeaveRequests]);
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {

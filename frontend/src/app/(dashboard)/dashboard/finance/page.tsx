@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { financeApi } from '@/services/api';
 import { useAuthStore } from '@/stores/auth.store';
+import { useDataStore } from '@/stores/data.store';
 import { 
   Wallet, FileText, Plus, Search, MoreHorizontal, Download, Send,
   CheckCircle, Clock, XCircle, DollarSign, TrendingUp, TrendingDown,
@@ -116,6 +117,7 @@ interface Sale {
 }
 
 export default function FinanceDashboard() {
+  const { invoices: storeInvoices, customers: storeCustomers, payroll: storePayroll, addInvoice, updateInvoice, addCustomer } = useDataStore();
   const [activeView, setActiveView] = useState<ViewTab>('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -129,9 +131,9 @@ export default function FinanceDashboard() {
   });
   
   // Data states
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [invoices, setInvoices] = useState(storeInvoices as unknown as Invoice[]);
   const [quotations, setQuotations] = useState<Quotation[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customers, setCustomers] = useState(storeCustomers as unknown as Customer[]);
   const [products, setProducts] = useState<Product[]>([]);
   const [receipts, setReceipts] = useState<Receipt[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
