@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { crmApi } from '@/services/api';
+import { useDataStore } from '@/stores/data.store';
 import { 
   BarChart3, Users, UserPlus, Plus, Search, MoreHorizontal, Phone, Mail, MapPin,
   TrendingUp, DollarSign, Star, Edit, Trash2, CheckCircle, XCircle, Clock,
@@ -60,6 +61,7 @@ interface DashboardStats {
 }
 
 export default function CRMDashboard() {
+  const { customers, leads, addCustomer, updateLead, addLead } = useDataStore();
   const [activeView, setActiveView] = useState<ViewTab>('contacts');
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -135,17 +137,42 @@ export default function CRMDashboard() {
   }, []);
 
   useEffect(() => {
-    loadDashboardStats();
+    loadDashboardStats().catch(() => {});
   }, [loadDashboardStats]);
 
   useEffect(() => {
-    if (activeView === 'contacts') loadContacts();
-    if (activeView === 'deals') loadDeals();
-    if (activeView === 'social') {
-      loadSocialAccounts();
-      loadScheduledPosts();
+    if (activeView === 'contacts') {
+      setContacts(customers.map(c => ({
+        id: c.id,
+        firstName: c.name.split(' ')[0],
+        lastName: c.name.split(' ').slice(1).join(' '),
+        email: c.email,
+        phone: c.phone,
+        company: c.company,
+        status: c.status,
+        source: c.source,
+        createdAt: c.lastContact,
+      })));
+      loadContacts().catch(() => {});
     }
-  }, [activeView, loadContacts, loadDeals, loadSocialAccounts, loadScheduledPosts]);
+    if (activeView === 'deals') {
+      setDeals(leads.filter(l => l.status !== 'new').map(l => ({
+        id: l.id,
+        title: l.company,
+        value: l.value,
+        stage: l.status,
+        contactName: l.name,
+        expectedCloseDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        probability: 50,
+        createdAt: l.createdAt,
+      })));
+      loadDeals().catch(() => {});
+    }
+    if (activeView === 'social') {
+      loadSocialAccounts().catch(() => {});
+      loadScheduledPosts().catch(() => {});
+    }
+  }, [activeView, customers, leads]);
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {

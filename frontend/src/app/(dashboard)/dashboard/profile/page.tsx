@@ -61,14 +61,22 @@ export default function ProfilePage() {
   };
 
   const industryLabels: Record<Industry, string> = {
-    healthcare: 'Healthcare',
-    retail: 'Retail',
+    technology: 'Technology & IT',
+    retail: 'Retail & E-Commerce',
     manufacturing: 'Manufacturing',
-    technology: 'Technology',
-    finance: 'Finance',
+    healthcare: 'Healthcare',
     education: 'Education',
-    logistics: 'Logistics',
-    hospitality: 'Hospitality',
+    finance: 'Finance & Banking',
+    construction: 'Construction',
+    hospitality: 'Hospitality & Tourism',
+    transportation: 'Transportation & Logistics',
+    agriculture: 'Agriculture',
+    mining: 'Mining & Resources',
+    telecommunications: 'Telecommunications',
+    realestate: 'Real Estate',
+    legal: 'Legal Services',
+    consulting: 'Consulting',
+    other: 'Other',
   };
 
   const planLabels: Record<SubscriptionPlan, string> = {

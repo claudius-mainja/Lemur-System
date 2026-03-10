@@ -125,6 +125,7 @@ export const tenantsApi = {
     currency?: string;
     language?: string;
     plan?: string;
+    country?: string;
   }) => api.post('/tenants/register', data),
 
   getAll: () => api.get('/tenants'),

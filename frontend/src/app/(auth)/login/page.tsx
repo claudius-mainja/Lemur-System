@@ -7,12 +7,46 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
-import { useAuthStore } from '@/stores/auth.store';
+import { useAuthStore, PLAN_CONFIG } from '@/stores/auth.store';
 import { authApi, tenantsApi } from '@/services/api';
 import { 
   Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, 
-  Building2, Users, DollarSign, Package, BarChart3 
+  Building2, Users, DollarSign, Package, BarChart3, Globe, MapPin
 } from 'lucide-react';
+
+const SADC_COUNTRIES = [
+  { code: 'ZA', name: 'South Africa', currency: 'ZAR', currencySymbol: 'R', timezone: 'Africa/Johannesburg' },
+  { code: 'BW', name: 'Botswana', currency: 'BWP', currencySymbol: 'P', timezone: 'Africa/Gaborone' },
+  { code: 'SZ', name: 'Eswatini', currency: 'SZL', currencySymbol: 'E', timezone: 'Africa/Mbabane' },
+  { code: 'LS', name: 'Lesotho', currency: 'LSL', currencySymbol: 'L', timezone: 'Africa/Maseru' },
+  { code: 'NA', name: 'Namibia', currency: 'NAD', currencySymbol: '$', timezone: 'Africa/Windhoek' },
+  { code: 'ZM', name: 'Zambia', currency: 'ZMW', currencySymbol: 'ZK', timezone: 'Africa/Lusaka' },
+  { code: 'ZW', name: 'Zimbabwe', currency: 'ZWL', currencySymbol: '$', timezone: 'Africa/Harare' },
+  { code: 'MZ', name: 'Mozambique', currency: 'MZN', currencySymbol: 'MT', timezone: 'Africa/Maputo' },
+  { code: 'MW', name: 'Malawi', currency: 'MWK', currencySymbol: 'MK', timezone: 'Africa/Blantyre' },
+  { code: 'AO', name: 'Angola', currency: 'AOA', currencySymbol: 'Kz', timezone: 'Africa/Luanda' },
+  { code: 'TZ', name: 'Tanzania', currency: 'TZS', currencySymbol: 'TSh', timezone: 'Africa/Dar_es_Salaam' },
+  { code: 'MU', name: 'Mauritius', currency: 'MUR', currencySymbol: '₨', timezone: 'Indian/Mauritius' },
+];
+
+const INDUSTRIES = [
+  { value: 'technology', label: 'Technology & IT' },
+  { value: 'retail', label: 'Retail & E-Commerce' },
+  { value: 'manufacturing', label: 'Manufacturing' },
+  { value: 'healthcare', label: 'Healthcare' },
+  { value: 'education', label: 'Education' },
+  { value: 'finance', label: 'Finance & Banking' },
+  { value: 'construction', label: 'Construction' },
+  { value: 'hospitality', label: 'Hospitality & Tourism' },
+  { value: 'transportation', label: 'Transportation & Logistics' },
+  { value: 'agriculture', label: 'Agriculture' },
+  { value: 'mining', label: 'Mining & Resources' },
+  { value: 'telecommunications', label: 'Telecommunications' },
+  { value: 'realestate', label: 'Real Estate' },
+  { value: 'legal', label: 'Legal Services' },
+  { value: 'consulting', label: 'Consulting' },
+  { value: 'other', label: 'Other' },
+];
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -27,8 +61,37 @@ const registerSchema = z.object({
   lastName: z.string().min(1, 'Last name is required'),
   organizationName: z.string().min(1, 'Organization name is required'),
   industry: z.string().min(1, 'Industry is required'),
+  country: z.string().min(1, 'Country is required'),
+  currency: z.string().min(1, 'Currency is required'),
   plan: z.enum(['starter', 'professional', 'enterprise']),
 });
+
+const planDetails = {
+  starter: {
+    name: 'Starter',
+    price: 10.60,
+    period: '/user/month',
+    maxUsers: 6,
+    features: ['HR', 'Finance', 'Supply Chain', '10 GB Storage', 'Email Support', 'Basic Reporting', 'Mobile App'],
+    notIncluded: ['CRM', 'Payroll', 'Productivity', 'API Access', 'Custom Integrations', 'SSO'],
+  },
+  professional: {
+    name: 'Professional',
+    price: 20.50,
+    period: '/user/month',
+    maxUsers: 50,
+    features: ['HR', 'Finance', 'CRM', 'Payroll', 'Productivity', 'Supply Chain', '100 GB Storage', 'Priority Support', 'Advanced Analytics', 'API Access', 'Custom Integrations', 'SSO'],
+    notIncluded: ['Dedicated Account Manager', 'On-premise Deployment'],
+  },
+  enterprise: {
+    name: 'Enterprise',
+    price: null,
+    period: 'Custom Pricing',
+    maxUsers: 'Unlimited',
+    features: ['All Applications + Custom', 'Unlimited Storage', '24/7 Dedicated Support', 'Custom Reporting & Dashboards', 'Full API Access', 'Custom Integrations', 'SSO & Advanced Security', 'Dedicated Account Manager', 'On-premise Option', 'SLA Guarantee', 'Custom Training'],
+    notIncluded: [],
+  },
+};
 
 type LoginForm = z.infer<typeof loginSchema>;
 type RegisterForm = z.infer<typeof registerSchema>;
@@ -57,9 +120,13 @@ export default function LoginPage() {
       lastName: '',
       organizationName: '',
       industry: 'technology',
+      country: 'ZA',
+      currency: 'ZAR',
       plan: 'starter',
     },
   });
+
+  const selectedCountry = SADC_COUNTRIES.find(c => c.code === registerForm.watch('country'));
 
   const onLogin = async (data: LoginForm) => {
     setIsLoading(true);
@@ -79,19 +146,39 @@ export default function LoginPage() {
   const onRegisterOrg = async (data: RegisterForm) => {
     setIsLoading(true);
     try {
+      const country = SADC_COUNTRIES.find(c => c.code === data.country) || SADC_COUNTRIES[0];
       const response = await tenantsApi.register({
         name: data.organizationName,
         email: data.email,
         password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
-        timezone: 'Africa/Johannesburg',
-        currency: 'ZAR',
+        timezone: country.timezone,
+        currency: country.currency,
+        country: data.country,
         plan: data.plan,
       });
-      const { user, accessToken, refreshToken } = response.data;
-      setAuth(user, accessToken, refreshToken);
-      toast.success(`Welcome to ${data.organizationName}!`);
+      const responseData = response.data;
+      
+      const userData = {
+        id: responseData.userId,
+        email: responseData.email,
+        firstName: responseData.firstName,
+        lastName: responseData.lastName,
+        role: 'admin',
+        organizationId: responseData.tenantId,
+        organizationName: data.organizationName,
+        industry: data.industry as any,
+        subscription: responseData.plan as any,
+        modules: responseData.modules,
+        currency: responseData.currency,
+        timezone: country.timezone,
+        country: responseData.country,
+        isOnTrial: true,
+      };
+      
+      setAuth(userData, responseData.accessToken, responseData.refreshToken);
+      toast.success(`Welcome to ${data.organizationName}! Your 14-day free trial has started.`);
       router.push('/dashboard/hr');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Registration failed');
@@ -154,13 +241,13 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-slate-50">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-dark-bg">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-slate-900">
+            <h2 className="text-3xl font-bold text-dark-text uppercase tracking-wide">
               {isLogin ? 'Sign in to your account' : 'Create your account'}
             </h2>
-            <p className="text-slate-600 mt-2">
+            <p className="text-dark-text-muted mt-2">
               {isLogin 
                 ? 'Enter your credentials to access your dashboard' 
                 : 'Start your 14-day free trial'}
@@ -170,15 +257,15 @@ export default function LoginPage() {
           {isLogin ? (
             <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-dark-text-secondary mb-2 uppercase tracking-wider">
                   Work Email
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-dark-text-muted" />
                   <input
                     {...loginForm.register('email')}
                     type="email"
-                    className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                    className="w-full pl-10 pr-4 py-3 border border-dark-border bg-dark-bg-tertiary text-dark-text rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     placeholder="you@company.com"
                   />
                 </div>
@@ -271,22 +358,50 @@ export default function LoginPage() {
                 )}
               </div>
 
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Country</label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                    <select
+                      {...registerForm.register('country')}
+                      className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-primary"
+                    >
+                      {SADC_COUNTRIES.map((country) => (
+                        <option key={country.code} value={country.code}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Currency</label>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                    <select
+                      {...registerForm.register('currency')}
+                      className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-primary"
+                    >
+                      {SADC_COUNTRIES.map((country) => (
+                        <option key={country.code} value={country.currency}>
+                          {country.currencySymbol} {country.currency}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Industry</label>
                 <select
                   {...registerForm.register('industry')}
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-primary"
                 >
-                  <option value="technology">Technology</option>
-                  <option value="retail">Retail</option>
-                  <option value="manufacturing">Manufacturing</option>
-                  <option value="healthcare">Healthcare</option>
-                  <option value="education">Education</option>
-                  <option value="finance">Finance</option>
-                  <option value="construction">Construction</option>
-                  <option value="hospitality">Hospitality</option>
-                  <option value="transportation">Transportation</option>
-                  <option value="other">Other</option>
+                  {INDUSTRIES.map((ind) => (
+                    <option key={ind.value} value={ind.value}>{ind.label}</option>
+                  ))}
                 </select>
               </div>
 
@@ -347,10 +462,54 @@ export default function LoginPage() {
                         value={plan}
                         className="sr-only"
                       />
-                      <p className="font-medium capitalize text-center">{plan}</p>
+                      <p className="font-medium capitalize text-center text-sm">{plan}</p>
+                      {planDetails[plan].price && (
+                        <p className="text-xs text-center text-slate-500 mt-1">
+                          ${planDetails[plan].price}/mo
+                        </p>
+                      )}
+                      {!planDetails[plan].price && (
+                        <p className="text-xs text-center text-slate-500 mt-1">Custom</p>
+                      )}
                     </label>
                   ))}
                 </div>
+                
+                {registerForm.watch('plan') && (
+                  <div className="mt-4 p-4 bg-slate-50 rounded-xl">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h4 className="font-semibold text-slate-900">{planDetails[registerForm.watch('plan')].name} Plan</h4>
+                        <p className="text-sm text-slate-500">
+                          {planDetails[registerForm.watch('plan')].price 
+                            ? `$${planDetails[registerForm.watch('plan')].price}${planDetails[registerForm.watch('plan')].period}`
+                            : planDetails[registerForm.watch('plan')].period}
+                        </p>
+                      </div>
+                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                        Up to {planDetails[registerForm.watch('plan')].maxUsers} users
+                      </span>
+                    </div>
+                    <div className="text-xs">
+                      <p className="font-medium text-slate-700 mb-1">Included:</p>
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {planDetails[registerForm.watch('plan')].features.map((f, i) => (
+                          <span key={i} className="bg-green-100 text-green-700 px-2 py-0.5 rounded">{f}</span>
+                        ))}
+                      </div>
+                      {planDetails[registerForm.watch('plan')].notIncluded.length > 0 && (
+                        <>
+                          <p className="font-medium text-slate-700 mb-1">Not Included:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {planDetails[registerForm.watch('plan')].notIncluded.map((f, i) => (
+                              <span key={i} className="bg-slate-200 text-slate-500 px-2 py-0.5 rounded">{f}</span>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <button
