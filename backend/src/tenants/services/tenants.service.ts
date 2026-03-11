@@ -2,7 +2,7 @@ import { Injectable, ConflictException, NotFoundException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { Tenant } from '../entities/tenant.entity';
+import { Tenant, SubscriptionPlan } from '../entities/tenant.entity';
 import { User } from '../../auth/entities/user.entity';
 
 export const SADC_COUNTRIES = [
@@ -41,10 +41,10 @@ export const CURRENCY_MAP: Record<string, { symbol: string; name: string }> = {
   MGA: { symbol: 'Ar', name: 'Malagasy Ariary' },
 };
 
-const PLAN_MODULES: Record<string, string[]> = {
-  starter: ['hr', 'finance', 'supply-chain'],
-  professional: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain'],
-  enterprise: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'email', 'documents'],
+const PLAN_MODULES: Record<SubscriptionPlan, string[]> = {
+  [SubscriptionPlan.STARTER]: ['hr', 'finance', 'supply-chain'],
+  [SubscriptionPlan.PROFESSIONAL]: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain'],
+  [SubscriptionPlan.ENTERPRISE]: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'email', 'documents'],
 };
 
 @Injectable()
@@ -76,9 +76,9 @@ export class TenantsService {
       throw new ConflictException('Organization with this email already exists');
     }
 
-    const validPlans = ['starter', 'professional', 'enterprise'];
-    const selectedPlan = validPlans.includes(data.plan) ? data.plan : 'starter';
-    const modules = PLAN_MODULES[selectedPlan] || PLAN_MODULES['starter'];
+    const validPlans: SubscriptionPlan[] = [SubscriptionPlan.STARTER, SubscriptionPlan.PROFESSIONAL, SubscriptionPlan.ENTERPRISE];
+    const selectedPlan: SubscriptionPlan = validPlans.includes(data.plan as SubscriptionPlan) ? data.plan as SubscriptionPlan : SubscriptionPlan.STARTER;
+    const modules = PLAN_MODULES[selectedPlan] || PLAN_MODULES[SubscriptionPlan.STARTER];
 
     const tenant = this.tenantRepository.create({
       name: data.name,
