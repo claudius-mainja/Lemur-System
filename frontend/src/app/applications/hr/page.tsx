@@ -1,194 +1,249 @@
 'use client';
 
 import Link from 'next/link';
-import { useThemeStore } from '@/stores/theme.store';
-import { ArrowLeft, Users, UserCheck, UserPlus, GraduationCap, FileText, Calendar, CheckCircle, Clock, Star } from 'lucide-react';
+import { useState } from 'react';
+import { 
+  Users, ArrowRight, Check, Menu, X, ChevronRight,
+  UserPlus, Briefcase, Calendar, Award, FileText, Mail,
+  Clock, Shield, TrendingUp, DollarSign, Settings,
+  Building2, ClipboardList, UsersRound, UserCheck, MapPin
+} from 'lucide-react';
 
 const features = [
   {
-    title: 'Employee Directory',
-    description: 'Complete employee database with profiles, contacts, and organizational structure.',
+    title: 'Employee Management',
+    description: 'Complete employee lifecycle management from hiring to retirement',
     icon: Users,
+    items: ['Employee Directory', 'Personal Profiles', 'Employment History', 'Document Storage', 'ID Card Generation']
   },
   {
     title: 'Leave Management',
-    description: 'Automated leave requests, approvals, and leave balance tracking.',
+    description: 'Streamlined leave requests and approval workflows',
     icon: Calendar,
+    items: ['Leave Requests', 'Approval Workflows', 'Leave Balances', 'Calendar View', 'Leave Reports']
   },
   {
     title: 'Recruitment',
-    description: 'Post jobs, track applicants, and manage the hiring pipeline.',
+    description: 'End-to-end hiring process management',
     icon: UserPlus,
+    items: ['Job Postings', 'Application Tracking', 'Resume Management', 'Interview Scheduling', 'Offer Letters']
   },
   {
     title: 'Performance Reviews',
-    description: 'Goal setting, performance tracking, and review cycles.',
-    icon: UserCheck,
+    description: 'Track and manage employee performance',
+    icon: Award,
+    items: ['Review Cycles', 'Goal Tracking', '360 Feedback', 'Performance Reports', 'Development Plans']
   },
   {
-    title: 'Training & Development',
-    description: 'Track employee training, certifications, and skills development.',
-    icon: GraduationCap,
+    title: 'Time & Attendance',
+    description: 'Monitor employee attendance and time worked',
+    icon: Clock,
+    items: ['Attendance Tracking', 'Time Sheets', 'Overtime Management', 'Late Arrivals', 'Monthly Reports']
   },
   {
-    title: 'Document Management',
-    description: 'Store and manage employee documents, contracts, and records.',
-    icon: FileText,
-  },
+    title: 'Reports & Analytics',
+    description: 'Comprehensive HR insights and reporting',
+    icon: TrendingUp,
+    items: ['Headcount Reports', 'Turnover Analysis', 'Diversity Metrics', 'Cost Analysis', 'Custom Reports']
+  }
 ];
 
-const benefits = [
-  'Reduce administrative workload by 70%',
-  'Improve employee self-service',
-  'Ensure compliance with labor laws',
-  'Streamline onboarding process',
-  'Track employee performance',
-  'Manage benefits administration',
+const stats = [
+  { value: '1,250+', label: 'Employees Managed' },
+  { value: '98%', label: 'User Satisfaction' },
+  { value: '50+', label: 'Companies Using' },
+  { value: '24/7', label: 'Support Available' }
 ];
 
 export default function HRPage() {
-  const { theme } = useThemeStore();
-  const isDark = theme === 'dark';
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-dark-bg' : 'bg-light-bg'}`}>
+    <div className="min-h-screen bg-dark-bg overflow-x-hidden">
+      {/* Animated Background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div 
+          className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px]"
+          style={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #06b6d4 100%)', top: '10%', right: '10%' }}
+        />
+        <div 
+          className="absolute w-[500px] h-[500px] rounded-full opacity-15 blur-[80px]"
+          style={{ background: 'linear-gradient(135deg, #f97316 0%, #fb923c 50%, #f59e0b 100%)', bottom: '20%', left: '10%', animationDelay: '2s' }}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(37,99,235,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(37,99,235,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+      </div>
+
       {/* Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-md ${isDark ? 'bg-dark-bg/90 border-dark-border' : 'bg-light-bg/90 border-light-border'}`}>
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-bg/80 backdrop-blur-xl border-b border-dark-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2">
-              <Link href="/" className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-orange-500 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">L</span>
-                </div>
-                <span className={`font-bold text-xl ${isDark ? 'text-dark-text' : 'text-light-text'}`}>LemurSystem</span>
+          <div className="flex items-center justify-between h-20">
+            <Link href="/" className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary via-blue-500 to-accent rounded-2xl flex items-center justify-center">
+                <span className="text-white font-bold text-xl">L</span>
+              </div>
+              <div>
+                <span className="font-bold text-2xl text-white font-serif">LemurSystem</span>
+                <p className="text-xs text-dark-text-muted -mt-1">Enterprise ERP</p>
+              </div>
+            </Link>
+            <div className="hidden lg:flex items-center gap-1">
+              {[
+                { name: 'Home', href: '/' },
+                { name: 'Features', href: '/features' },
+                { name: 'Pricing', href: '/pricing' },
+                { name: 'Industries', href: '/industries' },
+                { name: 'Docs', href: '/docs' },
+                { name: 'About', href: '/about' },
+                { name: 'Contact', href: '/contact' },
+              ].map((item) => (
+                <Link 
+                  key={item.name}
+                  href={item.href}
+                  className="px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium text-dark-text-secondary hover:text-white hover:bg-white/5"
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+            <div className="hidden lg:flex items-center gap-3">
+              <Link href="/login" className="px-5 py-2.5 text-dark-text-secondary hover:text-white transition-all duration-300 font-medium">
+                Log in
+              </Link>
+              <Link href="/login" className="px-6 py-2.5 bg-gradient-to-r from-primary to-blue-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5">
+                Start Free Trial
               </Link>
             </div>
-            <div className="hidden md:flex items-center gap-8">
-              <Link href="/" className={`font-medium transition ${isDark ? 'text-dark-text-secondary hover:text-dark-text' : 'text-light-text-secondary hover:text-light-text'}`}>Home</Link>
-              <Link href="/features" className={`font-medium transition ${isDark ? 'text-dark-text-secondary hover:text-dark-text' : 'text-light-text-secondary hover:text-light-text'}`}>Features</Link>
-              <Link href="/pricing" className={`font-medium transition ${isDark ? 'text-dark-text-secondary hover:text-dark-text' : 'text-light-text-secondary hover:text-light-text'}`}>Pricing</Link>
-              <Link href="/industries" className={`font-medium transition ${isDark ? 'text-dark-text-secondary hover:text-dark-text' : 'text-light-text-secondary hover:text-light-text'}`}>Industries</Link>
-            </div>
-            <div className="hidden md:flex items-center gap-3">
-              <Link href="/login" className={`px-4 py-2 font-medium transition ${isDark ? 'text-dark-text-secondary hover:text-dark-text' : 'text-light-text-secondary hover:text-light-text'}`}>Log in</Link>
-              <Link href="/login" className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-orange-500 text-white font-medium rounded-lg hover:shadow-lg hover:shadow-orange-500/25 transition">Start Free Trial</Link>
-            </div>
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 text-dark-text-secondary">
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-dark-bg/95 backdrop-blur-xl border-t border-dark-border px-4 py-6 space-y-3">
+            {['Home', 'Features', 'Pricing', 'Industries', 'Docs', 'About', 'Contact'].map((item) => (
+              <Link key={item} href={item === 'Home' ? '/' : `/${item.toLowerCase()}`} className="block py-3 text-dark-text-secondary hover:text-white">
+                {item}
+              </Link>
+            ))}
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-600/20 via-dark-bg to-orange-600/10">
-        <div className="max-w-7xl mx-auto">
-          <Link href="/" className={`inline-flex items-center gap-2 font-medium mb-8 ${isDark ? 'text-dark-text-secondary hover:text-dark-text' : 'text-light-text-secondary hover:text-light-text'}`}>
-            <ArrowLeft className="w-4 h-4" /> Back to Home
-          </Link>
-          
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-orange-500/20 text-blue-400 rounded-full text-sm font-medium mb-6 border border-blue-500/30">
-                Application
-              </div>
-              <h1 className={`text-4xl sm:text-5xl font-bold mb-6 uppercase tracking-wide ${isDark ? 'text-dark-text' : 'text-light-text'}`}>
-                Human Resources
-              </h1>
-              <p className={`text-lg mb-8 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                Complete HR management solution to handle the entire employee lifecycle from hiring to retirement. Streamline HR processes, improve employee experience, and ensure compliance.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {['Employee Management', 'Leave Tracking', 'Recruitment', 'Performance'].map((tag, i) => (
-                  <span key={i} className={`px-3 py-1 text-sm rounded-full ${isDark ? 'bg-dark-bg-tertiary text-dark-text-secondary' : 'bg-light-bg-tertiary text-light-text-secondary'}`}>{tag}</span>
-                ))}
-              </div>
-            </div>
-            <div className="bg-gradient-to-br from-blue-500 to-orange-500 rounded-2xl p-8 text-white shadow-2xl shadow-blue-500/20">
-              <Users className="w-16 h-16 mb-6" />
-              <h3 className="text-2xl font-bold mb-4">Manage Your Workforce Effectively</h3>
-              <p className="text-white/80 mb-6">From recruitment to retirement, LemurSystem HR handles it all.</p>
-              <ul className="space-y-3">
-                {benefits.slice(0, 4).map((benefit, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-white/60" />
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
-            </div>
+      <section className="pt-40 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="text-center max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary/20 border border-primary/30 rounded-full text-sm mb-8 animate-fade-in">
+            <Users className="w-4 h-4 text-primary" />
+            <span className="text-primary font-medium">HUMAN RESOURCES</span>
+          </div>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif">
+            Human Resources
+            <br />
+            <span className="bg-gradient-to-r from-primary via-blue-400 to-accent bg-clip-text text-transparent">
+              Management
+            </span>
+          </h1>
+          <p className="text-lg sm:text-xl text-dark-text-secondary mb-10 leading-relaxed max-w-2xl mx-auto">
+            Complete employee lifecycle management from hiring to retirement. 
+            Streamline HR processes with our comprehensive module.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary via-blue-500 to-blue-600 text-white font-bold rounded-2xl hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 hover:-translate-y-2 flex items-center justify-center gap-2">
+              Start Free Trial <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link href="/contact" className="w-full sm:w-auto px-8 py-4 border-2 border-dark-border text-dark-text-secondary font-bold rounded-2xl hover:border-primary hover:text-white transition-all duration-300 hover:-translate-y-1">
+              Schedule Demo
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      {/* Stats */}
+      <section className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className={`text-3xl font-bold mb-4 uppercase tracking-wide ${isDark ? 'text-dark-text' : 'text-light-text'}`}>Key Features</h2>
-            <p className={`max-w-2xl mx-auto ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Everything you need to manage your human resources effectively</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, i) => (
-              <div key={i} className={`backdrop-blur-sm rounded-xl p-6 border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${isDark ? 'bg-dark-card/80 border-dark-border hover:border-blue-500/50' : 'bg-light-card/80 border-light-border hover:border-orange-500/50'}`}>
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-orange-500/20 rounded-xl flex items-center justify-center mb-4 border border-blue-500/30">
-                  <feature.icon className="w-6 h-6 text-blue-400" />
-                </div>
-                <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{feature.title}</h3>
-                <p className={`text-sm ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{feature.description}</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat, i) => (
+              <div key={i} className="bg-dark-card/50 border border-dark-border rounded-2xl p-6 text-center">
+                <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
+                <div className="text-dark-text-muted text-sm">{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600/10 to-orange-600/10">
+      {/* Features */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-dark-bg-secondary/50">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className={`text-3xl font-bold mb-6 uppercase tracking-wide ${isDark ? 'text-dark-text' : 'text-light-text'}`}>Why Choose LemurSystem HR?</h2>
-              <ul className="space-y-4">
-                {benefits.map((benefit, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span className={isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: 'Employees', value: '10,000+' },
-                { label: 'Companies', value: '500+' },
-                { label: 'Countries', value: '15+' },
-                { label: 'Satisfaction', value: '98%' },
-              ].map((stat, i) => (
-                <div key={i} className={`backdrop-blur-sm rounded-xl p-6 text-center border ${isDark ? 'bg-dark-card/80 border-dark-border' : 'bg-light-card/80 border-light-border'}`}>
-                  <div className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-orange-500 bg-clip-text text-transparent mb-1">{stat.value}</div>
-                  <div className={`text-sm ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{stat.label}</div>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 font-serif">
+              FEATURES
+            </h2>
+            <p className="text-lg text-dark-text-secondary max-w-2xl mx-auto">
+              Everything you need to manage your workforce effectively
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="bg-dark-card border border-dark-border rounded-2xl p-6 hover:border-primary/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10"
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center mb-4">
+                  <feature.icon className="w-6 h-6 text-white" />
                 </div>
-              ))}
-            </div>
+                <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
+                <p className="text-dark-text-secondary text-sm mb-4">{feature.description}</p>
+                <ul className="space-y-2">
+                  {feature.items.map((item, i) => (
+                    <li key={i} className="flex items-center gap-2 text-xs text-dark-text-muted">
+                      <Check className="w-3 h-3 text-primary flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-orange-600">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-6 uppercase">Start Your Free Trial</h2>
-          <p className="text-white/80 mb-8">Experience the power of LemurSystem HR today. No credit card required.</p>
+      {/* CTA Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary via-blue-600 to-blue-700 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 font-serif">
+            READY TO GET STARTED?
+          </h2>
+          <p className="text-blue-100 text-lg mb-10">
+            Join hundreds of companies using LemurSystem HR
+          </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/login" className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl hover:bg-white/90 transition shadow-lg">Start Free Trial</Link>
-            <Link href="/contact" className="px-8 py-4 border-2 border-white text-white font-semibold rounded-xl hover:bg-white/10 transition">Contact Sales</Link>
+            <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-white text-primary font-bold rounded-2xl hover:bg-blue-50 transition-all duration-300 hover:-translate-y-2 flex items-center justify-center gap-2">
+              Start Free Trial <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link href="/contact" className="w-full sm:w-auto px-8 py-4 border-2 border-white text-white font-bold rounded-2xl hover:bg-white/10 transition-all duration-300">
+              Contact Sales
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className={`py-12 px-4 ${isDark ? 'bg-dark-bg border-t border-dark-border' : 'bg-light-bg-secondary border-t border-light-border'}`}>
-        <div className="max-w-7xl mx-auto text-center">
-          <p className={isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}>© 2026 LemurSystem. A product of Blacklemur Innovations. All rights reserved.</p>
+      <footer className="bg-dark-bg-secondary border-t border-dark-border py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-700 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">L</span>
+              </div>
+              <span className="font-bold text-white">LemurSystem</span>
+            </div>
+            <p className="text-dark-text-muted text-sm">
+              © 2026 LemurSystem. A product of Blacklemur Innovations. All rights reserved.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
