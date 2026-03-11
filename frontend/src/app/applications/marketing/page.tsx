@@ -58,8 +58,8 @@ export default function MarketingPage() {
               <p className="text-indigo-100 mb-6">Powerful tools to attract and convert customers.</p>
               <ul className="space-y-3">
                 {['Email campaigns', 'Lead nurturing', 'Analytics', 'Automation'].map((b, i) => (<li key={i} className="flex items-center gap-2"><Check className="w-5 h-5 text-indigo-200" />{b}</li>))}
-            </div>
               </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -75,7 +75,6 @@ export default function MarketingPage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
           {features.map((f, i) => (
             <div key={i} className="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-xl transition-shadow">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center mb-4"><f.icon className="w-6 h-6 text-white" /></div>
               <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
               <p className="text-slate-600 text-sm mb-4">{f.description}</p>
               <ul className="space-y-2">{f.items.map((item, j) => (<li key={j} className="flex items-center gap-2 text-sm text-slate-500"><ChevronRight className="w-4 h-4 text-primary" />{item}</li>))}</ul>
