@@ -328,3 +328,17 @@ export const documentsApi = {
   downloadDocument: (id: string) => api.get(`/documents/${id}/download`, { responseType: 'blob' }),
   deleteDocument: (id: string) => api.delete(`/documents/${id}`),
 };
+
+export const paymentsApi = {
+  getPaymentMethods: () => api.get('/payments/methods'),
+  getPlanPrices: () => api.get('/payments/plans'),
+  initiateCheckout: (data: {
+    plan: string;
+    billingCycle: 'monthly' | 'annual';
+    paymentMethod: string;
+  }) => api.post('/payments/checkout', data),
+  getPaymentHistory: () => api.get('/payments/history'),
+  getPayment: (id: string) => api.get(`/payments/${id}`),
+  getPaymentStatus: (id: string) => api.get(`/payments/${id}/status`),
+  refundPayment: (id: string) => api.post(`/payments/${id}/refund`, {}),
+};

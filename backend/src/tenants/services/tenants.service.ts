@@ -1,6 +1,8 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { Tenant, SubscriptionPlan } from '../entities/tenant.entity';
 import { User } from '../../auth/entities/user.entity';
@@ -54,6 +56,8 @@ export class TenantsService {
     private readonly tenantRepository: Repository<Tenant>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async register(data: {
@@ -94,7 +98,7 @@ export class TenantsService {
       plan: selectedPlan,
       modules,
       isOnTrial: true,
-      trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+      trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
     await this.tenantRepository.save(tenant);
@@ -145,11 +149,11 @@ export class TenantsService {
       modules: tenant.modules,
       industry: 'technology',
     };
-    return Buffer.from(JSON.stringify(payload)).toString('base64');
+    return this.jwtService.sign(payload);
   }
 
   private generateRefreshToken(user: User): string {
-    return `refresh_${user.id}_${Date.now()}`;
+    return this.jwtService.sign({ sub: user.id }, { expiresIn: '7d' });
   }
 
   async findAll() {
