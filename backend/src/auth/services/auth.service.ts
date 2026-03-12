@@ -57,7 +57,7 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto, ipAddress?: string) {
-    const user = await this.validateUser(loginDto.email, loginDto.password);
+    const user = await this.validateUser(loginDto.email, loginDto.password, loginDto.organizationId);
     
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
@@ -167,8 +167,14 @@ export class AuthService {
     return { message: 'Password reset successfully' };
   }
 
-  async validateUser(email: string, password: string): Promise<User | null> {
-    const user = await this.userRepository.findOne({ where: { email } });
+  async validateUser(email: string, password: string, organizationId?: string): Promise<User | null> {
+    const query: any = { where: { email } };
+    
+    if (organizationId) {
+      query.where.organizationId = organizationId;
+    }
+    
+    const user = await this.userRepository.findOne(query);
     
     if (!user) {
       return null;

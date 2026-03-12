@@ -99,6 +99,12 @@ type RegisterForm = z.infer<typeof registerSchema>;
 type Industry = 'technology' | 'retail' | 'manufacturing' | 'healthcare' | 'education' | 'finance' | 'construction' | 'hospitality' | 'transportation' | 'other';
 type SubscriptionPlan = 'starter' | 'professional' | 'enterprise';
 
+function getDashboardRoute(modules: string[]): string {
+  const moduleOrder = ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'email', 'documents'];
+  const availableModule = moduleOrder.find(m => modules.includes(m));
+  return `/dashboard/${availableModule || 'hr'}`;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
@@ -135,7 +141,7 @@ export default function LoginPage() {
       const { user, accessToken, refreshToken } = response.data;
       setAuth(user, accessToken, refreshToken);
       toast.success('Welcome back!');
-      router.push('/dashboard/hr');
+      router.push(getDashboardRoute(user.modules));
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Invalid credentials');
     } finally {
@@ -178,8 +184,8 @@ export default function LoginPage() {
       };
       
       setAuth(userData, responseData.accessToken, responseData.refreshToken);
-      toast.success(`Welcome to ${data.organizationName}! Your 14-day free trial has started.`);
-      router.push('/dashboard/hr');
+      toast.success(`Welcome to ${data.organizationName}! Your 7-day free trial has started.`);
+      router.push(getDashboardRoute(responseData.modules));
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Registration failed');
     } finally {
@@ -250,7 +256,7 @@ export default function LoginPage() {
             <p className="text-dark-text-muted mt-2">
               {isLogin 
                 ? 'Enter your credentials to access your dashboard' 
-                : 'Start your 14-day free trial'}
+                : 'Start your 7-day free trial'}
             </p>
           </div>
 

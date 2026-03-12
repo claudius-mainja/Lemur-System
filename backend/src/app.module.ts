@@ -9,6 +9,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 
 import { AuthModule } from './auth/auth.module';
 import { TenantsModule } from './tenants/tenants.module';
+import { PaymentsModule } from './payments/payments.module';
 import { HrModule } from './hr/hr.module';
 import { FinanceModule } from './finance/finance.module';
 import { CrmModule } from './crm/crm.module';
@@ -71,6 +72,7 @@ import { UsersModule } from './users/users.module';
 
     AuthModule,
     TenantsModule,
+    PaymentsModule,
     HrModule,
     FinanceModule,
     CrmModule,

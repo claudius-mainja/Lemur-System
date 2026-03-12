@@ -2,14 +2,14 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TenantsController } from './controllers/tenants.controller';
-import { TenantsService } from './services/tenants.service';
-import { Tenant } from './entities/tenant.entity';
-import { User } from '../auth/entities/user.entity';
+import { PaymentsController } from './controllers/payments.controller';
+import { PaymentsService } from './services/payments.service';
+import { Payment } from './entities/payment.entity';
+import { Tenant } from '../tenants/entities/tenant.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Tenant, User]),
+    TypeOrmModule.forFeature([Payment, Tenant]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -19,8 +19,8 @@ import { User } from '../auth/entities/user.entity';
       inject: [ConfigService],
     }),
   ],
-  controllers: [TenantsController],
-  providers: [TenantsService],
-  exports: [TenantsService],
+  controllers: [PaymentsController],
+  providers: [PaymentsService],
+  exports: [PaymentsService],
 })
-export class TenantsModule {}
+export class PaymentsModule {}
