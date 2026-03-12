@@ -131,7 +131,7 @@ export default function ContactPage() {
             <Sparkles className="w-4 h-4 text-blue-400" />
             <span className="text-blue-400 font-medium">CONTACT US</span>
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif uppercase">
             Get in Touch
             <br />
             <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 bg-clip-text text-transparent">

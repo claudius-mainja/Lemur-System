@@ -173,7 +173,7 @@ export default function IndustriesPage() {
             <Globe className="w-4 h-4 text-pink-400" />
             <span className="text-pink-400 font-medium">SADC REGION</span>
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif uppercase">
             Built for
             <br />
             <span className="bg-gradient-to-r from-pink-400 via-rose-400 to-orange-400 bg-clip-text text-transparent">
