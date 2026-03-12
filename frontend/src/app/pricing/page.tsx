@@ -213,7 +213,7 @@ export default function PricingPage() {
             <Star className="w-4 h-4 text-purple-400" />
             <span className="text-purple-400 font-medium">SIMPLE, TRANSPARENT PRICING</span>
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif uppercase">
             Choose the Right Plan
             <br />
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 bg-clip-text text-transparent">

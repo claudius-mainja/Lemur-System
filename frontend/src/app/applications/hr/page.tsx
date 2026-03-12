@@ -136,7 +136,7 @@ export default function HRPage() {
             <Users className="w-4 h-4 text-primary" />
             <span className="text-primary font-medium">HUMAN RESOURCES</span>
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif uppercase">
             Human Resources
             <br />
             <span className="bg-gradient-to-r from-primary via-blue-400 to-accent bg-clip-text text-transparent">
