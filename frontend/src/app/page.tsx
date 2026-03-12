@@ -471,7 +471,7 @@ export default function WelcomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.2)_0%,transparent_70%)]" />
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl sm:text-6xl font-bold text-white mb-6 font-serif">
+          <h2 className="text-4xl sm:text-6xl font-bold text-white mb-6 font-serif uppercase">
             Ready to <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Transform</span>?
           </h2>
           <p className="text-xl text-dark-text-secondary mb-10 max-w-2xl mx-auto">

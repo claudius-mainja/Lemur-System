@@ -265,7 +265,7 @@ export default function FeaturesPage() {
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 font-serif">
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 font-serif uppercase">
             Ready to Get Started?
           </h2>
           <p className="text-blue-200 text-lg mb-10">
