@@ -217,7 +217,7 @@ export default function AboutPage() {
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-amber-600 via-orange-600 to-rose-600 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 font-serif">
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 font-serif uppercase">
             Join Our Journey
           </h2>
           <p className="text-amber-100 text-lg mb-10">
