@@ -66,7 +66,6 @@ interface AuthState {
   setUser: (userData: Partial<User>) => void;
   logout: () => void;
   setLoading: (loading: boolean) => void;
-  demoLogin: () => void;
   login: (email: string, password: string) => { success: boolean; error?: string };
   register: (data: {
     email: string;
@@ -133,33 +132,6 @@ export const useAuthStore = create<AuthState>()(
         }),
 
       setLoading: (loading) => set({ isLoading: loading }),
-
-      demoLogin: () => {
-        const demoUser: User = {
-          id: generateId(),
-          email: 'demo@lemursystem.com',
-          firstName: 'Demo',
-          lastName: 'User',
-          role: 'admin',
-          organizationId: generateId(),
-          organizationName: 'Demo Company',
-          industry: 'technology',
-          subscription: 'professional',
-          modules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain'],
-          currency: 'ZAR',
-          timezone: 'Africa/Johannesburg',
-          country: 'ZA',
-          isOnTrial: true,
-          trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        };
-        set({
-          user: demoUser,
-          accessToken: 'demo-token-' + generateId(),
-          refreshToken: 'demo-refresh-' + generateId(),
-          isAuthenticated: true,
-          isLoading: false,
-        });
-      },
 
       login: (email: string, password: string) => {
         const users = getStoredUsers();
