@@ -3,6 +3,16 @@ import { persist } from 'zustand/middleware';
 
 export type Industry = 'technology' | 'retail' | 'manufacturing' | 'healthcare' | 'education' | 'finance' | 'construction' | 'hospitality' | 'transportation' | 'agriculture' | 'mining' | 'telecommunications' | 'realestate' | 'legal' | 'consulting' | 'other';
 export type SubscriptionPlan = 'starter' | 'professional' | 'enterprise';
+export type UserRole = 'admin' | 'hr' | 'finance' | 'marketing' | 'manager' | 'employee';
+
+export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
+  admin: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'settings'],
+  hr: ['hr', 'productivity'],
+  finance: ['finance', 'payroll'],
+  marketing: ['crm', 'productivity'],
+  manager: ['hr', 'finance', 'crm', 'productivity'],
+  employee: ['productivity'],
+};
 
 export const PLAN_CONFIG = {
   starter: {
@@ -36,7 +46,8 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
-  role: string;
+  role: UserRole;
+  department?: string;
   avatarUrl?: string;
   organizationId: string;
   organizationName: string;
@@ -48,6 +59,7 @@ interface User {
   country: string;
   isOnTrial: boolean;
   trialEndsAt?: string;
+  isActive?: boolean;
 }
 
 interface StoredUser {
