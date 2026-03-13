@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 import { useAuthStore, PLAN_CONFIG } from '@/stores/auth.store';
 import { authApi, tenantsApi } from '@/services/api';
 import { 
-  Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, Building2, Users, DollarSign, Package, BarChart3, Globe, MapPin, Zap
+  Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, Building2, Users, DollarSign, Package, BarChart3, Globe, MapPin
 } from 'lucide-react';
 
 const SADC_COUNTRIES = [
@@ -526,23 +526,6 @@ export default function LoginPage() {
               {isLogin ? 'Start free trial' : 'Sign in'}
             </button>
           </p>
-
-          {/* Demo Login Button */}
-          <div className="mt-6 pt-6 border-t border-slate-200">
-            <p className="text-center text-slate-500 text-sm mb-4">Or try the system without registering</p>
-            <button
-              type="button"
-              onClick={() => {
-                useAuthStore.getState().demoLogin();
-                toast.success('Welcome to Demo Mode!');
-                router.push('/dashboard/hr');
-              }}
-              className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-3 px-4 rounded-xl font-medium hover:from-purple-600 hover:to-indigo-600 transition flex items-center justify-center gap-2"
-            >
-              <Zap className="w-5 h-5" />
-              Try Demo (No Account Required)
-            </button>
-          </div>
         </div>
       </div>
     </div>

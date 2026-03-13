@@ -233,23 +233,6 @@ export default function PaymentPage() {
                 <Shield className="w-4 h-4" />
                 Your payment is secured with 256-bit SSL encryption
               </p>
-
-              {/* Skip for demo */}
-              <button
-                type="button"
-                onClick={() => {
-                  localStorage.setItem('erp-payment-status', JSON.stringify({
-                    plan: plan,
-                    status: 'trial',
-                    paymentMethod: 'none',
-                    paidAt: new Date().toISOString(),
-                  }));
-                  router.push('/dashboard/hr');
-                }}
-                className="w-full text-slate-500 text-sm mt-4 hover:text-slate-700"
-              >
-                Skip for now (7-day trial)
-              </button>
             </form>
           </div>
         </div>
