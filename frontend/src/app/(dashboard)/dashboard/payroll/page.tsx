@@ -1,21 +1,44 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { useDataStore, PayrollRecord, Employee } from '@/stores/data.store';
 import { useAuthStore } from '@/stores/auth.store';
+import { hrApi, payrollApi } from '@/services/api';
 import { 
   PiggyBank, Plus, Search, MoreHorizontal, Download, Banknote, DollarSign,
-  Calendar, CheckCircle, Clock, Users, TrendingUp, CreditCard, Building2
+  Calendar, CheckCircle, Clock, Users, TrendingUp, CreditCard, Building2, RefreshCw
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 type ViewTab = 'employees' | 'payments' | 'reports';
 
+interface HREmployee {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  department?: { name: string };
+  jobTitle?: string;
+  salary?: number;
+  status: string;
+  hireDate: string;
+}
+
+interface PayrollEmployee extends HREmployee {
+  departmentName?: string;
+  positionName?: string;
+}
+
 export default function PayrollDashboard() {
+  const router = useRouter();
   const { user } = useAuthStore();
-  const { employees, payroll, addPayrollRecord, updatePayrollRecord } = useDataStore();
+  const { payroll, addPayrollRecord, updatePayrollRecord } = useDataStore();
   const [activeView, setActiveView] = useState<ViewTab>('employees');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [employees, setEmployees] = useState<PayrollEmployee[]>([]);
   const [showProcessPayroll, setShowProcessPayroll] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<string>('');
   const [payrollData, setPayrollData] = useState({
@@ -25,15 +48,44 @@ export default function PayrollDashboard() {
     benefits: 0,
   });
 
+  const loadEmployees = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await hrApi.getEmployees(1, 100);
+      const empData = response.data.data || response.data || [];
+      setEmployees(empData.map((e: any) => ({
+        id: e.id,
+        firstName: e.firstName,
+        lastName: e.lastName,
+        email: e.email,
+        phone: e.phone,
+        department: e.department,
+        departmentName: e.department?.name || e.jobTitle || 'Unassigned',
+        jobTitle: e.jobTitle,
+        salary: e.salary || 0,
+        status: e.status,
+        hireDate: e.hireDate,
+      })));
+    } catch (error) {
+      console.error('Failed to load employees:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadEmployees();
+  }, [loadEmployees]);
+
   const filteredEmployees = employees.filter(e => 
     `${e.firstName} ${e.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    e.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    e.position.toLowerCase().includes(searchQuery.toLowerCase())
+    (e.departmentName?.toLowerCase().includes(searchQuery.toLowerCase()) || false) ||
+    (e.jobTitle?.toLowerCase().includes(searchQuery.toLowerCase()) || false)
   );
 
   const filteredPayroll = payroll.filter(p => 
     p.employeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.department.toLowerCase().includes(searchQuery.toLowerCase())
+    (p.department?.toLowerCase().includes(searchQuery.toLowerCase()) || false)
   );
 
   const stats = {
@@ -48,13 +100,13 @@ export default function PayrollDashboard() {
     const employee = employees.find(e => e.id === selectedEmployee);
     if (!employee) return;
 
-    const baseSalary = employee.salary / 12;
+    const baseSalary = (employee.salary || 0) / 12;
     const netSalary = baseSalary + payrollData.bonuses - payrollData.deductions - payrollData.tax + payrollData.benefits;
 
     addPayrollRecord({
       employeeId: employee.id,
       employeeName: `${employee.firstName} ${employee.lastName}`,
-      department: employee.department,
+      department: employee.departmentName || 'Unassigned',
       baseSalary,
       bonuses: payrollData.bonuses,
       deductions: payrollData.deductions,
@@ -203,7 +255,7 @@ export default function PayrollDashboard() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-medium">
-                          {employee.firstName[0]}{employee.lastName[0]}
+                          {employee.firstName?.[0]}{employee.lastName?.[0]}
                         </div>
                         <div>
                           <p className="font-medium text-slate-900">{employee.firstName} {employee.lastName}</p>
@@ -211,10 +263,10 @@ export default function PayrollDashboard() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-slate-600">{employee.department}</td>
-                    <td className="px-4 py-3 text-sm text-slate-600">{employee.position}</td>
-                    <td className="px-4 py-3 font-medium text-slate-900">${employee.salary.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-slate-600">${(employee.salary / 12).toLocaleString()}</td>
+                    <td className="px-4 py-3 text-sm text-slate-600">{employee.departmentName || '-'}</td>
+                    <td className="px-4 py-3 text-sm text-slate-600">{employee.jobTitle || '-'}</td>
+                    <td className="px-4 py-3 font-medium text-slate-900">${(employee.salary || 0).toLocaleString()}</td>
+                    <td className="px-4 py-3 text-slate-600">${((employee.salary || 0) / 12).toLocaleString()}</td>
                     <td className="px-4 py-3 text-right">
                       <button className="p-1 hover:bg-slate-100 rounded">
                         <MoreHorizontal className="w-4 h-4 text-slate-400" />
@@ -329,9 +381,9 @@ export default function PayrollDashboard() {
           <div className="bg-white rounded-xl border border-slate-200 p-6">
             <h3 className="text-lg font-semibold mb-4">Department Breakdown</h3>
             <div className="space-y-3">
-              {Array.from(new Set(employees.map(e => e.department))).map(dept => {
-                const deptEmployees = employees.filter(e => e.department === dept);
-                const totalSalary = deptEmployees.reduce((sum, e) => sum + e.salary, 0);
+              {Array.from(new Set(employees.map(e => e.departmentName || 'Unassigned'))).map(dept => {
+                const deptEmployees = employees.filter(e => (e.departmentName || 'Unassigned') === dept);
+                const totalSalary = deptEmployees.reduce((sum, e) => sum + (e.salary || 0), 0);
                 return (
                   <div key={dept} className="p-3 border border-slate-200 rounded-lg">
                     <div className="flex justify-between mb-2">
@@ -362,7 +414,7 @@ export default function PayrollDashboard() {
                     setSelectedEmployee(e.target.value);
                     const emp = employees.find(em => em.id === e.target.value);
                     if (emp) {
-                      const monthlySalary = emp.salary / 12;
+                      const monthlySalary = (emp.salary || 0) / 12;
                       setPayrollData(prev => ({ ...prev, tax: monthlySalary * 0.2 }));
                     }
                   }}
@@ -372,7 +424,7 @@ export default function PayrollDashboard() {
                   <option value="">Select Employee</option>
                   {employees.map(e => (
                     <option key={e.id} value={e.id}>
-                      {e.firstName} {e.lastName} - ${(e.salary / 12).toLocaleString()}/month
+                      {e.firstName} {e.lastName} - ${(((e.salary || 0) / 12)).toLocaleString()}/month
                     </option>
                   ))}
                 </select>
@@ -382,7 +434,7 @@ export default function PayrollDashboard() {
                 <>
                   <div className="p-3 bg-slate-50 rounded-lg">
                     <p className="text-sm text-slate-600">Base Monthly Salary</p>
-                    <p className="text-lg font-bold">${(employees.find(e => e.id === selectedEmployee)?.salary || 0 / 12).toLocaleString()}</p>
+                    <p className="text-lg font-bold">${((employees.find(e => e.id === selectedEmployee)?.salary || 0) / 12).toLocaleString()}</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">

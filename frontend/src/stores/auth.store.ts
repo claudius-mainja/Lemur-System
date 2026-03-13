@@ -18,7 +18,7 @@ export const PLAN_CONFIG = {
     price: 20.50,
     maxUsers: 50,
     modules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain'],
-    features: ['email_support', 'priority_support', 'basic_reporting', 'advanced_analytics', 'mobile_app', 'api_access', 'custom_integrations', 'sso'],
+    features: ['email_support', 'priority_support', 'basic_reporting', 'advanced_analytics', 'mobile_app', 'api_access', 'custom_integrations', 'ss0'],
     storageGB: 100,
   },
   enterprise: {
@@ -26,7 +26,7 @@ export const PLAN_CONFIG = {
     price: null,
     maxUsers: null,
     modules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'email', 'documents'],
-    features: ['email_support', 'priority_support', 'dedicated_support_24_7', 'basic_reporting', 'advanced_analytics', 'custom_reporting', 'mobile_app', 'api_access', 'custom_integrations', 'sso', 'advanced_security', 'dedicated_account_manager', 'on_premise', 'sla_guarantee', 'custom_training'],
+    features: ['email_support', 'priority_support', 'dedicated_support_24_7', 'basic_reporting', 'advanced_analytics', 'custom_reporting', 'mobile_app', 'api_access', 'custom_integrations', 'ss0', 'advanced_security', 'dedicated_account_manager', 'on_premise', 'sla_guarantee', 'custom_training'],
     storageGB: null,
   },
 } as const;
@@ -50,6 +50,12 @@ interface User {
   trialEndsAt?: string;
 }
 
+interface StoredUser {
+  email: string;
+  password: string;
+  user: User;
+}
+
 interface AuthState {
   user: User | null;
   accessToken: string | null;
@@ -60,11 +66,43 @@ interface AuthState {
   setUser: (userData: Partial<User>) => void;
   logout: () => void;
   setLoading: (loading: boolean) => void;
+  demoLogin: () => void;
+  login: (email: string, password: string) => { success: boolean; error?: string };
+  register: (data: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    organizationName: string;
+    industry: Industry;
+    country: string;
+    currency: string;
+    plan: SubscriptionPlan;
+  }) => { success: boolean; error?: string };
 }
+
+const generateId = () => Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+
+const getStoredUsers = (): StoredUser[] => {
+  if (typeof window === 'undefined') return [];
+  const stored = localStorage.getItem('erp-users');
+  return stored ? JSON.parse(stored) : [];
+};
+
+const saveUser = (user: StoredUser) => {
+  const users = getStoredUsers();
+  const existingIndex = users.findIndex(u => u.email === user.email);
+  if (existingIndex >= 0) {
+    users[existingIndex] = user;
+  } else {
+    users.push(user);
+  }
+  localStorage.setItem('erp-users', JSON.stringify(users));
+};
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       accessToken: null,
       refreshToken: null,
@@ -95,6 +133,96 @@ export const useAuthStore = create<AuthState>()(
         }),
 
       setLoading: (loading) => set({ isLoading: loading }),
+
+      demoLogin: () => {
+        const demoUser: User = {
+          id: generateId(),
+          email: 'demo@lemursystem.com',
+          firstName: 'Demo',
+          lastName: 'User',
+          role: 'admin',
+          organizationId: generateId(),
+          organizationName: 'Demo Company',
+          industry: 'technology',
+          subscription: 'professional',
+          modules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain'],
+          currency: 'ZAR',
+          timezone: 'Africa/Johannesburg',
+          country: 'ZA',
+          isOnTrial: true,
+          trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        };
+        set({
+          user: demoUser,
+          accessToken: 'demo-token-' + generateId(),
+          refreshToken: 'demo-refresh-' + generateId(),
+          isAuthenticated: true,
+          isLoading: false,
+        });
+      },
+
+      login: (email: string, password: string) => {
+        const users = getStoredUsers();
+        const foundUser = users.find(u => u.email === email && u.password === password);
+        
+        if (foundUser) {
+          const accessToken = generateId();
+          const refreshToken = generateId();
+          set({
+            user: foundUser.user,
+            accessToken,
+            refreshToken,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+          return { success: true };
+        }
+        
+        return { success: false, error: 'Invalid email or password' };
+      },
+
+      register: (data) => {
+        const users = getStoredUsers();
+        
+        if (users.find(u => u.email === data.email)) {
+          return { success: false, error: 'User with this email already exists' };
+        }
+
+        const organizationId = generateId();
+        const modules = [...PLAN_CONFIG[data.plan].modules];
+        
+        const newUser: User = {
+          id: generateId(),
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          role: 'admin',
+          organizationId,
+          organizationName: data.organizationName,
+          industry: data.industry,
+          subscription: data.plan,
+          modules,
+          currency: data.currency,
+          timezone: 'Africa/Johannesburg',
+          country: data.country,
+          isOnTrial: true,
+          trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        };
+
+        saveUser({ email: data.email, password: data.password, user: newUser });
+
+        const accessToken = generateId();
+        const refreshToken = generateId();
+        set({
+          user: newUser,
+          accessToken,
+          refreshToken,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+
+        return { success: true };
+      },
     }),
     {
       name: 'erp-auth',

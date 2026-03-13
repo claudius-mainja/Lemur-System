@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, FindOptionsWhere, Between } from 'typeorm';
+import { Repository, Like, FindOptionsWhere, Between, MoreThanOrEqual, MoreThan, LessThan } from 'typeorm';
 import { 
   Employee, Department, LeaveRequest, LeaveBalance, AttendanceRecord,
   EmployeeStatus, EmploymentType, LeaveType, LeaveStatus
@@ -439,27 +439,30 @@ export class HrService {
   // ==================== DASHBOARD STATS ====================
 
   async getDashboardStats(tenantId: string): Promise<any> {
-    const totalEmployees = await this.employeeRepo.count({
-      where: { tenantId, status: EmployeeStatus.ACTIVE },
-    });
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const onLeave = await this.employeeRepo.count({
-      where: { tenantId, status: EmployeeStatus.ON_LEAVE },
-    });
-
-    const pendingLeaveRequests = await this.leaveRequestRepo.count({
-      where: { tenantId, status: LeaveStatus.PENDING },
-    });
-
-    const departments = await this.departmentRepo.count({
-      where: { tenantId, isActive: true },
-    });
+    const [totalEmployees, activeEmployees, onLeave, newHires, departments, pendingLeaveRequests] = await Promise.all([
+      this.employeeRepo.count({ where: { tenantId } }),
+      this.employeeRepo.count({ where: { tenantId, status: EmployeeStatus.ACTIVE } }),
+      this.employeeRepo.count({ where: { tenantId, status: EmployeeStatus.ON_LEAVE } }),
+      this.employeeRepo.count({ 
+        where: { 
+          tenantId, 
+          hireDate: MoreThanOrEqual(thirtyDaysAgo) 
+        } 
+      }),
+      this.departmentRepo.count({ where: { tenantId, isActive: true } }),
+      this.leaveRequestRepo.count({ where: { tenantId, status: LeaveStatus.PENDING } }),
+    ]);
 
     return {
       totalEmployees,
+      activeEmployees,
       onLeave,
-      pendingLeaveRequests,
+      newHires,
       departments,
+      pendingLeaveRequests,
     };
   }
 

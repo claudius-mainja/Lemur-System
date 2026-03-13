@@ -332,63 +332,28 @@ export class CrmService {
   // ==================== DASHBOARD & REPORTS ====================
 
   async getDashboardStats(tenantId: string): Promise<any> {
-    const totalLeads = await this.leadRepo.count({ where: { tenantId } });
-    const newLeads = await this.leadRepo.count({ where: { tenantId, status: LeadStatus.NEW } });
-    const qualifiedLeads = await this.leadRepo.count({ where: { tenantId, status: LeadStatus.QUALIFIED } });
-    
-    const totalDeals = await this.dealRepo.count({ where: { tenantId } });
-    const activeDeals = await this.dealRepo.count({ where: { tenantId } });
-    const wonDeals = await this.dealRepo.count({ where: { tenantId, stage: DealStage.CLOSED_WON } });
-    
-    const totalDealValue = await this.dealRepo
+    const [totalContacts, totalDeals, wonDeals, lostDeals] = await Promise.all([
+      this.contactRepo.count({ where: { tenantId } }),
+      this.dealRepo.count({ where: { tenantId } }),
+      this.dealRepo.count({ where: { tenantId, stage: DealStage.CLOSED_WON } }),
+      this.dealRepo.count({ where: { tenantId, stage: DealStage.CLOSED_LOST } }),
+    ]);
+
+    const pipelineResult = await this.dealRepo
       .createQueryBuilder('deal')
       .where('deal.tenantId = :tenantId', { tenantId })
-      .andWhere('deal.stage != :lost', { lost: DealStage.CLOSED_LOST })
+      .andWhere('deal.stage NOT IN (:...closedStages)', { closedStages: [DealStage.CLOSED_WON, DealStage.CLOSED_LOST] })
       .select('SUM(deal.value)', 'total')
       .getRawOne();
 
-    const wonDealValue = await this.dealRepo
-      .createQueryBuilder('deal')
-      .where('deal.tenantId = :tenantId', { tenantId })
-      .andWhere('deal.stage = :won', { won: DealStage.CLOSED_WON })
-      .select('SUM(deal.value)', 'total')
-      .getRawOne();
-
-    const totalContacts = await this.contactRepo.count({ where: { tenantId } });
-    const customers = await this.contactRepo.count({ where: { tenantId, type: ContactType.CUSTOMER } });
-
-    const totalCompanies = await this.companyRepo.count({ where: { tenantId } });
-
-    const upcomingActivities = await this.activityRepo.count({
-      where: { 
-        tenantId,
-        isCompleted: false,
-      },
-    });
+    const totalPipeline = Number(pipelineResult?.total) || 0;
+    const conversionRate = totalDeals > 0 ? Math.round((wonDeals / totalDeals) * 100) : 0;
 
     return {
-      leads: {
-        total: totalLeads,
-        new: newLeads,
-        qualified: qualifiedLeads,
-      },
-      deals: {
-        total: totalDeals,
-        active: activeDeals,
-        won: wonDeals,
-        totalValue: totalDealValue?.total || 0,
-        wonValue: wonDealValue?.total || 0,
-      },
-      contacts: {
-        total: totalContacts,
-        customers: customers,
-      },
-      companies: {
-        total: totalCompanies,
-      },
-      activities: {
-        upcoming: upcomingActivities,
-      },
+      totalContacts,
+      totalDeals,
+      totalPipeline,
+      conversionRate,
     };
   }
 }
