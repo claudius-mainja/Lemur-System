@@ -175,7 +175,30 @@ export default function PayrollDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                {filteredEmployees.map((employee) => (
+                {employees.length === 0 ? (
+                  <tr>
+                    <td colSpan={6}>
+                      <div className="text-center py-12">
+                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Users className="w-8 h-8 text-gray-400" />
+                        </div>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No Employees Yet</h3>
+                        <p className="text-gray-500 mb-6 max-w-md mx-auto">Add employees in the HR module first, then you can process their payroll here.</p>
+                        <button
+                          onClick={() => router.push('/dashboard/hr')}
+                          className="bg-primary text-white px-6 py-3 rounded-lg inline-flex items-center gap-2 hover:bg-primary/90"
+                        >
+                          Go to HR Module
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ) : filteredEmployees.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="p-8 text-center text-gray-500">No employees found matching your search</td>
+                  </tr>
+                ) : (
+                  filteredEmployees.map((employee) => (
                   <tr key={employee.id} className="hover:bg-slate-50">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
@@ -198,7 +221,8 @@ export default function PayrollDashboard() {
                       </button>
                     </td>
                   </tr>
-                ))}
+                ))
+                )}
               </tbody>
             </table>
           </div>

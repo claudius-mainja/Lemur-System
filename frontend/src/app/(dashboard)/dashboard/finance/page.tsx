@@ -394,7 +394,19 @@ export default function FinanceDashboard() {
         </div>
         <div className="p-6">
           {invoices.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">No invoices yet. Create your first invoice!</p>
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No Invoices Yet</h3>
+              <p className="text-gray-500 mb-6 max-w-md mx-auto">Create your first invoice to start tracking payments from your customers.</p>
+              <button
+                onClick={() => setActiveView('invoices')}
+                className="bg-primary text-white px-6 py-3 rounded-lg inline-flex items-center gap-2 hover:bg-primary/90"
+              >
+                <Plus className="w-5 h-5" /> Create First Invoice
+              </button>
+            </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -481,7 +493,23 @@ export default function FinanceDashboard() {
               {isLoading ? (
                 <tr><td colSpan={7} className="p-8 text-center text-gray-500">Loading...</td></tr>
               ) : invoices.length === 0 ? (
-                <tr><td colSpan={7} className="p-8 text-center text-gray-500">No invoices found</td></tr>
+                <tr>
+                  <td colSpan={7}>
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FileText className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Invoices Found</h3>
+                      <p className="text-gray-500 mb-6">Create your first invoice to get started.</p>
+                      <button
+                        onClick={() => setShowAddInvoice(true)}
+                        className="bg-primary text-white px-6 py-3 rounded-lg inline-flex items-center gap-2 hover:bg-primary/90"
+                      >
+                        <Plus className="w-5 h-5" /> Create Invoice
+                      </button>
+                    </div>
+                  </td>
+                </tr>
               ) : (
                 invoices.map((invoice) => (
                   <tr key={invoice.id} className="border-b border-gray-50 hover:bg-gray50">

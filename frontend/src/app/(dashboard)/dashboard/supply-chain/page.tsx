@@ -277,11 +277,14 @@ export default function SupplyChainDashboard() {
       {activeView === 'orders' && (
         <div className="bg-white rounded-xl border border-slate-200 p-6">
           <h3 className="text-lg font-semibold mb-4">Purchase Orders</h3>
-          <div className="text-center py-12 text-slate-500">
-            <ShoppingCart className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-            <p>No purchase orders yet</p>
-            <button className="mt-3 px-4 py-2 bg-primary text-white rounded-lg text-sm">
-              Create Purchase Order
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <ShoppingCart className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Purchase Orders Yet</h3>
+            <p className="text-gray-500 mb-6 max-w-md mx-auto">Create your first purchase order to start managing your suppliers and orders.</p>
+            <button className="mt-3 px-6 py-3 bg-primary text-white rounded-lg inline-flex items-center gap-2 hover:bg-primary/90">
+              <Plus className="w-5 h-5" /> Create Purchase Order
             </button>
           </div>
         </div>
