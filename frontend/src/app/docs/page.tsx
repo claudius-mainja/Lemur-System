@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowRight, Check, Book, Code, Database, Cloud, Shield, Zap, Rocket, FileText, Video, MessageCircle, Mail, Hexagon, Circle, ChevronRight, Menu, X, Search, BookOpen, Users, CreditCard, Wallet, Package, Truck, BarChart2, Settings, Lock, Globe, FileCheck, HelpCircle, Play, Download, ExternalLink, Cpu, Database2, Link2, Server, Smartphone, Mail as MailIcon, Clock, Star, ArrowUpRight, Layers, Workflow, PieChart, Target, TrendingUp, Calendar, FileSearch, UserCheck, Briefcase, DollarSign } from 'lucide-react';
+import { ArrowRight, Check, Book, Code, Database, Cloud, Shield, Zap, Rocket, FileText, Video, MessageCircle, Mail, Hexagon, Circle, ChevronRight, Menu, X, Search, BookOpen, Users, CreditCard, Wallet, Package, Truck, BarChart2, Settings, Lock, Globe, FileCheck, HelpCircle, Play, Download, ExternalLink, Cpu, Link2, Server, Smartphone, Mail as MailIcon, Clock, Star, ArrowUpRight, Layers, Workflow, PieChart, Target, TrendingUp, Calendar, FileSearch, UserCheck, Briefcase, DollarSign } from 'lucide-react';
 
 const docsSections = [
   {

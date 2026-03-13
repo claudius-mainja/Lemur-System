@@ -10,8 +10,7 @@ import toast from 'react-hot-toast';
 import { useAuthStore, PLAN_CONFIG } from '@/stores/auth.store';
 import { authApi, tenantsApi } from '@/services/api';
 import { 
-  Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, 
-  Building2, Users, DollarSign, Package, BarChart3, Globe, MapPin
+  Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, Building2, Users, DollarSign, Package, BarChart3, Globe, MapPin, Zap
 } from 'lucide-react';
 
 const SADC_COUNTRIES = [
@@ -137,13 +136,16 @@ export default function LoginPage() {
   const onLogin = async (data: LoginForm) => {
     setIsLoading(true);
     try {
-      const response = await authApi.login(data.email, data.password, data.organizationId);
-      const { user, accessToken, refreshToken } = response.data;
-      setAuth(user, accessToken, refreshToken);
-      toast.success('Welcome back!');
-      router.push(getDashboardRoute(user.modules));
+      const result = useAuthStore.getState().login(data.email, data.password);
+      if (result.success) {
+        const user = useAuthStore.getState().user;
+        toast.success('Welcome back!');
+        router.push(getDashboardRoute(user?.modules || ['hr']));
+      } else {
+        toast.error(result.error || 'Invalid credentials');
+      }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Invalid credentials');
+      toast.error('Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -153,41 +155,26 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const country = SADC_COUNTRIES.find(c => c.code === data.country) || SADC_COUNTRIES[0];
-      const response = await tenantsApi.register({
-        name: data.organizationName,
+      const result = useAuthStore.getState().register({
         email: data.email,
         password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
-        timezone: country.timezone,
-        currency: country.currency,
-        country: data.country,
-        plan: data.plan,
-      });
-      const responseData = response.data;
-      
-      const userData = {
-        id: responseData.userId,
-        email: responseData.email,
-        firstName: responseData.firstName,
-        lastName: responseData.lastName,
-        role: 'admin',
-        organizationId: responseData.tenantId,
         organizationName: data.organizationName,
         industry: data.industry as any,
-        subscription: responseData.plan as any,
-        modules: responseData.modules,
-        currency: responseData.currency,
-        timezone: country.timezone,
-        country: responseData.country,
-        isOnTrial: true,
-      };
+        country: data.country,
+        currency: country.currency,
+        plan: data.plan,
+      });
       
-      setAuth(userData, responseData.accessToken, responseData.refreshToken);
-      toast.success(`Welcome to ${data.organizationName}! Your 7-day free trial has started.`);
-      router.push(getDashboardRoute(responseData.modules));
+      if (result.success) {
+        toast.success(`Welcome to ${data.organizationName}! Complete your subscription to get started.`);
+        router.push('/payment');
+      } else {
+        toast.error(result.error || 'Registration failed');
+      }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Registration failed');
+      toast.error('Registration failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -539,6 +526,23 @@ export default function LoginPage() {
               {isLogin ? 'Start free trial' : 'Sign in'}
             </button>
           </p>
+
+          {/* Demo Login Button */}
+          <div className="mt-6 pt-6 border-t border-slate-200">
+            <p className="text-center text-slate-500 text-sm mb-4">Or try the system without registering</p>
+            <button
+              type="button"
+              onClick={() => {
+                useAuthStore.getState().demoLogin();
+                toast.success('Welcome to Demo Mode!');
+                router.push('/dashboard/hr');
+              }}
+              className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-3 px-4 rounded-xl font-medium hover:from-purple-600 hover:to-indigo-600 transition flex items-center justify-center gap-2"
+            >
+              <Zap className="w-5 h-5" />
+              Try Demo (No Account Required)
+            </button>
+          </div>
         </div>
       </div>
     </div>

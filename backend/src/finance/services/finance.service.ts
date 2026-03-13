@@ -439,38 +439,25 @@ export class FinanceService {
   // ==================== REPORTS & DASHBOARD ====================
 
   async getDashboardStats(tenantId: string): Promise<any> {
-    const totalInvoices = await this.invoiceRepo.sum('total', { tenantId });
-    const paidInvoices = await this.invoiceRepo.sum('paidAmount', { tenantId, status: InvoiceStatus.PAID });
-    const pendingInvoices = await this.invoiceRepo.sum('dueAmount', { tenantId: tenantId });
-    
-    const totalExpenses = await this.expenseRepo.sum('amount', { tenantId });
-
-    const overdueInvoices = await this.invoiceRepo.count({
-      where: { 
-        tenantId, 
-        status: InvoiceStatus.OVERDUE 
-      },
+    const totalRevenue = await this.invoiceRepo.sum('paidAmount', { tenantId, status: InvoiceStatus.PAID }) || 0;
+    const pendingAmount = await this.invoiceRepo.sum('dueAmount', { tenantId, status: InvoiceStatus.SENT }) || 0;
+    const overdueAmount = await this.invoiceRepo.sum('dueAmount', { tenantId, status: InvoiceStatus.OVERDUE }) || 0;
+    const totalInvoices = await this.invoiceRepo.count({ where: { tenantId } });
+    const totalCustomers = await this.invoiceRepo.count({ 
+      where: { tenantId },
+      select: ['customerId'],
+      distinct: true
     });
-
-    const pendingExpenses = await this.expenseRepo.count({
-      where: { 
-        tenantId, 
-        status: PaymentStatus.PENDING 
-      },
-    });
-
-    const accounts = await this.findAllAccounts(tenantId);
-    const totalBalance = accounts.reduce((sum, acc) => sum + Number(acc.balance), 0);
+    const totalExpenses = await this.expenseRepo.sum('amount', { tenantId }) || 0;
 
     return {
-      totalInvoices: totalInvoices || 0,
-      paidInvoices: paidInvoices || 0,
-      pendingInvoices: pendingInvoices || 0,
-      totalExpenses: totalExpenses || 0,
-      overdueInvoices,
-      pendingExpenses,
-      totalBalance,
-      netIncome: (paidInvoices || 0) - (totalExpenses || 0),
+      totalRevenue,
+      pendingAmount,
+      overdueAmount,
+      totalInvoices,
+      totalCustomers: 0,
+      totalProducts: 0,
+      totalExpenses,
     };
   }
 
