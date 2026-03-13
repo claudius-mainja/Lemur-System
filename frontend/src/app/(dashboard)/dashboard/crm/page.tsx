@@ -316,7 +316,19 @@ export default function CRMDashboard() {
         </div>
         <div className="p-6">
           {contacts.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">No contacts yet. Add your first contact!</p>
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No Contacts Yet</h3>
+              <p className="text-gray-500 mb-6 max-w-md mx-auto">Add your first contact to start building your customer relationships.</p>
+              <button
+                onClick={() => setActiveView('contacts')}
+                className="bg-primary text-white px-6 py-3 rounded-lg inline-flex items-center gap-2 hover:bg-primary/90"
+              >
+                <UserPlus className="w-5 h-5" /> Add Your First Contact
+              </button>
+            </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">

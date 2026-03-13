@@ -32,20 +32,9 @@ interface Project {
   dueDate: string;
 }
 
-const mockTasks: Task[] = [
-  { id: '1', title: 'Review Q1 Financial Reports', description: 'Review and approve quarterly financial reports', status: 'in_progress', priority: 'high', assignee: 'Thabo Mokoena', dueDate: '2024-02-15', project: 'Finance' },
-  { id: '2', title: 'Update Employee Records', description: 'Add new hires to the system', status: 'todo', priority: 'medium', assignee: 'Amara Okonkwo', dueDate: '2024-02-20', project: 'HR' },
-  { id: '3', title: 'Client Presentation Prep', description: 'Prepare slides for MegaMart meeting', status: 'review', priority: 'urgent', assignee: 'Lerato Dlamini', dueDate: '2024-02-12', project: 'Sales' },
-  { id: '4', title: 'Inventory Audit', description: 'Complete monthly inventory check', status: 'completed', priority: 'low', assignee: 'Pieter van der Merwe', dueDate: '2024-02-10', project: 'Operations' },
-  { id: '5', title: 'Software Update Review', description: 'Review new system requirements', status: 'todo', priority: 'medium', assignee: 'Fatima Ahmed', dueDate: '2024-02-25', project: 'IT' },
-];
+const mockTasks: Task[] = [];
 
-const mockProjects: Project[] = [
-  { id: '1', name: 'Q1 Financial Review', description: 'Complete quarterly financial analysis and reporting', progress: 75, status: 'active', teamSize: 4, dueDate: '2024-03-31' },
-  { id: '2', name: 'HR Onboarding Campaign', description: 'New employee onboarding process improvement', progress: 45, status: 'active', teamSize: 3, dueDate: '2024-04-15' },
-  { id: '3', name: 'Website Redesign', description: 'Company website modernization project', progress: 90, status: 'active', teamSize: 5, dueDate: '2024-02-28' },
-  { id: '4', name: 'CRM Implementation', description: 'Customer relationship management system rollout', progress: 30, status: 'active', teamSize: 6, dueDate: '2024-05-30' },
-];
+const mockProjects: Project[] = [];
 
 export default function ProductivityDashboard() {
   const { theme } = useThemeStore();
