@@ -9,25 +9,25 @@ const values = [
     icon: Users,
     title: 'Customer First',
     description: 'We prioritize our customers success in everything we do',
-    color: 'from-blue-500 to-blue-600',
+    color: 'from-accent to-accentDark',
   },
   {
     icon: TrendingUp,
     title: 'Continuous Innovation',
     description: 'We constantly improve our platform to stay ahead',
-    color: 'from-blue-600 to-cyan-500',
+    color: 'from-primary to-secondary',
   },
   {
     icon: Globe,
     title: 'Regional Focus',
     description: 'Serving businesses across the SADC region',
-    color: 'from-orange-500 to-orange-600',
+    color: 'from-accentDark to-accent',
   },
   {
     icon: Award,
     title: 'Excellence',
     description: 'We maintain the highest standards in everything',
-    color: 'from-orange-600 to-amber-500',
+    color: 'from-accent to-accentDark',
   },
 ];
 
@@ -47,15 +47,15 @@ export default function AboutPage() {
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div 
           className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px] animate-blob"
-          style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #ef4444 100%)', top: '10%', right: '10%' }}
+          style={{ background: 'linear-gradient(135deg, #7e49de 0%, #412576 50%, #0b2f40 100%)', top: '10%', right: '10%' }}
         />
         <div 
           className="absolute w-[500px] h-[500px] rounded-full opacity-15 blur-[80px] animate-blob"
-          style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%)', bottom: '20%', left: '10%', animationDelay: '2s' }}
+          style={{ background: 'linear-gradient(135deg, #0b2f40 0%, #184250 50%, #7e49de 100%)', bottom: '20%', left: '10%', animationDelay: '2s' }}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(37,99,235,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(37,99,235,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
-        <Hexagon className="absolute top-40 left-40 w-20 h-20 text-amber-500/10 animate-float" />
-        <Circle className="absolute top-1/3 right-40 w-16 h-16 text-purple-500/10 animate-float" style={{ animationDelay: '0.5s' }} />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(11,47,64,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(11,47,64,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+        <Hexagon className="absolute top-40 left-40 w-20 h-20 text-accent/10 animate-float" />
+        <Circle className="absolute top-1/3 right-40 w-16 h-16 text-primary/10 animate-float" style={{ animationDelay: '0.5s' }} />
       </div>
 
       {/* Navigation */}
@@ -73,19 +73,19 @@ export default function AboutPage() {
             </Link>
             <div className="hidden lg:flex items-center gap-1">
               {[
-                { name: 'Home', href: '/' },
-                { name: 'Features', href: '/features' },
-                { name: 'Pricing', href: '/pricing' },
-                { name: 'Industries', href: '/industries' },
-                { name: 'Docs', href: '/docs' },
-                { name: 'About', href: '/about' },
-                { name: 'Contact', href: '/contact' },
+                { name: 'HOME', href: '/' },
+                { name: 'FEATURES', href: '/features' },
+                { name: 'PRICING', href: '/pricing' },
+                { name: 'INDUSTRIES', href: '/industries' },
+                { name: 'DOCS', href: '/docs' },
+                { name: 'ABOUT', href: '/about' },
+                { name: 'CONTACT', href: '/contact' },
               ].map((item) => (
                 <Link 
                   key={item.name}
                   href={item.href}
                   className={`px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium ${
-                    item.name === 'About' 
+                    item.name === 'ABOUT' 
                       ? 'text-white bg-white/10' 
                       : 'text-dark-text-secondary hover:text-white hover:bg-white/5'
                   }`}
@@ -95,11 +95,11 @@ export default function AboutPage() {
               ))}
             </div>
             <div className="hidden lg:flex items-center gap-3">
-              <Link href="/login" className="px-5 py-2.5 text-dark-text-secondary hover:text-white transition-all duration-300 font-medium">
-                Log in
+              <Link href="/login" className="px-5 py-2.5 text-dark-text-secondary hover:text-white transition-all duration-300 font-medium uppercase tracking-wider text-sm">
+                Sign In
               </Link>
-              <Link href="/login" className="px-6 py-2.5 bg-gradient-to-r from-primary to-blue-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5">
-                Start Free Trial
+              <Link href="/login" className="px-6 py-2.5 bg-gradient-to-r from-accent to-accentDark text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 hover:-translate-y-0.5">
+                GET STARTED
               </Link>
             </div>
             <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 text-dark-text-secondary">
@@ -121,14 +121,14 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="pt-40 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500/20 border border-amber-500/30 rounded-full text-sm mb-8 animate-fade-in">
-            <Award className="w-4 h-4 text-amber-400" />
-            <span className="text-amber-400 font-medium">ABOUT US</span>
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent/20 border border-accent/30 rounded-full text-sm mb-8 animate-fade-in">
+            <Award className="w-4 h-4 text-accent" />
+            <span className="text-accent font-medium uppercase">About Us</span>
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif uppercase">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 uppercase">
             Empowering African
             <br />
-            <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-accent via-[#9e79ef] to-accentDark bg-clip-text text-transparent">
               Businesses
             </span>
           </h1>
@@ -144,10 +144,10 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {stats.map((stat, i) => (
-              <div key={i} className="bg-dark-card/50 border border-dark-border rounded-2xl p-6 text-center hover:border-amber-500/30 transition-all duration-300 hover:-translate-y-1">
-                <stat.icon className="w-8 h-8 text-amber-400 mx-auto mb-3" />
+              <div key={i} className="bg-dark-card/50 border border-dark-border rounded-2xl p-6 text-center hover:border-accent/30 transition-all duration-300 hover:-translate-y-1">
+                <stat.icon className="w-8 h-8 text-accent mx-auto mb-3" />
                 <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
-                <div className="text-dark-text-muted text-sm">{stat.label}</div>
+                <div className="text-dark-text-muted text-sm uppercase">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -158,22 +158,22 @@ export default function AboutPage() {
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-dark-bg-secondary/50">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-dark-card border border-dark-border rounded-3xl p-8 hover:border-amber-500/30 transition-all duration-300">
-              <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center mb-6">
+            <div className="bg-dark-card border border-dark-border rounded-3xl p-8 hover:border-accent/30 transition-all duration-300">
+              <div className="w-14 h-14 bg-gradient-to-br from-accent to-accentDark rounded-2xl flex items-center justify-center mb-6">
                 <Target className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4 font-serif">OUR MISSION</h3>
+              <h3 className="text-2xl font-bold text-white mb-4 uppercase">OUR MISSION</h3>
               <p className="text-dark-text-secondary leading-relaxed">
                 To provide affordable, powerful, and user-friendly enterprise software 
                 that helps SADC businesses streamline operations, increase productivity, 
                 and achieve sustainable growth.
               </p>
             </div>
-            <div className="bg-dark-card border border-dark-border rounded-3xl p-8 hover:border-purple-500/30 transition-all duration-300">
-              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6">
+            <div className="bg-dark-card border border-dark-border rounded-3xl p-8 hover:border-accent/30 transition-all duration-300">
+              <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mb-6">
                 <Lightbulb className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4 font-serif">OUR VISION</h3>
+              <h3 className="text-2xl font-bold text-white mb-4 uppercase">OUR VISION</h3>
               <p className="text-dark-text-secondary leading-relaxed">
                 To become the leading ERP platform in Africa, enabling businesses 
                 of all sizes to compete globally through digital transformation 
@@ -188,7 +188,7 @@ export default function AboutPage() {
       <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 font-serif">
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 uppercase">
               OUR VALUES
             </h2>
             <p className="text-lg text-dark-text-secondary max-w-2xl mx-auto">
@@ -200,7 +200,7 @@ export default function AboutPage() {
             {values.map((value, index) => (
               <div
                 key={index}
-                className="bg-dark-card/50 border border-dark-border rounded-2xl p-6 text-center hover:border-amber-500/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl"
+                className="bg-dark-card/50 border border-dark-border rounded-2xl p-6 text-center hover:border-accent/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl"
               >
                 <div className={`w-14 h-14 bg-gradient-to-br ${value.color} rounded-2xl flex items-center justify-center mx-auto mb-4`}>
                   <value.icon className="w-7 h-7 text-white" />
@@ -214,21 +214,21 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-amber-600 via-orange-600 to-rose-600 relative overflow-hidden">
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-accentDark via-accent to-primary relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 font-serif uppercase">
-            Join Our Journey
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 uppercase">
+            JOIN OUR JOURNEY
           </h2>
-          <p className="text-amber-100 text-lg mb-10">
+          <p className="text-white/80 text-lg mb-10">
             Be part of the transformation in African business
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-white text-amber-600 font-bold rounded-2xl hover:bg-amber-50 transition-all duration-300 hover:-translate-y-2 flex items-center justify-center gap-2">
-              Start Free Trial <ArrowRight className="w-5 h-5" />
+            <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-white text-accent font-bold rounded-2xl hover:bg-white/90 transition-all duration-300 hover:-translate-y-2 flex items-center justify-center gap-2">
+              START FREE TRIAL <ArrowRight className="w-5 h-5" />
             </Link>
             <Link href="/contact" className="w-full sm:w-auto px-8 py-4 border-2 border-white text-white font-bold rounded-2xl hover:bg-white/10 transition-all duration-300">
-              Contact Us
+              CONTACT US
             </Link>
           </div>
         </div>

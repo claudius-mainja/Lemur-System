@@ -68,12 +68,18 @@ export default function PaymentPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-      <div className="max-w-4xl w-full">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl mb-4">
-            <Shield className="w-8 h-8 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-dark-card rounded-3xl p-8 shadow-2xl">
+          <div className="flex items-center gap-3 mb-6">
+            <button onClick={() => router.back()} className="p-2 rounded-lg hover:bg-dark-bg-tertiary transition-colors">
+              <ArrowLeft className="w-5 h-5 text-dark-text-secondary" />
+            </button>
+            <h1 className="text-2xl font-bold text-white">Upgrade Plan</h1>
+          </div>
+          
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-accent to-accentDark rounded-2xl mb-4">
+            <CreditCard className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Complete Your Subscription</h1>
           <p className="text-slate-400">Choose your payment method to activate your {planDetails.name} plan</p>
@@ -202,7 +208,7 @@ export default function PaymentPage() {
                     <input
                       type="tel"
                       placeholder="+263 77X XXX XXXX"
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
                       required
                     />
                   </div>
@@ -214,7 +220,7 @@ export default function PaymentPage() {
               <button
                 type="submit"
                 disabled={isProcessing}
-                className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-accent to-accentDark text-white py-4 rounded-xl font-semibold hover:from-accentDark hover:to-primary transition flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isProcessing ? (
                   <>

@@ -16,7 +16,7 @@ export class User {
   organizationId: string;
 
   @Field()
-  @Column({ type: 'citext', unique: true })
+  @Column({ type: 'varchar', unique: true, length: 255 })
   email: string;
 
   @Exclude()

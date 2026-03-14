@@ -15,59 +15,62 @@ import {
   Star, Crown, Zap, Shield, Activity, UsersRound, Receipt, PackageCheck,
   Target, UserCog, Building, Clock4, Wallet2, TrendingDown, Sparkles,
   ArrowUpRight, Mail, FileCheck, Zap as Lightning, HeadphonesIcon,
-  MessageSquare, Video, Presentation, Palette, Code, Database, Moon, Sun
+  MessageSquare, Video, Presentation, Palette, Code, Database, Moon, Sun, Link as LinkIcon,
+  Grid3X3, LayoutDashboard, Gauge, ActivitySquare
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-type TabId = 'hr' | 'finance' | 'supply-chain' | 'crm' | 'payroll' | 'productivity' | 'email' | 'documents';
+type TabId = 'hr' | 'finance' | 'supply-chain' | 'crm' | 'payroll' | 'productivity' | 'email' | 'documents' | 'integrations' | 'automations';
 
 const tabs = [
-  { id: 'hr' as TabId, name: 'Human Resources', icon: Users, color: 'from-blue-500 to-blue-600', bgColor: 'bg-blue-500' },
-  { id: 'finance' as TabId, name: 'Finance', icon: Wallet, color: 'from-purple-500 to-purple-600', bgColor: 'bg-purple-500' },
-  { id: 'crm' as TabId, name: 'CRM', icon: BarChart3, color: 'from-pink-500 to-pink-600', bgColor: 'bg-pink-500' },
-  { id: 'payroll' as TabId, name: 'Payroll', icon: PiggyBank, color: 'from-green-500 to-green-600', bgColor: 'bg-green-500' },
-  { id: 'productivity' as TabId, name: 'Productivity', icon: Zap, color: 'from-amber-500 to-orange-600', bgColor: 'bg-amber-500' },
-  { id: 'supply-chain' as TabId, name: 'Supply Chain', icon: Package, color: 'from-orange-500 to-red-600', bgColor: 'bg-orange-500' },
-  { id: 'email' as TabId, name: 'Email', icon: Mail, color: 'from-cyan-500 to-blue-600', bgColor: 'bg-cyan-500' },
-  { id: 'documents' as TabId, name: 'Documents', icon: FileText, color: 'from-slate-500 to-slate-600', bgColor: 'bg-slate-500' },
+  { id: 'hr' as TabId, name: 'HUMAN RESOURCES', icon: Users, color: 'from-primary to-secondary', bgColor: 'bg-primary' },
+  { id: 'finance' as TabId, name: 'FINANCE', icon: Wallet, color: 'from-accent to-accentDark', bgColor: 'bg-accent' },
+  { id: 'crm' as TabId, name: 'CRM', icon: BarChart3, color: 'from-accent to-accentDark', bgColor: 'bg-accent' },
+  { id: 'payroll' as TabId, name: 'PAYROLL', icon: PiggyBank, color: 'from-secondary to-primary', bgColor: 'bg-secondary' },
+  { id: 'productivity' as TabId, name: 'PRODUCTIVITY', icon: Zap, color: 'from-accentDark to-accent', bgColor: 'bg-accentDark' },
+  { id: 'supply-chain' as TabId, name: 'SUPPLY CHAIN', icon: Package, color: 'from-primary to-accent', bgColor: 'bg-primary' },
+  { id: 'email' as TabId, name: 'EMAIL', icon: Mail, color: 'from-secondary to-accent', bgColor: 'bg-secondary' },
+  { id: 'documents' as TabId, name: 'DOCUMENTS', icon: FileText, color: 'from-primary to-secondary', bgColor: 'bg-primary' },
+  { id: 'integrations' as TabId, name: 'INTEGRATIONS', icon: LinkIcon, color: 'from-accent to-accentDark', bgColor: 'bg-accent' },
+  { id: 'automations' as TabId, name: 'AUTOMATIONS', icon: Zap as typeof Settings, color: 'from-accentDark to-accent', bgColor: 'bg-accentDark' },
 ];
 
 const subscriptionFeatures = {
   starter: {
-    name: 'Starter',
+    name: 'STARTER',
     price: 10.60,
-    color: 'from-slate-400 to-slate-600',
-    bgLight: 'bg-slate-100',
-    textColor: 'text-slate-700',
-    borderColor: 'border-slate-300',
+    color: 'from-primary to-secondary',
+    bgLight: 'bg-primary/10',
+    textColor: 'text-primary',
+    borderColor: 'border-primary',
     icon: Star,
-    features: ['HR Module', 'Finance', 'Supply Chain', '10 GB Storage', 'Email Support', 'Basic Reporting', 'Mobile App'],
+    features: ['HR Module', 'Finance', 'Supply Chain', '10 GB Storage', 'Email Support', 'Basic Reporting', 'Mobile App', 'Integrations'],
     limits: { employees: 6, modules: 3, storageGB: 10 },
-    allowedModules: ['hr', 'finance', 'supply-chain'],
+    allowedModules: ['hr', 'finance', 'supply-chain', 'integrations'],
   },
   professional: {
-    name: 'Professional',
+    name: 'PROFESSIONAL',
     price: 20.50,
-    color: 'from-blue-500 to-cyan-600',
-    bgLight: 'bg-blue-100',
-    textColor: 'text-blue-700',
-    borderColor: 'border-blue-300',
+    color: 'from-accent to-accentDark',
+    bgLight: 'bg-accent/10',
+    textColor: 'text-accent',
+    borderColor: 'border-accent',
     icon: Zap,
-    features: ['HR Suite', 'Finance & Invoicing', 'CRM', 'Payroll', 'Productivity', 'Supply Chain', '100 GB Storage', 'Priority Support', 'Advanced Analytics', 'API Access', 'Custom Integrations', 'SSO'],
+    features: ['HR Suite', 'Finance & Invoicing', 'CRM', 'Payroll', 'Productivity', 'Supply Chain', '100 GB Storage', 'Priority Support', 'Advanced Analytics', 'API Access', 'Custom Integrations', 'SSO', 'Automations'],
     limits: { employees: 50, modules: 6, storageGB: 100 },
-    allowedModules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain'],
+    allowedModules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'integrations', 'automations'],
   },
   enterprise: {
-    name: 'Enterprise',
+    name: 'ENTERPRISE',
     price: null,
-    color: 'from-amber-500 to-orange-600',
-    bgLight: 'bg-amber-100',
-    textColor: 'text-amber-700',
-    borderColor: 'border-amber-300',
+    color: 'from-accentDark to-primary',
+    bgLight: 'bg-accentDark/10',
+    textColor: 'text-accentDark',
+    borderColor: 'border-accentDark',
     icon: Crown,
-    features: ['All Applications + Custom', 'Unlimited Storage', '24/7 Dedicated Support', 'Custom Reporting & Dashboards', 'Full API Access', 'Custom Integrations', 'SSO & Advanced Security', 'Dedicated Account Manager', 'On-premise Option', 'SLA Guarantee', 'Custom Training'],
+    features: ['All Applications + Custom', 'Unlimited Storage', '24/7 Dedicated Support', 'Custom Reporting & Dashboards', 'Full API Access', 'Custom Integrations', 'SSO & Advanced Security', 'Dedicated Account Manager', 'On-premise Option', 'SLA Guarantee', 'Custom Training', 'Advanced Automations'],
     limits: { employees: 'Unlimited', modules: 'Unlimited', storageGB: null },
-    allowedModules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'email', 'documents'],
+    allowedModules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'email', 'documents', 'integrations', 'automations'],
   },
 };
 
@@ -117,10 +120,10 @@ export default function DashboardLayout({
   const newLeads = leads.filter(l => l.status === 'new').length;
 
   const notifications = [
-    { type: 'leave', count: pendingLeaves, label: 'Pending Leaves', color: 'bg-amber-500', icon: Calendar },
-    { type: 'invoice', count: overdueInvoices, label: 'Overdue Invoices', color: 'bg-red-500', icon: Receipt },
-    { type: 'inventory', count: lowStockItems, label: 'Low Stock', color: 'bg-orange-500', icon: Package },
-    { type: 'lead', count: newLeads, label: 'New Leads', color: 'bg-blue-500', icon: Users },
+    { type: 'leave', count: pendingLeaves, label: 'PENDING LEAVES', color: 'bg-amber-500', icon: Calendar },
+    { type: 'invoice', count: overdueInvoices, label: 'OVERDUE INVOICES', color: 'bg-red-500', icon: Receipt },
+    { type: 'inventory', count: lowStockItems, label: 'LOW STOCK', color: 'bg-orange-500', icon: Package },
+    { type: 'lead', count: newLeads, label: 'NEW LEADS', color: 'bg-blue-500', icon: Users },
   ];
 
   const totalNotifications = notifications.reduce((acc, n) => acc + n.count, 0);
@@ -147,60 +150,67 @@ export default function DashboardLayout({
   const isDark = theme === 'dark';
 
   return (
-    <div className={`min-h-screen transition-all duration-500 ${isDark ? 'bg-dark-bg' : 'bg-light-bg'}`}>
-      {/* Animated Background */}
+    <div className={`min-h-screen transition-all duration-500 bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]`}>
+      {/* Background Pattern */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-blob" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-blob" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-blue-500/5 to-orange-500/5 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-br from-blue-600/20 to-transparent rounded-full blur-2xl animate-float" />
-        <div className="absolute bottom-20 right-20 w-72 h-72 bg-gradient-to-br from-orange-600/20 to-transparent rounded-full blur-2xl animate-float" style={{ animationDelay: '1.5s' }} />
+        <div className="absolute inset-0 opacity-[0.02]">
+          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <circle cx="20" cy="20" r="1" fill="white"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+          </svg>
+        </div>
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-radial from-accent/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-radial from-primary/5 to-transparent rounded-full blur-3xl" />
       </div>
 
       {/* Top Navigation */}
-      <nav className={`relative backdrop-blur-xl border-b ${isDark ? 'bg-dark-bg/80 border-dark-border' : 'bg-light-bg/80 border-light-border'} shadow-lg shadow-slate-200/50 fixed top-0 left-0 right-0 z-50 transition-all duration-300`}>
+      <nav className="relative backdrop-blur-xl border-b border-white/10 bg-[#0b2535]/90 fixed top-0 left-0 right-0 z-50">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className={`lg:hidden p-2.5 rounded-xl transition-all duration-300 ${isDark ? 'text-dark-text-secondary hover:bg-dark-bg-tertiary' : 'text-light-text-secondary hover:bg-light-bg-tertiary'}`}
+                className="lg:hidden p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors"
               >
-                {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
               <Link href="/dashboard/hr" className="flex items-center gap-3 group">
-                <div className="w-11 h-11 bg-gradient-to-br from-blue-600 via-orange-500 to-blue-600 bg-size-200 animate-gradient rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:shadow-orange-500/50 transition-all duration-300 group-hover:scale-110">
-                  <span className="text-white font-bold text-xl">L</span>
+                <div className="w-10 h-10 bg-gradient-to-br from-accent to-accentDark rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-accent/30 transition-all duration-300 group-hover:scale-105">
+                  <span className="text-white font-bold text-lg">L</span>
                 </div>
-                <span className={`font-bold text-xl hidden sm:block bg-gradient-to-r bg-clip-text text-transparent ${isDark ? 'from-dark-text to-dark-text-secondary' : 'from-light-text to-light-text-secondary'}`}>LemurSystem</span>
+                <span className="font-bold text-xl text-white tracking-tight hidden sm:block">LEMUR<span className="text-accent">SYSTEM</span></span>
               </Link>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <div className="relative hidden md:block">
-                <Search className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`} />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                 <input
                   type="text"
-                  placeholder="Search anything..."
+                  placeholder="SEARCH..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className={`pl-12 pr-4 py-2.5 ${isDark ? 'bg-dark-bg-tertiary text-dark-text border-dark-border' : 'bg-light-bg-secondary text-light-text border-light-border'} rounded-xl text-sm w-72 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-transparent transition-all duration-300 border`}
+                  className="pl-10 pr-4 py-2 bg-white/5 text-white border border-white/10 rounded-lg text-sm w-56 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 placeholder-white/30 uppercase tracking-wider"
                 />
               </div>
               
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
-                className={`p-2.5 rounded-xl transition-all duration-300 ${isDark ? 'text-dark-text-secondary hover:bg-dark-bg-tertiary' : 'text-light-text-secondary hover:bg-light-bg-tertiary'}`}
+                className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors"
               >
-                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </button>
 
               <div className="relative">
-                <button className={`p-2.5 rounded-xl relative transition-all duration-300 ${isDark ? 'text-dark-text-secondary hover:bg-dark-bg-tertiary' : 'text-light-text-secondary hover:bg-light-bg-tertiary'}`}>
-                  <Bell className="w-5 h-5" />
+                <button className="p-2 rounded-lg relative text-white/60 hover:text-white hover:bg-white/10 transition-colors">
+                  <Bell className="w-4 h-4" />
                   {totalNotifications > 0 && (
-                    <span className="absolute top-1 right-1 w-5 h-5 bg-gradient-to-r from-red-500 to-orange-500 rounded-full text-white text-xs flex items-center justify-center animate-pulse">
+                    <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-accent rounded-full text-white text-[10px] flex items-center justify-center font-bold">
                       {totalNotifications}
                     </span>
                   )}
@@ -210,85 +220,85 @@ export default function DashboardLayout({
               <div className="relative">
                 <button 
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className={`flex items-center gap-2 p-1.5 rounded-xl transition-all duration-300 ${isDark ? 'hover:bg-dark-bg-tertiary' : 'hover:bg-light-bg-tertiary'}`}
+                  className="flex items-center gap-2 p-1 rounded-lg hover:bg-white/10 transition-colors"
                 >
-                  <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-orange-500 rounded-full flex items-center justify-center shadow-md">
-                    <span className="text-white font-medium text-sm">
+                  <div className="w-8 h-8 bg-gradient-to-br from-accent to-accentDark rounded-lg flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">
                       {userInitials}
                     </span>
                   </div>
                   <div className="hidden sm:block text-left">
-                    <p className={`text-sm font-semibold ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{user?.firstName} {user?.lastName}</p>
-                    <p className={`text-xs ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{subscription.name}</p>
+                    <p className="text-sm font-bold text-white">{user?.firstName} {user?.lastName}</p>
+                    <p className="text-xs text-white/40 uppercase tracking-wider">{subscription.name}</p>
                   </div>
-                  <ChevronDown className={`w-4 h-4 hidden sm:block ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`} />
+                  <ChevronDown className="w-4 h-4 text-white/40 hidden sm:block" />
                 </button>
 
                 {showProfileMenu && (
-                  <div className={`absolute right-0 mt-3 w-80 backdrop-blur-xl rounded-2xl shadow-2xl border z-50 animate-fade-in-down overflow-hidden ${isDark ? 'bg-dark-card border-dark-border' : 'bg-light-card border-light-border'}`}>
-                    <div className={`p-4 border-b ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
+                  <div className="absolute right-0 mt-3 w-80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 bg-[#0b2535]/95 z-50 animate-fade-in-down overflow-hidden">
+                    <div className="p-4 border-b border-white/10">
                       <div className="flex items-center gap-3 mb-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                        <div className="w-12 h-12 bg-gradient-to-br from-accent to-accentDark rounded-full flex items-center justify-center shadow-lg">
                           <span className="text-white font-bold text-lg">{userInitials}</span>
                         </div>
                         <div className="flex-1">
-                          <p className={`font-semibold ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{user?.firstName} {user?.lastName}</p>
-                          <p className={`text-xs ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{user?.email}</p>
+                          <p className="font-bold text-white">{user?.firstName} {user?.lastName}</p>
+                          <p className="text-xs text-white/40">{user?.email}</p>
                         </div>
-                        <span className={`px-3 py-1.5 text-xs font-semibold rounded-full bg-gradient-to-r ${subscription.color} text-white flex items-center gap-1`}>
+                        <span className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-full bg-gradient-to-r ${subscription.color} text-white flex items-center gap-1`}>
                           <subscription.icon className="w-3 h-3" />
                           {subscription.name}
                         </span>
                       </div>
-                      <p className={`text-sm font-medium ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>{user?.organizationName}</p>
-                      <p className={`text-xs capitalize ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{user?.industry} Industry</p>
+                      <p className="text-sm font-medium text-white/60">{user?.organizationName}</p>
+                      <p className="text-xs text-white/40 uppercase tracking-wider">{user?.industry} Industry</p>
                     </div>
                     
-                    <div className={`p-4 bg-gradient-to-r ${isDark ? 'from-dark-bg-tertiary' : 'from-light-bg-tertiary'}`}>
+                    <div className="p-4 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-white/10">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className={`text-xs ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>Storage Used</p>
-                          <p className={`text-sm font-semibold ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{subscription.limits.storageGB} GB</p>
+                          <p className="text-xs text-white/40 uppercase tracking-wider">Storage</p>
+                          <p className="text-sm font-bold text-white">{subscription.limits.storageGB} GB</p>
                         </div>
                         <div>
-                          <p className={`text-xs ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>Max Users</p>
-                          <p className={`text-sm font-semibold ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{subscription.limits.employees}</p>
+                          <p className="text-xs text-white/40 uppercase tracking-wider">Max Users</p>
+                          <p className="text-sm font-bold text-white">{subscription.limits.employees}</p>
                         </div>
                         <div>
-                          <p className={`text-xs ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>Modules</p>
-                          <p className={`text-sm font-semibold ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{enabledModules.length}</p>
+                          <p className="text-xs text-white/40 uppercase tracking-wider">Modules</p>
+                          <p className="text-sm font-bold text-white">{enabledModules.length}</p>
                         </div>
                       </div>
                     </div>
                     
                     <div className="p-3">
-                      <p className={`text-xs mb-2 ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>Your Features</p>
+                      <p className="text-xs text-white/40 mb-2 uppercase tracking-wider">Your Features</p>
                       <div className="flex flex-wrap gap-1.5">
                         {subscription.features.slice(0, 5).map((f, i) => (
-                          <span key={i} className="px-2 py-1 bg-gradient-to-r from-blue-100 to-orange-100 text-blue-700 text-xs rounded-lg font-medium">
+                          <span key={i} className="px-2 py-1 bg-accent/20 text-accent text-xs rounded-lg font-medium uppercase tracking-wider">
                             {f}
                           </span>
                         ))}
                         {subscription.features.length > 5 && (
-                          <span className={`px-2 py-1 text-xs rounded-lg ${isDark ? 'bg-dark-bg-tertiary text-dark-text-muted' : 'bg-light-bg-tertiary text-light-text-muted'}`}>
+                          <span className="px-2 py-1 text-xs rounded-lg text-white/40">
                             +{subscription.features.length - 5} more
                           </span>
                         )}
                       </div>
                     </div>
 
-                    <div className={`border-t ${isDark ? 'border-dark-border' : 'border-light-border'} p-2`}>
-                      <Link href="/dashboard/profile" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${isDark ? 'text-dark-text-secondary hover:bg-dark-bg-tertiary hover:text-dark-text' : 'text-light-text-secondary hover:bg-light-bg-tertiary hover:text-light-text'}`}>
+                    <div className="border-t border-white/10 p-2">
+                      <Link href="/dashboard/profile" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200">
                         <UserCog className="w-4 h-4" />
-                        <span className="text-sm font-medium">PROFILE & SETTINGS</span>
+                        <span className="text-sm font-bold uppercase tracking-wider">PROFILE & SETTINGS</span>
                       </Link>
-                      <Link href="/docs" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${isDark ? 'text-dark-text-secondary hover:bg-dark-bg-tertiary hover:text-dark-text' : 'text-light-text-secondary hover:bg-light-bg-tertiary hover:text-light-text'}`}>
+                      <Link href="/docs" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200">
                         <FileText className="w-4 h-4" />
-                        <span className="text-sm font-medium">DOCUMENTATION</span>
+                        <span className="text-sm font-bold uppercase tracking-wider">DOCUMENTATION</span>
                       </Link>
-                      <button onClick={handleLogout} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20`}>
+                      <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200">
                         <LogOut className="w-4 h-4" />
-                        <span className="text-sm font-medium">SIGN OUT</span>
+                        <span className="text-sm font-bold uppercase tracking-wider">SIGN OUT</span>
                       </button>
                     </div>
                   </div>
@@ -299,7 +309,7 @@ export default function DashboardLayout({
         </div>
 
         {/* Module Tabs */}
-        <div className={`border-t ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
+        <div className="border-t border-white/10">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex gap-2 overflow-x-auto py-3 -mb-3 scrollbar-hide">
               {tabs.filter(tab => enabledModules.includes(tab.id)).map((tab, index) => (
@@ -308,32 +318,32 @@ export default function DashboardLayout({
                   href={`/dashboard/${tab.id}`}
                   className={`relative flex items-center gap-2.5 px-5 py-2.5 rounded-xl whitespace-nowrap transition-all duration-300 ${
                     activeTab === tab.id
-                      ? `bg-gradient-to-r ${tab.color} text-white shadow-lg shadow-orange-500/25 scale-105`
-                      : `${isDark ? 'text-dark-text-secondary hover:bg-dark-bg-tertiary' : 'text-light-text-secondary hover:bg-light-bg-tertiary'} hover:scale-102`
+                      ? `bg-gradient-to-r ${tab.color} text-white shadow-lg shadow-accent/25 scale-105`
+                      : `text-white/40 hover:text-white hover:bg-white/5 hover:scale-102`
                   }`}
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <div className={`p-1.5 rounded-lg ${activeTab === tab.id ? 'bg-white/20' : `${tab.bgColor}/10`}`}>
+                  <div className={`p-1.5 rounded-lg ${activeTab === tab.id ? 'bg-white/20' : `bg-white/5`}`}>
                     <tab.icon className="w-4 h-4" />
                   </div>
                   <span className="text-sm font-bold uppercase tracking-wider">{tab.name}</span>
                   {tab.id === 'hr' && pendingLeaves > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-amber-500 to-red-500 rounded-full text-white text-xs flex items-center justify-center animate-bounce">
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-accent to-accentDark rounded-full text-white text-xs flex items-center justify-center animate-bounce font-bold">
                       {pendingLeaves}
                     </span>
                   )}
                   {tab.id === 'finance' && overdueInvoices > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-red-500 to-orange-500 rounded-full text-white text-xs flex items-center justify-center animate-bounce">
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-accentDark to-primary rounded-full text-white text-xs flex items-center justify-center animate-bounce font-bold">
                       {overdueInvoices}
                     </span>
                   )}
                   {tab.id === 'supply-chain' && lowStockItems > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full text-white text-xs flex items-center justify-center animate-bounce">
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-accent to-primary rounded-full text-white text-xs flex items-center justify-center animate-bounce font-bold">
                       {lowStockItems}
                     </span>
                   )}
                   {tab.id === 'crm' && newLeads > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full text-white text-xs flex items-center justify-center animate-bounce">
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-primary to-secondary rounded-full text-white text-xs flex items-center justify-center animate-bounce font-bold">
                       {newLeads}
                     </span>
                   )}
@@ -345,42 +355,41 @@ export default function DashboardLayout({
       </nav>
 
       {/* Main Content */}
-      <main className={`pt-40 pb-8 transition-all duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      <main className={`pt-36 pb-8 transition-all duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <div className="px-4 sm:px-6 lg:px-8">
           {/* Welcome Banner */}
-          <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-orange-600 rounded-3xl p-8 mb-8 text-white shadow-2xl">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/30 via-transparent to-orange-600/30" />
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-orange-500/20 to-transparent rounded-full blur-3xl" />
+          <div className="relative overflow-hidden bg-[#0b2535]/50 border border-white/10 rounded-3xl p-8 mb-8">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
             
             <div className="relative z-10">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                 <div>
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="px-4 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm font-bold flex items-center gap-2 uppercase tracking-wider">
-                      <Sparkles className="w-4 h-4" />
+                    <span className="px-4 py-1.5 bg-accent/20 text-accent rounded-full text-xs font-bold uppercase tracking-wider">
                       {subscription.name} PLAN
                     </span>
                   </div>
-                  <h1 className="text-3xl lg:text-4xl font-bold mb-2 uppercase tracking-wide">
-                    Welcome back, {user?.firstName}! 👋
+                  <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2 tracking-tight">
+                    WELCOME BACK, {user?.firstName?.toUpperCase()}!
                   </h1>
-                  <p className="text-blue-100 text-lg uppercase tracking-wide">
-                    {user?.organizationName} • {user?.industry}
+                  <p className="text-white/40 font-light">
+                    {user?.organizationName} • {user?.industry?.toUpperCase()}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-4">
-                  <div className="px-5 py-3 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
-                    <p className="text-xs text-blue-200 uppercase tracking-wider">Employees</p>
-                    <p className="text-2xl font-bold">{stats.totalEmployees}</p>
+                <div className="flex flex-wrap gap-3">
+                  <div className="px-5 py-3 bg-white/5 rounded-2xl border border-white/10">
+                    <p className="text-xs text-white/40 uppercase tracking-wider">Employees</p>
+                    <p className="text-2xl font-bold text-white">{stats.totalEmployees}</p>
                   </div>
-                  <div className="px-5 py-3 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
-                    <p className="text-xs text-blue-200 uppercase tracking-wider">Revenue</p>
-                    <p className="text-2xl font-bold">R{stats.totalRevenue.toLocaleString()}</p>
+                  <div className="px-5 py-3 bg-white/5 rounded-2xl border border-white/10">
+                    <p className="text-xs text-white/40 uppercase tracking-wider">Revenue</p>
+                    <p className="text-2xl font-bold text-white">R{stats.totalRevenue.toLocaleString()}</p>
                   </div>
-                  <div className="px-5 py-3 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
-                    <p className="text-xs text-blue-200 uppercase tracking-wider">Customers</p>
-                    <p className="text-2xl font-bold">{stats.totalCustomers}</p>
+                  <div className="px-5 py-3 bg-white/5 rounded-2xl border border-white/10">
+                    <p className="text-xs text-white/40 uppercase tracking-wider">Customers</p>
+                    <p className="text-2xl font-bold text-white">{stats.totalCustomers}</p>
                   </div>
                 </div>
               </div>
@@ -390,57 +399,54 @@ export default function DashboardLayout({
           {/* Quick Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {[
-              { label: 'EMPLOYEES', value: stats.totalEmployees, icon: Users, gradient: 'from-blue-500 to-cyan-500', bg: 'bg-blue-500' },
-              { label: 'REVENUE', value: `R${stats.totalRevenue.toLocaleString()}`, icon: DollarSign, gradient: 'from-green-500 to-emerald-500', bg: 'bg-green-500' },
-              { label: 'INVOICES', value: stats.totalInvoices, icon: Receipt, gradient: 'from-purple-500 to-pink-500', bg: 'bg-purple-500' },
-              { label: 'INVENTORY', value: inventory.length, icon: Package, gradient: 'from-orange-500 to-amber-500', bg: 'bg-orange-500' },
+              { label: 'EMPLOYEES', value: stats.totalEmployees, icon: Users, gradient: 'from-primary to-secondary' },
+              { label: 'REVENUE', value: `R${stats.totalRevenue.toLocaleString()}`, icon: DollarSign, gradient: 'from-accent to-accentDark' },
+              { label: 'INVOICES', value: stats.totalInvoices, icon: Receipt, gradient: 'from-accentDark to-accent' },
+              { label: 'INVENTORY', value: inventory.length, icon: Package, gradient: 'from-secondary to-primary' },
             ].map((stat, index) => (
               <div 
                 key={stat.label}
-                className={`group relative backdrop-blur-sm rounded-2xl p-5 border transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-fade-in-up ${isDark ? 'bg-dark-card/80 border-dark-border hover:border-blue-500/50' : 'bg-light-card/80 border-light-border hover:border-orange-500/50'}`}
+                className="group rounded-2xl p-5 border border-white/10 bg-[#0b2535]/30 hover:border-white/20 hover:bg-[#0b2535]/50 transition-all duration-300 hover:-translate-y-1"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
-                <div className="relative z-10">
-                  <div className={`w-12 h-12 bg-gradient-to-br ${stat.gradient} rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                    <stat.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <p className={`text-3xl font-bold mb-1 ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{stat.value}</p>
-                  <p className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{stat.label}</p>
+                <div className={`w-12 h-12 bg-gradient-to-br ${stat.gradient} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-lg transition-all duration-300`}>
+                  <stat.icon className="w-6 h-6 text-white" />
                 </div>
+                <p className="text-3xl font-bold text-white mb-1">{stat.value}</p>
+                <p className="text-xs font-bold text-white/40 uppercase tracking-wider">{stat.label}</p>
               </div>
             ))}
           </div>
 
           {/* Alerts Section */}
           {totalNotifications > 0 && (
-            <div className={`backdrop-blur-sm rounded-2xl border shadow-lg mb-8 overflow-hidden animate-fade-in-up ${isDark ? 'bg-dark-card/80 border-dark-border' : 'bg-light-card/80 border-light-border'}`}>
-              <div className={`p-5 border-b ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
-                <h3 className={`font-bold uppercase tracking-wider flex items-center gap-3 text-lg ${isDark ? 'text-dark-text' : 'text-light-text'}`}>
-                  <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center">
-                    <AlertCircle className="w-5 h-5 text-white" />
+            <div className="backdrop-blur-sm rounded-3xl border border-white/10 bg-[#0b2535]/30 mb-8 overflow-hidden animate-fade-in-up">
+              <div className="p-6 border-b border-white/10">
+                <h3 className="font-bold uppercase tracking-widest flex items-center gap-4 text-xl text-white">
+                  <div className="w-12 h-12 bg-gradient-to-r from-accent to-accentDark rounded-xl flex items-center justify-center">
+                    <AlertCircle className="w-6 h-6 text-white" />
                   </div>
                   ACTION REQUIRED
-                  <span className="ml-auto px-3 py-1 bg-gradient-to-r from-red-500 to-orange-500 text-white text-sm font-bold rounded-full">
+                  <span className="ml-auto px-4 py-1.5 bg-gradient-to-r from-accent to-accentDark text-white text-sm font-bold rounded-full">
                     {totalNotifications}
                   </span>
                 </h3>
               </div>
-              <div className="p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {notifications.filter(n => n.count > 0).map((notification, i) => (
                   <Link 
                     key={i}
                     href={`/dashboard/${notification.type === 'leave' ? 'hr' : notification.type === 'invoice' ? 'finance' : notification.type === 'inventory' ? 'supply-chain' : 'crm'}`}
-                    className={`group flex items-center gap-4 p-4 rounded-xl transition-all duration-300 hover:-translate-y-1 border ${isDark ? 'bg-dark-bg-tertiary border-dark-border hover:border-blue-500/50' : 'bg-light-bg-secondary border-light-border hover:border-orange-500/50'}`}
+                    className="group flex items-center gap-4 p-5 rounded-2xl border border-white/10 hover:border-accent/50 hover:bg-white/5 transition-all duration-300 hover:-translate-y-1"
                   >
-                    <div className={`w-14 h-14 ${notification.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                      <notification.icon className="w-7 h-7 text-white" />
+                    <div className={`w-16 h-16 ${notification.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      <notification.icon className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                      <p className={`text-2xl font-bold ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{notification.count}</p>
-                      <p className={`text-sm font-medium uppercase tracking-wider ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{notification.label}</p>
+                      <p className="text-3xl font-bold text-white">{notification.count}</p>
+                      <p className="text-xs font-bold text-white/40 uppercase tracking-wider">{notification.label}</p>
                     </div>
-                    <ArrowRight className={`w-5 h-5 ml-auto transition-transform group-hover:translate-x-1 ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`} />
+                    <ArrowRight className="w-5 h-5 ml-auto text-white/40 group-hover:translate-x-1 group-hover:text-white transition-all" />
                   </Link>
                 ))}
               </div>
@@ -448,62 +454,60 @@ export default function DashboardLayout({
           )}
 
           {/* Quick Actions */}
-          <div className={`backdrop-blur-sm rounded-2xl border shadow-lg mb-8 overflow-hidden animate-fade-in-up ${isDark ? 'bg-dark-card/80 border-dark-border' : 'bg-light-card/80 border-light-border'}`}>
-            <div className={`p-5 border-b ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
-              <h3 className={`font-bold uppercase tracking-wider flex items-center gap-3 text-lg ${isDark ? 'text-dark-text' : 'text-light-text'}`}>
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-white" />
-                </div>
+          <div className="rounded-2xl border border-white/10 bg-[#0b2535]/30 mb-8">
+            <div className="px-6 py-5 border-b border-white/10">
+              <h3 className="font-bold uppercase tracking-widest flex items-center gap-3 text-white">
+                <Zap className="w-5 h-5 text-accent" />
                 QUICK ACTIONS
               </h3>
             </div>
-            <div className="p-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
               {enabledModules.includes('hr') && (
-                <Link href="/dashboard/hr" className="group flex flex-col items-center gap-3 p-5 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-300 hover:-translate-y-2 border border-blue-100">
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <UserPlus className="w-7 h-7 text-white" />
+                <Link href="/dashboard/hr" className="group flex flex-col items-center gap-3 p-5 rounded-2xl border border-transparent hover:border-primary/30 hover:bg-primary/5 transition-all duration-200">
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
+                    <UserPlus className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-sm font-bold text-blue-700 uppercase tracking-wider">ADD EMPLOYEE</span>
+                  <span className="text-xs font-bold text-primary uppercase tracking-wider">Add Employee</span>
                 </Link>
               )}
               {enabledModules.includes('finance') && (
-                <Link href="/dashboard/finance" className="group flex flex-col items-center gap-3 p-5 bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-2xl hover:shadow-xl hover:shadow-purple-500/20 transition-all duration-300 hover:-translate-y-2 border border-purple-100">
-                  <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <Receipt className="w-7 h-7 text-white" />
+                <Link href="/dashboard/finance" className="group flex flex-col items-center gap-3 p-5 rounded-2xl border border-transparent hover:border-accent/30 hover:bg-accent/5 transition-all duration-200">
+                  <div className="w-12 h-12 bg-gradient-to-br from-accent to-accentDark rounded-xl flex items-center justify-center">
+                    <Receipt className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-sm font-bold text-purple-700 uppercase tracking-wider">CREATE INVOICE</span>
+                  <span className="text-xs font-bold text-accent uppercase tracking-wider">Create Invoice</span>
                 </Link>
               )}
               {enabledModules.includes('payroll') && (
-                <Link href="/dashboard/payroll" className="group flex flex-col items-center gap-3 p-5 bg-gradient-to-br from-green-50 to-green-100/50 rounded-2xl hover:shadow-xl hover:shadow-green-500/20 transition-all duration-300 hover:-translate-y-2 border border-green-100">
-                  <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <Wallet2 className="w-7 h-7 text-white" />
+                <Link href="/dashboard/payroll" className="group flex flex-col items-center gap-3 p-5 rounded-2xl border border-transparent hover:border-secondary/30 hover:bg-secondary/5 transition-all duration-200">
+                  <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center">
+                    <Wallet2 className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-sm font-bold text-green-700 uppercase tracking-wider">RUN PAYROLL</span>
+                  <span className="text-xs font-bold text-secondary uppercase tracking-wider">Run Payroll</span>
                 </Link>
               )}
               {enabledModules.includes('crm') && (
-                <Link href="/dashboard/crm" className="group flex flex-col items-center gap-3 p-5 bg-gradient-to-br from-pink-50 to-pink-100/50 rounded-2xl hover:shadow-xl hover:shadow-pink-500/20 transition-all duration-300 hover:-translate-y-2 border border-pink-100">
-                  <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <Target className="w-7 h-7 text-white" />
+                <Link href="/dashboard/crm" className="group flex flex-col items-center gap-3 p-5 rounded-2xl border border-transparent hover:border-accentDark/30 hover:bg-accentDark/5 transition-all duration-200">
+                  <div className="w-12 h-12 bg-gradient-to-br from-accentDark to-accent rounded-xl flex items-center justify-center">
+                    <Target className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-sm font-bold text-pink-700 uppercase tracking-wider">ADD LEAD</span>
+                  <span className="text-xs font-bold text-accentDark uppercase tracking-wider">Add Lead</span>
                 </Link>
               )}
               {enabledModules.includes('supply-chain') && (
-                <Link href="/dashboard/supply-chain" className="group flex flex-col items-center gap-3 p-5 bg-gradient-to-br from-orange-50 to-orange-100/50 rounded-2xl hover:shadow-xl hover:shadow-orange-500/20 transition-all duration-300 hover:-translate-y-2 border border-orange-100">
-                  <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <Package className="w-7 h-7 text-white" />
+                <Link href="/dashboard/supply-chain" className="group flex flex-col items-center gap-3 p-5 rounded-2xl border border-transparent hover:border-primary/30 hover:bg-primary/5 transition-all duration-200">
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center">
+                    <Package className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-sm font-bold text-orange-700 uppercase tracking-wider">ADD INVENTORY</span>
+                  <span className="text-xs font-bold text-primary uppercase tracking-wider">Add Inventory</span>
                 </Link>
               )}
               {enabledModules.includes('productivity') && (
-                <Link href="/dashboard/productivity" className="group flex flex-col items-center gap-3 p-5 bg-gradient-to-br from-amber-50 to-amber-100/50 rounded-2xl hover:shadow-xl hover:shadow-amber-500/20 transition-all duration-300 hover:-translate-y-2 border border-amber-100">
-                  <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <Lightning className="w-7 h-7 text-white" />
+                <Link href="/dashboard/productivity" className="group flex flex-col items-center gap-3 p-5 rounded-2xl border border-transparent hover:border-secondary/30 hover:bg-secondary/5 transition-all duration-200">
+                  <div className="w-12 h-12 bg-gradient-to-br from-secondary to-accentDark rounded-xl flex items-center justify-center">
+                    <Lightning className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-sm font-bold text-amber-700 uppercase tracking-wider">TASKS</span>
+                  <span className="text-xs font-bold text-secondary uppercase tracking-wider">Tasks</span>
                 </Link>
               )}
             </div>
@@ -511,27 +515,24 @@ export default function DashboardLayout({
 
           {/* Module Cards */}
           <div className="mb-8">
-            <h3 className={`font-bold uppercase tracking-wider text-xl mb-5 flex items-center gap-3 ${isDark ? 'text-dark-text' : 'text-light-text'}`}>
-              <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl flex items-center justify-center">
-                <Building2 className="w-5 h-5 text-white" />
-              </div>
-              YOUR BUSINESS MODULES
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {tabs.filter(tab => enabledModules.includes(tab.id)).map((tab, index) => (
+              <h3 className="font-bold text-xl uppercase tracking-widest mb-6 flex items-center gap-3 text-white">
+                <Building2 className="w-5 h-5 text-accent" />
+                YOUR BUSINESS MODULES
+              </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {tabs.filter(tab => enabledModules.includes(tab.id)).map((tab, index) => {
+                return (
                 <Link 
                   key={tab.id}
                   href={`/dashboard/${tab.id}`}
-                  className={`group relative backdrop-blur-sm rounded-2xl p-6 border shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden animate-fade-in-up ${isDark ? 'bg-dark-card/80 border-dark-border hover:border-blue-500/50' : 'bg-light-card/80 border-light-border hover:border-orange-500/50'}`}
+                  className="group rounded-2xl p-5 border border-white/10 bg-[#0b2535]/30 hover:border-white/20 hover:bg-[#0b2535]/50 transition-all duration-200 hover:-translate-y-1"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${tab.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-                  <div className="relative z-10">
-                    <div className={`w-16 h-16 bg-gradient-to-br ${tab.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                      <tab.icon className="w-8 h-8 text-white" />
+                    <div className={`w-14 h-14 bg-gradient-to-br ${tab.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-lg transition-all duration-300`}>
+                      <tab.icon className="w-7 h-7 text-white" />
                     </div>
-                    <h4 className={`font-bold uppercase tracking-wider text-lg mb-2 ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{tab.name}</h4>
-                    <p className={`text-sm mb-4 ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>
+                    <h4 className="font-bold text-white text-lg mb-2 uppercase tracking-wide">{tab.name}</h4>
+                    <p className="text-sm text-white/40 font-light mb-4">
                       {tab.id === 'hr' && `${stats.totalEmployees} employees`}
                       {tab.id === 'finance' && `${stats.totalInvoices} invoices`}
                       {tab.id === 'supply-chain' && `${inventory.length} items`}
@@ -541,60 +542,59 @@ export default function DashboardLayout({
                       {tab.id === 'email' && 'Communication hub'}
                       {tab.id === 'documents' && 'File management'}
                     </p>
-                    <span className="text-sm font-bold text-orange-500 flex items-center gap-1 group-hover:gap-2 transition-all uppercase tracking-wider">
+                    <span className="text-sm font-bold text-accent flex items-center gap-2 group-hover:gap-3 transition-all uppercase tracking-wider">
                       MANAGE <ArrowRight className="w-4 h-4" />
                     </span>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
           {/* Plan Features Banner */}
-          <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-orange-600 rounded-3xl p-8 text-white shadow-2xl overflow-hidden relative">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-orange-500/20 to-transparent rounded-full blur-3xl" />
-            <div className="relative z-10">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                <div>
-                  <div className="flex items-center gap-3 mb-3">
-                    <subscription.icon className="w-6 h-6" />
-                    <span className="text-xl font-bold uppercase tracking-wider">{subscription.name} PLAN FEATURES</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {subscription.features.map((feature, i) => (
-                      <span key={i} className="px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium border border-white/20 uppercase tracking-wider">
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
+          <div className="bg-[#0b2535]/50 border border-white/10 rounded-2xl p-8">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <subscription.icon className="w-6 h-6 text-accent" />
+                  <span className="font-bold text-white uppercase tracking-wider text-lg">{subscription.name} PLAN FEATURES</span>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  {subscription.limits.storageGB === 100 && (
-                    <div className="flex items-center gap-2 px-4 py-2 bg-green-500/20 rounded-xl border border-green-500/30">
-                      <HeadphonesIcon className="w-5 h-5 text-green-400" />
-                      <span className="text-sm font-bold uppercase tracking-wider">PRIORITY SUPPORT</span>
-                    </div>
-                  )}
-                  {subscription.limits.storageGB === 10 && (
-                    <div className="flex items-center gap-2 px-4 py-2 bg-blue-500/20 rounded-xl border border-blue-500/30">
-                      <Code className="w-5 h-5 text-blue-400" />
-                      <span className="text-sm font-bold uppercase tracking-wider">API ACCESS</span>
-                    </div>
-                  )}
-                  {subscription.limits.storageGB === null && (
-                    <>
-                      <div className="flex items-center gap-2 px-4 py-2 bg-green-500/20 rounded-xl border border-green-500/30">
-                        <HeadphonesIcon className="w-5 h-5 text-green-400" />
-                        <span className="text-sm font-bold uppercase tracking-wider">24/7 SUPPORT</span>
-                      </div>
-                      <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-xl border border-purple-500/30">
-                        <Shield className="w-5 h-5 text-purple-400" />
-                        <span className="text-sm font-bold uppercase tracking-wider">SSO ENABLED</span>
-                      </div>
-                    </>
+                <div className="flex flex-wrap gap-2">
+                  {subscription.features.slice(0, 4).map((feature, i) => (
+                    <span key={i} className="px-3 py-1.5 bg-white/5 text-white/60 text-xs rounded-lg font-medium uppercase tracking-wider">
+                      {feature}
+                    </span>
+                  ))}
+                  {subscription.features.length > 4 && (
+                    <span className="px-3 py-1.5 text-white/30 text-xs uppercase tracking-wider">+{subscription.features.length - 4} more</span>
                   )}
                 </div>
+              </div>
+              <div className="flex gap-3">
+                {subscription.limits.storageGB === 100 && (
+                  <div className="flex items-center gap-2 px-4 py-2 bg-accent/10 rounded-xl">
+                    <HeadphonesIcon className="w-4 h-4 text-accent" />
+                    <span className="text-xs font-bold text-accent uppercase tracking-wider">Priority Support</span>
+                  </div>
+                )}
+                {subscription.limits.storageGB === 10 && (
+                  <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-xl">
+                    <Code className="w-4 h-4 text-primary" />
+                    <span className="text-xs font-bold text-primary uppercase tracking-wider">API Access</span>
+                  </div>
+                )}
+                {subscription.limits.storageGB === null && (
+                  <>
+                    <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 rounded-xl">
+                      <HeadphonesIcon className="w-4 h-4 text-green-500" />
+                      <span className="text-xs font-bold text-green-500 uppercase tracking-wider">24/7 Support</span>
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-2 bg-accent/10 rounded-xl">
+                      <Shield className="w-4 h-4 text-accent" />
+                      <span className="text-xs font-bold text-accent uppercase tracking-wider">SSO</span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
