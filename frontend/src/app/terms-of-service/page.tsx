@@ -112,8 +112,9 @@ export default function TermsOfServicePage() {
               Subscription fees are billed monthly or annually in advance. Fees are non-refundable unless otherwise specified. You authorize us to charge your payment method for any subscriptions.
             </p>
             <ul className="list-disc list-inside text-white/60 space-y-2 ml-4">
-              <li>Starter Plan: R199/month (up to 5 users)</li>
-              <li>Professional Plan: R499/month (up to 25 users)</li>
+              <li>Starter Plan: $10.60/user/month (up to 6 users)</li>
+              <li>Professional Plan: $20.50/user/month (up to 50 users)</li>
+              <li>Enterprise Plan: Custom pricing (unlimited users)</li>
               <li>Enterprise Plan: Custom pricing</li>
             </ul>
           </div>

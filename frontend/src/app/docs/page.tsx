@@ -439,14 +439,15 @@ export default function DocsPage() {
                   
                   <div className="grid sm:grid-cols-3 gap-4 mb-6">
                     {[
-                      { name: 'Starter', price: 'R199/mo', desc: 'Up to 5 users' },
-                      { name: 'Professional', price: 'R499/mo', desc: 'Up to 25 users' },
-                      { name: 'Enterprise', price: 'Custom', desc: 'Unlimited users' },
+                      { name: 'Starter', price: '$10.60/user/mo', desc: 'Up to 6 users', note: '3 Applications' },
+                      { name: 'Professional', price: '$20.50/user/mo', desc: 'Up to 50 users', note: '6 Applications' },
+                      { name: 'Enterprise', price: 'Custom Pricing', desc: 'Unlimited users', note: 'All Applications + Custom' },
                     ].map((plan, i) => (
                       <div key={i} className="bg-dark-card/50 border border-dark-border rounded-xl p-5 text-center">
                         <h3 className="text-white font-semibold mb-1">{plan.name}</h3>
-                        <p className="text-accent text-xl font-bold mb-1">{plan.price}</p>
+                        <p className="text-accent text-lg font-bold mb-1">{plan.price}</p>
                         <p className="text-white/40 text-sm">{plan.desc}</p>
+                        <p className="text-white/30 text-xs mt-1">{plan.note}</p>
                       </div>
                     ))}
                   </div>

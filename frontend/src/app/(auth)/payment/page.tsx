@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuthStore, PLAN_CONFIG } from '@/stores/auth.store';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuthStore, PLAN_CONFIG, SubscriptionPlan } from '@/stores/auth.store';
 import toast from 'react-hot-toast';
 import { 
   CreditCard, Smartphone, Wallet, Lock, Check, ArrowLeft, 
-  Loader2, Shield, Building2, ArrowRight
+  Loader2, Shield, Building2, ArrowRight, UserPlus
 } from 'lucide-react';
 
 type PaymentMethod = 'card' | 'ecocash' | 'paypal' | 'payflex' | 'bank';
@@ -16,13 +16,17 @@ interface PlanDetails {
   price: number;
   period: string;
   features: string[];
+  maxUsers: number | null;
 }
 
 export default function PaymentPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useAuthStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('card');
+  const [numUsers, setNumUsers] = useState(1);
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   const [cardDetails, setCardDetails] = useState({
     number: '',
     name: '',
@@ -30,13 +34,34 @@ export default function PaymentPage() {
     cvv: '',
   });
 
-  const plan = user?.subscription || 'starter';
-  const planConfig = PLAN_CONFIG[plan];
+  const planParam = (searchParams.get('plan') as SubscriptionPlan) || user?.subscription || 'starter';
+  const usersParam = parseInt(searchParams.get('users') || '1');
+  
+  useEffect(() => {
+    setNumUsers(usersParam);
+  }, [usersParam]);
+  
+  const planConfig = PLAN_CONFIG[planParam];
+  const pricePerUser = planConfig?.price || 0;
+  const maxUsers = planConfig?.maxUsers;
+  
+  const calculateTotal = () => {
+    if (!pricePerUser) return 0;
+    const base = pricePerUser * numUsers;
+    if (billingCycle === 'annual') {
+      return base * 12 * 0.8; // 20% discount
+    }
+    return base;
+  };
+  
+  const monthlyEquivalent = billingCycle === 'annual' ? calculateTotal() / 12 : calculateTotal();
+
   const planDetails: PlanDetails = {
-    name: planConfig.name,
-    price: planConfig.price || 0,
-    period: planConfig.price ? '/month' : 'Custom',
-    features: [...planConfig.features],
+    name: planConfig?.name || 'Starter',
+    price: monthlyEquivalent,
+    period: '/user/month',
+    features: [...(planConfig?.features || [])],
+    maxUsers: maxUsers,
   };
 
   const handlePayment = async (e: React.FormEvent) => {
@@ -46,7 +71,9 @@ export default function PaymentPage() {
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     localStorage.setItem('erp-payment-status', JSON.stringify({
-      plan: plan,
+      plan: planParam,
+      users: numUsers,
+      billingCycle,
       status: 'active',
       paymentMethod: selectedMethod,
       paidAt: new Date().toISOString(),
@@ -85,21 +112,90 @@ export default function PaymentPage() {
               </div>
               <div>
                 <h2 className="text-xl font-bold text-white">Complete Your Subscription</h2>
-                <p className="text-white/40 text-sm">Choose your payment method</p>
+                <p className="text-white/40 text-sm">Review your order</p>
               </div>
             </div>
             
             <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/10">
               <div>
                 <p className="text-white font-medium">{planDetails.name} Plan</p>
-                <p className="text-white/40 text-sm">{planDetails.period}</p>
+                <p className="text-white/40 text-sm">{numUsers} user(s)</p>
               </div>
               <div className="text-right">
                 <p className="text-2xl font-bold text-white">
-                  {planDetails.price ? `$${planDetails.price}` : 'Custom'}
+                  ${monthlyEquivalent.toFixed(2)}
                 </p>
-                {planDetails.price && <p className="text-white/40 text-xs">per user/month</p>}
+                <p className="text-white/40 text-xs">per user/month</p>
               </div>
+            </div>
+            
+            {/* Billing Cycle Toggle */}
+            <div className="mb-4">
+              <div className="flex items-center justify-center gap-3 p-3 bg-white/5 rounded-xl border border-white/10">
+                <span className={`text-sm font-medium ${billingCycle === 'monthly' ? 'text-white' : 'text-white/40'}`}>MONTHLY</span>
+                <button
+                  onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
+                  className={`relative w-12 h-6 rounded-full transition-colors ${billingCycle === 'annual' ? 'bg-accent' : 'bg-white/20'}`}
+                >
+                  <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${billingCycle === 'annual' ? 'left-7' : 'left-1'}`} />
+                </button>
+                <span className={`text-sm font-medium ${billingCycle === 'annual' ? 'text-white' : 'text-white/40'}`}>ANNUAL</span>
+                {billingCycle === 'annual' && (
+                  <span className="ml-1 px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-bold rounded-full">SAVE 20%</span>
+                )}
+              </div>
+            </div>
+            
+            {/* User Count Selector */}
+            {pricePerUser > 0 && (
+              <div className="mb-4 p-4 bg-white/5 rounded-xl border border-white/10">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-white/60 text-sm flex items-center gap-2">
+                    <UserPlus className="w-4 h-4" />
+                    Number of Users
+                  </span>
+                  <span className="text-white font-bold">{numUsers}</span>
+                </div>
+                <input
+                  type="range"
+                  min={1}
+                  max={typeof maxUsers === 'number' ? maxUsers : 100}
+                  value={numUsers}
+                  onChange={(e) => setNumUsers(parseInt(e.target.value))}
+                  className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-accent"
+                />
+                <div className="flex justify-between mt-2 text-xs text-white/30">
+                  <span>1</span>
+                  <span>Max: {typeof maxUsers === 'number' ? maxUsers : 'Unlimited'}</span>
+                </div>
+              </div>
+            )}
+            
+            {/* Price Breakdown */}
+            <div className="space-y-2 mb-4 p-4 bg-white/5 rounded-xl border border-white/10">
+              <div className="flex justify-between text-white/60 text-sm">
+                <span>Price per user</span>
+                <span>${pricePerUser.toFixed(2)}/month</span>
+              </div>
+              <div className="flex justify-between text-white/60 text-sm">
+                <span>Number of users</span>
+                <span>× {numUsers}</span>
+              </div>
+              {billingCycle === 'annual' && (
+                <div className="flex justify-between text-green-400 text-sm">
+                  <span>Annual discount (20%)</span>
+                  <span>-${(pricePerUser * numUsers * 12 * 0.2).toFixed(2)}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-white font-bold text-lg pt-2 border-t border-white/10">
+                <span>Total</span>
+                <span className="text-accent">${calculateTotal().toFixed(2)}/{billingCycle === 'annual' ? 'year' : 'month'}</span>
+              </div>
+              {billingCycle === 'annual' && (
+                <p className="text-white/40 text-xs text-center">
+                  Equivalent to ${monthlyEquivalent.toFixed(2)}/month billed annually
+                </p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -242,7 +338,7 @@ export default function PaymentPage() {
                 ) : (
                   <>
                     <Lock className="w-4 h-4" />
-                    Pay ${planDetails.price || 'Custom Price'}
+                    Pay ${calculateTotal().toFixed(2)} {billingCycle === 'annual' ? 'Annually' : 'Monthly'}
                   </>
                 )}
               </button>

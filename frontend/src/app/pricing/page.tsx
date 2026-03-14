@@ -217,7 +217,7 @@ export default function PricingPage() {
                   </div>
 
                   <Link
-                    href={plan.price === null ? "/contact" : "/payment"}
+                    href={plan.price === null ? "/contact" : `/create-account?plan=${plan.name.toLowerCase()}`}
                     className={`block w-full py-4 px-6 rounded-xl font-bold text-center transition-all duration-300 uppercase tracking-wider ${
                       plan.popular
                         ? 'bg-gradient-to-r from-accent to-accentDark text-white hover:shadow-xl hover:shadow-accent/30 hover:-translate-y-1'
@@ -296,7 +296,7 @@ export default function PricingPage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href="/payment"
+                href="/create-account?plan=starter"
                 className="px-8 py-3 bg-white text-accent font-bold uppercase tracking-wider rounded-lg hover:bg-white/90 transition"
               >
                 BUY NOW
