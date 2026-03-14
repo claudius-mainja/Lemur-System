@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-import { ArrowRight, Users, Award, Globe, TrendingUp, Check, Star, MapPin, Mail, Phone, Sparkles, Hexagon, Circle, Triangle, Target, Heart, Lightbulb, Shield, Menu, X } from 'lucide-react';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import { ArrowRight, Users, Award, Globe, TrendingUp, Check, Star, MapPin, Mail, Phone, Sparkles, Hexagon, Circle, Triangle, Target, Heart, Lightbulb, Shield } from 'lucide-react';
 
 const values = [
   {
@@ -39,100 +40,37 @@ const stats = [
 ];
 
 export default function AboutPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
-    <div className="min-h-screen bg-dark-bg overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520] overflow-x-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div 
-          className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px] animate-blob"
+          className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px]"
           style={{ background: 'linear-gradient(135deg, #7e49de 0%, #412576 50%, #0b2f40 100%)', top: '10%', right: '10%' }}
         />
         <div 
-          className="absolute w-[500px] h-[500px] rounded-full opacity-15 blur-[80px] animate-blob"
-          style={{ background: 'linear-gradient(135deg, #0b2f40 0%, #184250 50%, #7e49de 100%)', bottom: '20%', left: '10%', animationDelay: '2s' }}
+          className="absolute w-[500px] h-[500px] rounded-full opacity-15 blur-[80px]"
+          style={{ background: 'linear-gradient(135deg, #0b2f40 0%, #184250 50%, #7e49de 100%)', bottom: '20%', left: '10%' }}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(11,47,64,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(11,47,64,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
-        <Hexagon className="absolute top-40 left-40 w-20 h-20 text-accent/10 animate-float" />
-        <Circle className="absolute top-1/3 right-40 w-16 h-16 text-primary/10 animate-float" style={{ animationDelay: '0.5s' }} />
       </div>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-bg/80 backdrop-blur-xl border-b border-dark-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary via-blue-500 to-accent rounded-2xl flex items-center justify-center animate-float-3d">
-                <span className="text-white font-bold text-xl">L</span>
-              </div>
-              <div>
-                <span className="font-bold text-2xl text-white font-serif">LemurSystem</span>
-                <p className="text-xs text-dark-text-muted -mt-1">Enterprise ERP</p>
-              </div>
-            </Link>
-            <div className="hidden lg:flex items-center gap-1">
-              {[
-                { name: 'HOME', href: '/' },
-                { name: 'FEATURES', href: '/features' },
-                { name: 'PRICING', href: '/pricing' },
-                { name: 'INDUSTRIES', href: '/industries' },
-                { name: 'DOCS', href: '/docs' },
-                { name: 'ABOUT', href: '/about' },
-                { name: 'CONTACT', href: '/contact' },
-              ].map((item) => (
-                <Link 
-                  key={item.name}
-                  href={item.href}
-                  className={`px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium ${
-                    item.name === 'ABOUT' 
-                      ? 'text-white bg-white/10' 
-                      : 'text-dark-text-secondary hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-            <div className="hidden lg:flex items-center gap-3">
-              <Link href="/login" className="px-5 py-2.5 text-dark-text-secondary hover:text-white transition-all duration-300 font-medium uppercase tracking-wider text-sm">
-                Sign In
-              </Link>
-              <Link href="/login" className="px-6 py-2.5 bg-gradient-to-r from-accent to-accentDark text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 hover:-translate-y-0.5">
-                GET STARTED
-              </Link>
-            </div>
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 text-dark-text-secondary">
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-        {mobileMenuOpen && (
-          <div className="lg:hidden bg-dark-bg/95 backdrop-blur-xl border-t border-dark-border px-4 py-6 space-y-3">
-            {['Home', 'Features', 'Pricing', 'Industries', 'Docs', 'About', 'Contact'].map((item) => (
-              <Link key={item} href={item === 'Home' ? '/' : `/${item.toLowerCase()}`} className="block py-3 text-dark-text-secondary hover:text-white">
-                {item}
-              </Link>
-            ))}
-          </div>
-        )}
-      </nav>
+      <Navbar activePage="about" />
 
       {/* Hero Section */}
-      <section className="pt-40 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent/20 border border-accent/30 rounded-full text-sm mb-8 animate-fade-in">
+      <section className="pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-[calc(100vh-4rem)] flex items-center">
+        <div className="text-center max-w-3xl mx-auto w-full">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-6">
             <Award className="w-4 h-4 text-accent" />
-            <span className="text-accent font-medium uppercase">About Us</span>
+            <span className="text-white/60 text-xs uppercase">About Us</span>
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 uppercase">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-5 uppercase">
             Empowering African
             <br />
             <span className="bg-gradient-to-r from-accent via-[#9e79ef] to-accentDark bg-clip-text text-transparent">
               Businesses
             </span>
           </h1>
-          <p className="text-lg sm:text-xl text-dark-text-secondary mb-10 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-base text-white/40 mb-8 max-w-xl mx-auto">
             We're on a mission to transform how businesses across SADC operate, 
             innovate, and grow with world-class ERP solutions.
           </p>

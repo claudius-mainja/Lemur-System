@@ -140,64 +140,64 @@ export default function IntegrationsPage() {
 
       <main className="p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className={`rounded-xl p-6 border ${isDark ? 'bg-dark-card border-dark-border' : 'bg-white border-gray-100'}`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Connected Apps</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{connectedCount}</p>
+                <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-gray-500'}`}>Connected Apps</p>
+                <p className={`text-2xl font-bold mt-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>{connectedCount}</p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-green-600" />
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${isDark ? 'bg-green-500/20' : 'bg-green-100'}`}>
+                <CheckCircle className={`w-6 h-6 ${isDark ? 'text-green-400' : 'text-green-600'}`} />
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className={`rounded-xl p-6 border ${isDark ? 'bg-dark-card border-dark-border' : 'bg-white border-gray-100'}`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Available</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{integrations.length}</p>
+                <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-gray-500'}`}>Available</p>
+                <p className={`text-2xl font-bold mt-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>{integrations.length}</p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Plug className="w-6 h-6 text-blue-600" />
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${isDark ? 'bg-accent/20' : 'bg-blue-100'}`}>
+                <Plug className={`w-6 h-6 ${isDark ? 'text-accent' : 'text-blue-600'}`} />
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className={`rounded-xl p-6 border ${isDark ? 'bg-dark-card border-dark-border' : 'bg-white border-gray-100'}`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Categories</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{categories.length - 1}</p>
+                <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-gray-500'}`}>Categories</p>
+                <p className={`text-2xl font-bold mt-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>{categories.length - 1}</p>
               </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Zap className="w-6 h-6 text-purple-600" />
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${isDark ? 'bg-secondary/20' : 'bg-purple-100'}`}>
+                <Zap className={`w-6 h-6 ${isDark ? 'text-secondary' : 'text-purple-600'}`} />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Popular Integrations</h2>
+        <div className={`rounded-xl shadow-sm border p-6 ${isDark ? 'bg-dark-card border-dark-border' : 'bg-white border-gray-100'}`}>
+          <h2 className={`text-lg font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Popular Integrations</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {popularIntegrations.map(integration => {
               const Icon = getIcon(integration.iconName);
               return (
-                <div key={integration.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
+                <div key={integration.id} className={`border rounded-xl p-4 transition-shadow ${isDark ? 'border-dark-border hover:bg-dark-bg-tertiary' : 'border-gray-200 hover:shadow-md'}`}>
                   <div className="flex items-start justify-between">
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <Icon className="w-6 h-6 text-gray-700" />
+                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${isDark ? 'bg-dark-bg-tertiary' : 'bg-gray-100'}`}>
+                      <Icon className={`w-6 h-6 ${isDark ? 'text-white' : 'text-gray-700'}`} />
                     </div>
                     {integration.status === 'connected' ? (
-                      <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Connected</span>
+                      <span className={`px-2 py-1 text-xs rounded-full ${isDark ? 'bg-green-500/20 text-green-400' : 'bg-green-100 text-green-700'}`}>Connected</span>
                     ) : (
-                      <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Available</span>
+                      <span className={`px-2 py-1 text-xs rounded-full ${isDark ? 'bg-dark-bg-tertiary text-dark-text-secondary' : 'bg-gray-100 text-gray-600'}`}>Available</span>
                     )}
                   </div>
-                  <h3 className="font-semibold mt-3">{integration.name}</h3>
-                  <p className="text-sm text-gray-500 mt-1">{integration.description}</p>
+                  <h3 className={`font-semibold mt-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>{integration.name}</h3>
+                  <p className={`text-sm mt-1 ${isDark ? 'text-dark-text-secondary' : 'text-gray-500'}`}>{integration.description}</p>
                   {integration.status === 'connected' ? (
                     <button
                       onClick={() => handleDisconnect(integration.id)}
-                      className="mt-4 w-full py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
+                      className={`mt-4 w-full py-2 border rounded-lg text-sm transition ${isDark ? 'border-dark-border text-white hover:bg-dark-bg-tertiary' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
                     >
                       Disconnect
                     </button>
@@ -215,7 +215,7 @@ export default function IntegrationsPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className={`rounded-xl shadow-sm border ${isDark ? 'bg-dark-card border-dark-border' : 'bg-white border-gray-100'}`}>
           <div className="p-6 border-b border-gray-100">
             <div className="flex flex-col md:flex-row gap-4 justify-between">
               <div className="relative flex-1 max-w-md">
@@ -225,7 +225,7 @@ export default function IntegrationsPage() {
                   placeholder="Search integrations..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm"
+                  className={`w-full pl-10 pr-4 py-2 border rounded-lg text-sm ${isDark ? 'bg-dark-bg border-dark-border text-white placeholder-dark-text-muted' : 'border-gray-200 text-gray-900'}`}
                 />
               </div>
               <div className="flex gap-2 flex-wrap">
@@ -236,7 +236,7 @@ export default function IntegrationsPage() {
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
                       selectedCategory === category
                         ? 'bg-gradient-to-r from-accent to-accentDark text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        : isDark ? 'bg-dark-bg-tertiary text-dark-text-secondary hover:bg-dark-border' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                   >
                     {category === 'all' ? 'All' : category}
@@ -251,33 +251,33 @@ export default function IntegrationsPage() {
               {filteredIntegrations.map(integration => {
                 const Icon = getIcon(integration.iconName);
                 return (
-                  <div key={integration.id} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-all hover:-translate-y-1">
+                  <div key={integration.id} className={`border rounded-xl p-5 transition-all hover:-translate-y-1 ${isDark ? 'border-dark-border hover:bg-dark-bg-tertiary' : 'border-gray-200 hover:shadow-md'}`}>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <Icon className="w-6 h-6 text-gray-700" />
+                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${isDark ? 'bg-dark-bg-tertiary' : 'bg-gray-100'}`}>
+                          <Icon className={`w-6 h-6 ${isDark ? 'text-white' : 'text-gray-700'}`} />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-gray-900">{integration.name}</h3>
-                          <span className="text-xs text-gray-500">{integration.category}</span>
+                          <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>{integration.name}</h3>
+                          <span className={`text-xs ${isDark ? 'text-dark-text-secondary' : 'text-gray-500'}`}>{integration.category}</span>
                         </div>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 mt-3">{integration.description}</p>
-                    <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                    <p className={`text-sm mt-3 ${isDark ? 'text-dark-text-secondary' : 'text-gray-600'}`}>{integration.description}</p>
+                    <div className={`mt-4 pt-4 border-t flex items-center justify-between ${isDark ? 'border-dark-border' : 'border-gray-100'}`}>
                       {integration.status === 'connected' ? (
                         <>
-                          <div className="flex items-center gap-2 text-sm text-green-600">
+                          <div className={`flex items-center gap-2 text-sm ${isDark ? 'text-green-400' : 'text-green-600'}`}>
                             <CheckCircle className="w-4 h-4" />
                             <span>Connected</span>
                           </div>
                           <div className="flex gap-2">
-                            <button className="p-2 hover:bg-gray-100 rounded-lg">
-                              <RefreshCw className="w-4 h-4 text-gray-500" />
+                            <button className={`p-2 rounded-lg transition ${isDark ? 'hover:bg-dark-border' : 'hover:bg-gray-100'}`}>
+                              <RefreshCw className={`w-4 h-4 ${isDark ? 'text-dark-text-secondary' : 'text-gray-500'}`} />
                             </button>
                             <button 
                               onClick={() => handleDisconnect(integration.id)}
-                              className="p-2 hover:bg-red-50 rounded-lg text-red-500"
+                              className={`p-2 rounded-lg transition ${isDark ? 'hover:bg-red-500/20 text-red-400' : 'hover:bg-red-50 text-red-500'}`}
                             >
                               <XCircle className="w-4 h-4" />
                             </button>
@@ -285,13 +285,13 @@ export default function IntegrationsPage() {
                         </>
                       ) : integration.status === 'pending' ? (
                         <>
-                          <div className="flex items-center gap-2 text-sm text-yellow-600">
+                          <div className={`flex items-center gap-2 text-sm ${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>
                             <Clock className="w-4 h-4" />
                             <span>Pending</span>
                           </div>
                           <button 
                             onClick={() => handleDisconnect(integration.id)}
-                            className="px-3 py-1.5 bg-gray-100 rounded-lg text-sm"
+                            className={`px-3 py-1.5 rounded-lg text-sm transition ${isDark ? 'bg-dark-bg-tertiary text-white hover:bg-dark-border' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                           >
                             Cancel
                           </button>

@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Mail, Send, Loader2, MessageSquare, CheckCircle, MapPin, Phone, Clock, ArrowRight, Sparkles, Hexagon, Circle, Triangle, Menu, X } from 'lucide-react';
+import { Mail, Send, Loader2, MessageSquare, CheckCircle, MapPin, Phone, Clock, ArrowRight } from 'lucide-react';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name is required'),
@@ -34,7 +36,6 @@ const departments = [
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const { register, handleSubmit, formState: { errors } } = useForm<ContactForm>({
     resolver: zodResolver(contactSchema),
@@ -48,99 +49,33 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-dark-bg overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520] overflow-x-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div 
-          className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px] animate-blob"
+          className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px]"
           style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #10b981 100%)', top: '10%', left: '10%' }}
         />
         <div 
-          className="absolute w-[500px] h-[500px] rounded-full opacity-15 blur-[80px] animate-blob"
-          style={{ background: 'linear-gradient(135deg, #f97316 0%, #ef4444 50%, #ec4899 100%)', bottom: '20%', right: '10%', animationDelay: '2s' }}
+          className="absolute w-[500px] h-[500px] rounded-full opacity-15 blur-[80px]"
+          style={{ background: 'linear-gradient(135deg, #f97316 0%, #ef4444 50%, #ec4899 100%)', bottom: '20%', right: '10%' }}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(37,99,235,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(37,99,235,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
-        <Hexagon className="absolute top-40 right-40 w-20 h-20 text-blue-500/10 animate-float" />
-        <Circle className="absolute bottom-40 left-40 w-16 h-16 text-orange-500/10 animate-float" style={{ animationDelay: '0.5s' }} />
       </div>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-bg/80 backdrop-blur-xl border-b border-dark-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary via-blue-500 to-accent rounded-2xl flex items-center justify-center animate-float-3d">
-                <span className="text-white font-bold text-xl">L</span>
-              </div>
-              <div>
-                <span className="font-bold text-2xl text-white font-serif">LemurSystem</span>
-                <p className="text-xs text-dark-text-muted -mt-1">Enterprise ERP</p>
-              </div>
-            </Link>
-            <div className="hidden lg:flex items-center gap-1">
-              {[
-                { name: 'Home', href: '/' },
-                { name: 'Features', href: '/features' },
-                { name: 'Pricing', href: '/pricing' },
-                { name: 'Industries', href: '/industries' },
-                { name: 'Docs', href: '/docs' },
-                { name: 'About', href: '/about' },
-                { name: 'Contact', href: '/contact' },
-              ].map((item) => (
-                <Link 
-                  key={item.name}
-                  href={item.href}
-                  className={`px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium ${
-                    item.name === 'Contact' 
-                      ? 'text-white bg-white/10' 
-                      : 'text-dark-text-secondary hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-            <div className="hidden lg:flex items-center gap-3">
-              <Link href="/login" className="px-5 py-2.5 text-dark-text-secondary hover:text-white transition-all duration-300 font-medium">
-                Log in
-              </Link>
-              <Link href="/login" className="px-6 py-2.5 bg-gradient-to-r from-primary to-blue-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5">
-                Start Free Trial
-              </Link>
-            </div>
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 text-dark-text-secondary">
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-        {mobileMenuOpen && (
-          <div className="lg:hidden bg-dark-bg/95 backdrop-blur-xl border-t border-dark-border px-4 py-6 space-y-3">
-            {['Home', 'Features', 'Pricing', 'Industries', 'Docs', 'About', 'Contact'].map((item) => (
-              <Link key={item} href={item === 'Home' ? '/' : `/${item.toLowerCase()}`} className="block py-3 text-dark-text-secondary hover:text-white">
-                {item}
-              </Link>
-            ))}
-          </div>
-        )}
-      </nav>
+      <Navbar activePage="contact" />
 
       {/* Hero Section */}
-      <section className="pt-40 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-500/20 border border-blue-500/30 rounded-full text-sm mb-8 animate-fade-in">
-            <Sparkles className="w-4 h-4 text-blue-400" />
-            <span className="text-blue-400 font-medium">CONTACT US</span>
+      <section className="pt-28 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-[calc(100vh-4rem)] flex items-center">
+        <div className="text-center max-w-3xl mx-auto w-full">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-6">
+            <MessageSquare className="w-4 h-4 text-accent" />
+            <span className="text-white/60 text-xs uppercase">Get in Touch</span>
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif uppercase">
-            Get in Touch
-            <br />
-            <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 bg-clip-text text-transparent">
-              We're Here to Help
-            </span>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-5 uppercase">
+            Contact <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-[#9e79ef] to-accentDark">Us</span>
           </h1>
-          <p className="text-lg sm:text-xl text-dark-text-secondary mb-10 leading-relaxed max-w-2xl mx-auto">
-            Have questions about LemurSystem? Our team is ready to assist you. 
-            Reach out and we'll get back to you within 24 hours.
+          <p className="text-base text-white/40 mb-8 max-w-xl mx-auto">
+            Have questions about LemurSystem? Our team is here to help you find the right solution for your business.
           </p>
         </div>
       </section>
@@ -294,67 +229,21 @@ export default function ContactPage() {
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 font-serif uppercase">
             Ready to Get Started?
           </h2>
-          <p className="text-blue-100 text-lg mb-10">
+          <p className="text-white/60 text-sm mb-6">
             Join thousands of businesses already using LemurSystem
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-white text-blue-600 font-bold rounded-2xl hover:bg-blue-50 transition-all duration-300 hover:-translate-y-2 flex items-center justify-center gap-2">
-              Start Free Trial <ArrowRight className="w-5 h-5" />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link href="/free-trial" className="px-6 py-2.5 bg-white text-accent font-medium rounded-lg hover:bg-white/90 transition flex items-center gap-2">
+              Start Free Trial <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/pricing" className="w-full sm:w-auto px-8 py-4 border-2 border-white text-white font-bold rounded-2xl hover:bg-white/10 transition-all duration-300">
+            <Link href="/pricing" className="px-6 py-2.5 border border-white text-white font-medium rounded-lg hover:bg-white/10 transition">
               View Pricing
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-dark-bg-secondary border-t border-dark-border py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-primary to-blue-700 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">L</span>
-                </div>
-                <span className="font-bold text-xl text-white font-serif">LemurSystem</span>
-              </div>
-              <p className="text-dark-text-muted text-sm">
-                Cloud-based ERP solution for SADC businesses.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-4">Product</h4>
-              <ul className="space-y-3 text-dark-text-muted text-sm">
-                <li><Link href="/features" className="hover:text-white transition">Features</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition">Pricing</Link></li>
-                <li><Link href="/industries" className="hover:text-white transition">Industries</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition">Contact</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-4">Company</h4>
-              <ul className="space-y-3 text-dark-text-muted text-sm">
-                <li><Link href="/about" className="hover:text-white transition">About</Link></li>
-                <li><a href="#" className="hover:text-white transition">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition">Careers</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-4">Legal</h4>
-              <ul className="space-y-3 text-dark-text-muted text-sm">
-                <li><a href="#" className="hover:text-white transition">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition">Terms of Service</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="pt-8 border-t border-dark-border">
-            <p className="text-dark-text-muted text-sm text-center">
-              © 2026 LemurSystem. A product of Blacklemur Innovations. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

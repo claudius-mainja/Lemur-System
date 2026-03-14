@@ -94,61 +94,57 @@ export default function WelcomePage() {
       </div>
 
       {/* Navigation */}
-      <nav className={`relative z-50 border-b transition-all duration-500 ${scrolled ? 'bg-[#0b2f40]/95 backdrop-blur-lg border-white/10' : 'bg-transparent border-white/5'}`}>
+      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#0b2f40]/95 backdrop-blur-lg shadow-lg' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-12 h-12 bg-gradient-to-br from-accent to-accentDark rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-accent/30 transition-all duration-300 group-hover:scale-105">
-                <span className="text-white font-bold text-xl">L</span>
+            <Link href="/" className="flex items-center gap-2">
+              <div className="w-9 h-9 bg-gradient-to-br from-accent to-accentDark rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">L</span>
               </div>
-              <div>
-                <span className="font-bold text-2xl text-white tracking-tight">LEMUR<span className="text-accent">SYSTEM</span></span>
-                <p className="text-xs text-white/50 tracking-[0.2em] uppercase">Enterprise ERP</p>
-              </div>
+              <span className="font-bold text-lg text-white">LEMUR<span className="text-accent">SYSTEM</span></span>
             </Link>
 
             {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center gap-8">
+            <div className="hidden md:flex items-center gap-6">
               {[
-                { name: 'FEATURES', href: '/features' },
-                { name: 'PRICING', href: '/pricing' },
-                { name: 'INDUSTRIES', href: '/industries' },
-                { name: 'DOCS', href: '/docs' },
-                { name: 'ABOUT', href: '/about' },
-                { name: 'CONTACT', href: '/contact' },
+                { name: 'Features', href: '/features' },
+                { name: 'Pricing', href: '/pricing' },
+                { name: 'Industries', href: '/industries' },
+                { name: 'Docs', href: '/docs' },
+                { name: 'About', href: '/about' },
+                { name: 'Contact', href: '/contact' },
               ].map((item) => (
                 <Link 
                   key={item.name}
                   href={item.href}
-                  className="text-sm font-semibold text-white/70 hover:text-white tracking-wider transition-all duration-300 relative group"
+                  className="text-sm text-white/70 hover:text-white transition-colors"
                 >
                   {item.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-300" />
                 </Link>
               ))}
             </div>
 
             {/* Auth Buttons */}
-            <div className="hidden lg:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-3">
               <Link 
                 href="/login" 
-                className="px-6 py-2.5 text-white/70 font-semibold tracking-wider text-sm hover:text-white transition-colors"
+                className="px-4 py-2 text-white/70 hover:text-white text-sm transition-colors"
               >
-                SIGN IN
+                Sign In
               </Link>
               <Link 
                 href="/login?register=true" 
-                className="px-8 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-bold tracking-wider text-sm rounded-lg hover:shadow-lg hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-0.5"
+                className="px-5 py-2 bg-gradient-to-r from-accent to-accentDark text-white text-sm font-medium rounded-lg hover:shadow-lg hover:shadow-accent/30 transition-all"
               >
-                GET STARTED
+                Get Started
               </Link>
             </div>
 
             {/* Mobile Menu Button */}
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-              className="lg:hidden p-2 text-white/70 hover:text-white"
+              className="md:hidden p-2 text-white/70 hover:text-white"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -157,27 +153,27 @@ export default function WelcomePage() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-[#0b2f40]/98 backdrop-blur-xl border-t border-white/10 px-4 py-6 space-y-3">
+          <div className="md:hidden bg-[#0b2f40]/98 backdrop-blur-xl border-t border-white/10 px-4 py-4 space-y-3">
             {[
-              { name: 'FEATURES', href: '/features' },
-              { name: 'PRICING', href: '/pricing' },
-              { name: 'INDUSTRIES', href: '/industries' },
-              { name: 'DOCUMENTATION', href: '/docs' },
-              { name: 'ABOUT', href: '/about' },
-              { name: 'CONTACT', href: '/contact' },
+              { name: 'Features', href: '/features' },
+              { name: 'Pricing', href: '/pricing' },
+              { name: 'Industries', href: '/industries' },
+              { name: 'Documentation', href: '/docs' },
+              { name: 'About', href: '/about' },
+              { name: 'Contact', href: '/contact' },
             ].map((item) => (
               <Link 
                 key={item.name}
                 href={item.href} 
-                className="block py-3 text-white/70 font-semibold tracking-wider text-sm hover:text-white transition-colors"
+                className="block py-2 text-white/70 hover:text-white text-sm"
               >
                 {item.name}
               </Link>
             ))}
-            <div className="pt-4 border-t border-white/10 space-y-3">
-              <Link href="/login" className="block py-3 text-white/70 font-semibold tracking-wider text-sm">SIGN IN</Link>
-              <Link href="/login?register=true" className="block text-center px-6 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-bold tracking-wider text-sm rounded-lg">
-                GET STARTED
+            <div className="pt-3 border-t border-white/10 space-y-2">
+              <Link href="/login" className="block py-2 text-white/70 text-sm">Sign In</Link>
+              <Link href="/login?register=true" className="block text-center px-4 py-2 bg-gradient-to-r from-accent to-accentDark text-white text-sm rounded-lg">
+                Get Started
               </Link>
             </div>
           </div>
@@ -185,55 +181,55 @@ export default function WelcomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-12 gap-12 items-center">
+      <section className="relative pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-[calc(100vh-4rem)] flex items-center">
+        <div className="grid lg:grid-cols-12 gap-8 items-center">
           {/* Left Content */}
           <div className="lg:col-span-7 text-center lg:text-left">
-            <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-white/5 border border-white/10 rounded-full mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-6">
               <span className="w-2 h-2 bg-accent rounded-full animate-pulse" />
-              <span className="text-white/60 font-medium tracking-wider text-sm uppercase">#1 ERP for SADC Businesses</span>
+              <span className="text-white/60 text-xs uppercase">#1 ERP for SADC Businesses</span>
             </div>
             
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-8 tracking-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-5">
               <span className="block">RUN YOUR BUSINESS</span>
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-accent via-[#9e79ef] to-accentDark">
                 ALL IN ONE PLACE
               </span>
             </h1>
             
-            <p className="text-xl text-white/50 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
-              The complete business management solution trusted by companies across Africa. 
-              Manage HR, Finance, Customers, Inventory, and more - without any technical knowledge needed.
+            <p className="text-base text-white/50 mb-6 max-w-lg mx-auto lg:mx-0">
+              The complete business management solution for African businesses. 
+              Manage HR, Finance, Customers, Inventory, and more.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5 mb-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8">
               <Link 
-                href="/login?register=true" 
-                className="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-accent to-accentDark text-white font-bold tracking-wider rounded-xl hover:shadow-xl hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-3"
+                href="/free-trial" 
+                className="px-8 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-medium rounded-lg hover:shadow-xl hover:shadow-accent/30 transition-all flex items-center gap-2"
               >
-                START FREE TRIAL
-                <ArrowRight className="w-5 h-5" />
+                Start Free Trial
+                <ArrowRight className="w-4 h-4" />
               </Link>
               <Link 
                 href="/contact" 
-                className="w-full sm:w-auto px-10 py-4 border border-white/20 text-white/70 font-bold tracking-wider rounded-xl hover:border-white/40 hover:text-white hover:bg-white/5 transition-all duration-300 flex items-center justify-center gap-3"
+                className="px-8 py-3 border border-white/20 text-white/70 rounded-lg hover:border-white/40 hover:text-white transition-all"
               >
-                TALK TO US
+                Talk to Us
               </Link>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {stats.map((stat, i) => (
                 <div 
                   key={i}
-                  className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-5 hover:border-white/20 hover:bg-white/10 transition-all duration-300"
+                  className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3"
                 >
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <stat.icon className="w-5 h-5 text-accent" />
-                    <div className="text-3xl font-bold text-white">{stat.value}</div>
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <stat.icon className="w-4 h-4 text-accent" />
+                    <div className="text-xl font-bold text-white">{stat.value}</div>
                   </div>
-                  <div className="text-xs text-white/40 uppercase tracking-wider">{stat.label}</div>
+                  <div className="text-[10px] text-white/40 uppercase tracking-wider">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -241,56 +237,56 @@ export default function WelcomePage() {
 
           {/* Right - Dashboard Preview */}
           <div className="lg:col-span-5 relative hidden lg:block">
-            <div className="absolute inset-0 bg-gradient-to-r from-accent to-accentDark rounded-3xl blur-2xl opacity-30" />
-            <div className="relative bg-[#0b2a38] border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
-              <div className="bg-[#061c26] px-6 py-4 flex items-center justify-between border-b border-white/10">
+            <div className="absolute inset-0 bg-gradient-to-r from-accent to-accentDark rounded-2xl blur-xl opacity-30" />
+            <div className="relative bg-[#0b2a38] border border-white/10 rounded-2xl overflow-hidden shadow-xl">
+              <div className="bg-[#061c26] px-4 py-3 flex items-center justify-between border-b border-white/10">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500/50" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
-                  <div className="w-3 h-3 rounded-full bg-green-500/50" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
                 </div>
-                <div className="text-sm text-white/40 uppercase tracking-wider">LemurSystem Dashboard</div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-xs text-green-500 uppercase">Live</span>
+                <div className="text-xs text-white/40 uppercase tracking-wider">LemurSystem Dashboard</div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-[10px] text-green-500 uppercase">Live</span>
                 </div>
               </div>
 
-              <div className="p-6">
-                <div className="grid grid-cols-4 gap-3">
+              <div className="p-4">
+                <div className="grid grid-cols-4 gap-2">
                   {applications.slice(0, 8).map((app, i) => (
                     <Link 
                       key={i} 
                       href={app.href}
-                      className="group flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-300 hover:bg-white/5"
+                      className="group flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:bg-white/5"
                     >
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${app.color} shadow-lg group-hover:scale-110 transition-transform`}>
-                        <app.icon className="w-5 h-5 text-white" />
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br ${app.color} shadow-md group-hover:scale-105 transition-transform`}>
+                        <app.icon className="w-4 h-4 text-white" />
                       </div>
-                      <span className="text-xs text-white/50 uppercase tracking-wider">{app.name.split(' ')[0]}</span>
+                      <span className="text-[9px] text-white/50 uppercase">{app.name.split(' ')[0]}</span>
                     </Link>
                   ))}
                 </div>
 
-                <div className="mt-4 grid grid-cols-3 gap-3">
-                  <div className="bg-[#061c26] rounded-xl p-3 border border-white/5">
-                    <div className="text-lg font-bold text-white">98%</div>
-                    <div className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Efficiency</div>
-                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <div className="mt-3 grid grid-cols-3 gap-2">
+                  <div className="bg-[#061c26] rounded-lg p-2 border border-white/5">
+                    <div className="text-sm font-bold text-white">98%</div>
+                    <div className="text-[8px] text-white/40 uppercase mb-1">Efficiency</div>
+                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-primary to-accent w-[98%]" />
                     </div>
                   </div>
-                  <div className="bg-[#061c26] rounded-xl p-3 border border-white/5">
-                    <div className="text-lg font-bold text-white">2.4k</div>
-                    <div className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Transactions</div>
-                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div className="bg-[#061c26] rounded-lg p-2 border border-white/5">
+                    <div className="text-sm font-bold text-white">2.4k</div>
+                    <div className="text-[8px] text-white/40 uppercase mb-1">Transactions</div>
+                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-accent to-accentDark w-[75%]" />
                     </div>
                   </div>
-                  <div className="bg-[#061c26] rounded-xl p-3 border border-white/5">
-                    <div className="text-lg font-bold text-white">99+</div>
-                    <div className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Performance</div>
-                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div className="bg-[#061c26] rounded-lg p-2 border border-white/5">
+                    <div className="text-sm font-bold text-white">99+</div>
+                    <div className="text-[8px] text-white/40 uppercase mb-1">Performance</div>
+                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-secondary to-primary w-[99%]" />
                     </div>
                   </div>
@@ -402,30 +398,30 @@ export default function WelcomePage() {
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
             
             <div className="relative z-10">
-              <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 tracking-tight">
-                READY TO <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-accentDark">SIMPLIFY</span> YOUR BUSINESS?
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 uppercase">
+                Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-accentDark">Simplify</span> Your Business?
               </h2>
-              <p className="text-white/40 mb-10 max-w-lg mx-auto text-lg font-light">
+              <p className="text-white/40 mb-6 max-w-lg mx-auto text-sm">
                 Join hundreds of businesses already using LemurSystem to save time, 
                 reduce costs, and grow their operations.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link 
-                  href="/login?register=true" 
-                  className="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-accent to-accentDark text-white font-bold tracking-wider rounded-xl hover:shadow-xl hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-3"
+                  href="/free-trial" 
+                  className="px-8 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-medium rounded-lg hover:shadow-xl hover:shadow-accent/30 transition-all flex items-center gap-2"
                 >
-                  START FREE TRIAL
-                  <ArrowRight className="w-5 h-5" />
+                  Start Free Trial
+                  <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link 
                   href="/contact" 
-                  className="w-full sm:w-auto px-10 py-4 border border-white/20 text-white/70 font-bold tracking-wider rounded-xl hover:border-white/40 hover:text-white transition-all duration-300"
+                  className="px-8 py-3 border border-white/20 text-white/70 rounded-lg hover:border-white/40 hover:text-white transition-all"
                 >
-                  CONTACT US
+                  Contact Us
                 </Link>
               </div>
-              <p className="mt-8 text-white/30 text-sm uppercase tracking-wider">
-                14-day free trial • No credit card required • Cancel anytime
+              <p className="mt-6 text-white/30 text-xs">
+                7-day free trial • No credit card required • Cancel anytime
               </p>
             </div>
           </div>
@@ -433,59 +429,58 @@ export default function WelcomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#061c26] border-t border-white/5 py-16 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-[#061c26] border-t border-white/5 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-10">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
             <div className="lg:col-span-2">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent to-accentDark rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">L</span>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-br from-accent to-accentDark rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">L</span>
                 </div>
-                <span className="font-bold text-xl text-white tracking-tight">LEMUR<span className="text-accent">SYSTEM</span></span>
+                <span className="font-bold text-lg text-white">LEMUR<span className="text-accent">SYSTEM</span></span>
               </div>
-              <p className="text-white/40 text-sm mb-5 max-w-xs font-light">
-                The most comprehensive cloud-based ERP solution for SADC businesses. 
-                Simple, powerful, and built for growth.
+              <p className="text-white/40 text-sm mb-4 max-w-xs">
+                The most comprehensive cloud-based ERP solution for SADC businesses.
               </p>
-              <div className="flex items-center gap-2 text-white/30 text-sm">
+              <div className="flex items-center gap-2 text-white/30 text-xs">
                 <Globe2 className="w-4 h-4" />
-                <span className="uppercase tracking-wider text-xs">Serving All SADC Countries</span>
+                <span>Serving All SADC Countries</span>
               </div>
             </div>
             
             <div>
-              <h4 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">PRODUCT</h4>
-              <ul className="space-y-3 text-white/40 text-sm">
-                <li><Link href="/features" className="hover:text-white transition-colors">FEATURES</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">PRICING</Link></li>
-                <li><Link href="/industries" className="hover:text-white transition-colors">INDUSTRIES</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">CONTACT</Link></li>
+              <h4 className="font-bold text-white mb-3 text-sm">Product</h4>
+              <ul className="space-y-2 text-white/40 text-sm">
+                <li><Link href="/features" className="hover:text-white transition-colors">Features</Link></li>
+                <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+                <li><Link href="/industries" className="hover:text-white transition-colors">Industries</Link></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">COMPANY</h4>
-              <ul className="space-y-3 text-white/40 text-sm">
-                <li><Link href="/about" className="hover:text-white transition-colors">ABOUT</Link></li>
-                <li><a href="#" className="hover:text-white transition-colors">BLOG</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">CAREERS</a></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">CONTACT</Link></li>
+              <h4 className="font-bold text-white mb-3 text-sm">Company</h4>
+              <ul className="space-y-2 text-white/40 text-sm">
+                <li><Link href="/about" className="hover:text-white transition-colors">About</Link></li>
+                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">LEGAL</h4>
-              <ul className="space-y-3 text-white/40 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">PRIVACY POLICY</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">TERMS OF SERVICE</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">SECURITY</a></li>
+              <h4 className="font-bold text-white mb-3 text-sm">Legal</h4>
+              <ul className="space-y-2 text-white/40 text-sm">
+                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Security</a></li>
               </ul>
             </div>
           </div>
           
-          <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-white/30 text-sm uppercase tracking-wider">
-              © 2026 LemurSystem. A product of Blacklemur Innovations. All rights reserved.
+          <div className="pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-white/30 text-xs">
+              &copy; 2026 LemurSystem. A product of Blacklemur Innovations. All rights reserved.
             </p>
           </div>
         </div>
