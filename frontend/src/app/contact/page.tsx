@@ -21,7 +21,7 @@ type ContactForm = z.infer<typeof contactSchema>;
 
 const contactInfo = [
   { icon: Mail, title: 'Email', value: 'support@lemursystem.com', desc: 'We reply within 24 hours', color: 'from-blue-500 to-cyan-500' },
-  { icon: Phone, title: 'Phone', value: '+27 10 123 4567', desc: 'Mon-Fri, 9am-6pm SAST', color: 'from-green-500 to-emerald-500' },
+  { icon: Phone, title: 'Phone', value: '+27 61 580 8228', desc: 'Mon-Fri, 9am-6pm SAST', color: 'from-green-500 to-emerald-500' },
   { icon: MapPin, title: 'Location', value: 'Johannesburg, South Africa', desc: 'SADC Headquarters', color: 'from-purple-500 to-pink-500' },
   { icon: Clock, title: 'Hours', value: '24/7 Support', desc: 'Enterprise plans', color: 'from-amber-500 to-orange-500' },
 ];

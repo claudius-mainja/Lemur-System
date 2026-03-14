@@ -298,40 +298,178 @@ export default function WelcomePage() {
       </section>
 
       {/* Applications Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#061c26]/50">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#061c26]/50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-accent/10 text-accent rounded-full text-sm font-bold uppercase tracking-wider mb-6">
-              <Layers className="w-5 h-5" />
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+              <Layers className="w-4 h-4" />
               ALL-IN-ONE SOLUTION
             </div>
-            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 tracking-tight">
-              EVERYTHING YOU NEED
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 uppercase tracking-wide">
+              Everything You Need
             </h2>
-            <p className="text-white/40 max-w-2xl mx-auto text-lg font-light">
-              8 powerful business applications that work together seamlessly - 
-              no need to buy or learn multiple systems
+            <p className="text-white/40 max-w-xl mx-auto text-sm">
+              8 powerful business applications that work together seamlessly
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {applications.map((app, i) => (
               <Link 
                 key={i} 
                 href={app.href}
-                className="group bg-[#0b2a38]/50 border border-white/5 rounded-2xl p-5 hover:border-accent/30 hover:bg-[#0b2a38] transition-all duration-300"
+                className="group bg-[#0b2a38]/50 border border-white/5 rounded-xl p-4 hover:border-accent/30 hover:bg-[#0b2a38] transition-all"
               >
-                <div className={`w-12 h-12 bg-gradient-to-br ${app.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-lg transition-all duration-300`}>
-                  <app.icon className="w-6 h-6 text-white" />
+                <div className={`w-10 h-10 bg-gradient-to-br ${app.color} rounded-lg flex items-center justify-center mb-3 group-hover:scale-105 transition-transform`}>
+                  <app.icon className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="text-white font-bold text-sm mb-2 uppercase tracking-wider">{app.name}</h3>
-                <p className="text-white/40 text-xs font-light mb-3">{app.desc}</p>
-                <div className="flex items-center gap-2 text-accent text-xs font-bold uppercase tracking-wider">
-                  <span>LEARN MORE</span>
-                  <ArrowRight className="w-3 h-3 group-hover:translate-x-2 transition-transform" />
-                </div>
+                <h3 className="text-white font-bold text-xs uppercase tracking-wider mb-1">{app.name}</h3>
+                <p className="text-white/40 text-xs">{app.desc}</p>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SADC Map Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+              <Globe2 className="w-4 h-4" />
+              ACROSS SADC
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 uppercase tracking-wide">
+              Serving All SADC Countries
+            </h2>
+            <p className="text-white/40 max-w-xl mx-auto text-sm">
+              Trusted by businesses throughout Southern Africa
+            </p>
+          </div>
+
+          <div className="relative">
+            {/* Simplified Africa Map SVG */}
+            <div className="relative w-full max-w-4xl mx-auto">
+              <svg viewBox="0 0 800 600" className="w-full h-auto" style={{ filter: 'drop-shadow(0 0 20px rgba(126, 73, 222, 0.2))' }}>
+                {/* Base Africa shape simplified */}
+                <path 
+                  d="M180,120 Q200,100 250,95 L320,90 Q380,85 420,95 L480,100 Q520,110 550,130 L580,160 Q600,190 610,230 L615,280 Q610,320 590,350 L560,380 Q530,400 500,410 L450,420 Q400,430 350,425 L300,415 Q260,400 230,370 L200,340 Q170,310 160,270 L155,220 Q150,170 160,140 Z" 
+                  fill="url(#africaGradient)" 
+                  stroke="#7e49de" 
+                  strokeWidth="2"
+                  opacity="0.3"
+                />
+                <defs>
+                  <linearGradient id="africaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#0b2f40" />
+                    <stop offset="100%" stopColor="#184250" />
+                  </linearGradient>
+                </defs>
+                
+                {/* SADC Region Highlight */}
+                <path 
+                  d="M200,180 Q220,170 260,165 L320,160 Q360,165 380,180 L390,210 Q385,250 360,270 L320,285 Q280,290 250,275 L210,250 Q180,220 190,195 Z" 
+                  fill="url(#sadcGradient)" 
+                  stroke="#7e49de" 
+                  strokeWidth="2"
+                  className="animate-pulse"
+                />
+                <defs>
+                  <linearGradient id="sadcGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#7e49de" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#9e79ef" stopOpacity="0.2" />
+                  </linearGradient>
+                </defs>
+
+                {/* Country Points with Labels */}
+                {/* South Africa */}
+                <g className="cursor-pointer">
+                  <circle cx="320" cy="320" r="8" fill="#7e49de" className="animate-ping" style={{ animationDuration: '2s' }} />
+                  <circle cx="320" cy="320" r="12" fill="#7e49de" opacity="0.5" />
+                  <circle cx="320" cy="320" r="20" fill="transparent" stroke="#7e49de" strokeWidth="1" opacity="0.3">
+                    <animate attributeName="r" values="20;25;20" dur="2s" repeatCount="indefinite" />
+                  </circle>
+                  <text x="320" y="345" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold">SOUTH AFRICA</text>
+                </g>
+                
+                {/* Botswana */}
+                <g className="cursor-pointer">
+                  <circle cx="380" cy="260" r="6" fill="#9e79ef" />
+                  <circle cx="380" cy="260" r="12" fill="#9e79ef" opacity="0.3" />
+                  <text x="380" y="282" textAnchor="middle" fill="#fff" fontSize="8">Botswana</text>
+                </g>
+                
+                {/* Namibia */}
+                <g className="cursor-pointer">
+                  <circle cx="340" cy="180" r="6" fill="#9e79ef" />
+                  <circle cx="340" cy="180" r="12" fill="#9e79ef" opacity="0.3" />
+                  <text x="340" y="200" textAnchor="middle" fill="#fff" fontSize="8">Namibia</text>
+                </g>
+                
+                {/* Zimbabwe */}
+                <g className="cursor-pointer">
+                  <circle cx="430" cy="290" r="6" fill="#9e79ef" />
+                  <circle cx="430" cy="290" r="12" fill="#9e79ef" opacity="0.3" />
+                  <text x="430" y="312" textAnchor="middle" fill="#fff" fontSize="8">Zimbabwe</text>
+                </g>
+                
+                {/* Zambia */}
+                <g className="cursor-pointer">
+                  <circle cx="420" cy="220" r="6" fill="#9e79ef" />
+                  <circle cx="420" cy="220" r="12" fill="#9e79ef" opacity="0.3" />
+                  <text x="420" y="242" textAnchor="middle" fill="#fff" fontSize="8">Zambia</text>
+                </g>
+                
+                {/* Mozambique */}
+                <g className="cursor-pointer">
+                  <circle cx="480" cy="320" r="6" fill="#9e79ef" />
+                  <circle cx="480" cy="320" r="12" fill="#9e79ef" opacity="0.3" />
+                  <text x="480" y="342" textAnchor="middle" fill="#fff" fontSize="8">Mozambique</text>
+                </g>
+                
+                {/* Tanzania */}
+                <g className="cursor-pointer">
+                  <circle cx="510" cy="240" r="6" fill="#9e79ef" />
+                  <circle cx="510" cy="240" r="12" fill="#9e79ef" opacity="0.3" />
+                  <text x="510" y="262" textAnchor="middle" fill="#fff" fontSize="8">Tanzania</text>
+                </g>
+                
+                {/* Malawi */}
+                <g className="cursor-pointer">
+                  <circle cx="460" cy="280" r="5" fill="#9e79ef" />
+                  <circle cx="460" cy="280" r="10" fill="#9e79ef" opacity="0.3" />
+                  <text x="460" y="300" textAnchor="middle" fill="#fff" fontSize="8">Malawi</text>
+                </g>
+                
+                {/* Mauritius */}
+                <g className="cursor-pointer">
+                  <circle cx="580" cy="420" r="4" fill="#9e79ef" />
+                  <circle cx="580" cy="420" r="8" fill="#9e79ef" opacity="0.3" />
+                  <text x="580" y="438" textAnchor="middle" fill="#fff" fontSize="8">Mauritius</text>
+                </g>
+                
+                {/* Eswatini */}
+                <g className="cursor-pointer">
+                  <circle cx="350" cy="360" r="4" fill="#9e79ef" />
+                  <circle cx="350" cy="360" r="8" fill="#9e79ef" opacity="0.3" />
+                  <text x="350" y="378" textAnchor="middle" fill="#fff" fontSize="8">Eswatini</text>
+                </g>
+                
+                {/* Lesotho */}
+                <g className="cursor-pointer">
+                  <circle cx="335" cy="355" r="3" fill="#9e79ef" />
+                  <circle cx="335" cy="355" r="6" fill="#9e79ef" opacity="0.3" />
+                  <text x="335" y="370" textAnchor="middle" fill="#fff" fontSize="7">Lesotho</text>
+                </g>
+                
+                {/* Angola */}
+                <g className="cursor-pointer">
+                  <circle cx="280" cy="200" r="6" fill="#9e79ef" />
+                  <circle cx="280" cy="200" r="12" fill="#9e79ef" opacity="0.3" />
+                  <text x="280" y="222" textAnchor="middle" fill="#fff" fontSize="8">Angola</text>
+                </g>
+              </svg>
+            </div>
           </div>
         </div>
       </section>
