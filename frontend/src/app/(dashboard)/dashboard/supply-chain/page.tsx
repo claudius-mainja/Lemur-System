@@ -251,7 +251,7 @@ export default function SupplyChainDashboard() {
             {filteredVendors.map((vendor) => (
               <div key={vendor.id} className="border border-slate-200 rounded-xl p-4 hover:shadow-lg transition">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
                     <Truck className="w-5 h-5 text-white" />
                   </div>
                   <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">

@@ -443,11 +443,11 @@ export class FinanceService {
     const pendingAmount = await this.invoiceRepo.sum('dueAmount', { tenantId, status: InvoiceStatus.SENT }) || 0;
     const overdueAmount = await this.invoiceRepo.sum('dueAmount', { tenantId, status: InvoiceStatus.OVERDUE }) || 0;
     const totalInvoices = await this.invoiceRepo.count({ where: { tenantId } });
-    const totalCustomers = await this.invoiceRepo.count({ 
-      where: { tenantId },
-      select: ['customerId'],
-      distinct: true
-    });
+    const totalCustomers = await this.invoiceRepo
+      .createQueryBuilder('invoice')
+      .select('COUNT(DISTINCT invoice.customerId)', 'count')
+      .where('invoice.tenantId = :tenantId', { tenantId })
+      .getRawOne();
     const totalExpenses = await this.expenseRepo.sum('amount', { tenantId }) || 0;
 
     return {
@@ -455,7 +455,7 @@ export class FinanceService {
       pendingAmount,
       overdueAmount,
       totalInvoices,
-      totalCustomers: 0,
+      totalCustomers: totalCustomers?.count || 0,
       totalProducts: 0,
       totalExpenses,
     };

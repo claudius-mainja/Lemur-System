@@ -254,7 +254,7 @@ export default function PayrollDashboard() {
                   <tr key={employee.id} className="hover:bg-slate-50">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-medium">
+                        <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center text-white font-medium">
                           {employee.firstName?.[0]}{employee.lastName?.[0]}
                         </div>
                         <div>

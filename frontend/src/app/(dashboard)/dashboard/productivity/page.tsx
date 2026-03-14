@@ -7,7 +7,7 @@ import { useDataStore } from '@/stores/data.store';
 import { 
   Plus, Search, MoreHorizontal, CheckCircle, Clock, AlertCircle,
   Calendar, Users, Briefcase, Target, Trash2, Eye, ArrowRight, Flag, 
-  ListTodo, FileText, X, Upload, Paperclip, Video, MapPin, Bell
+  ListTodo, FileText, X, Upload, Paperclip, Video, MapPin, Bell, MessageSquare
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -28,6 +28,13 @@ interface Task {
   project: string;
   projectId?: string;
   createdAt: string;
+  progress: number;
+  comments: Array<{
+    id: string;
+    author: string;
+    text: string;
+    timestamp: string;
+  }>;
 }
 
 interface Project {
@@ -90,6 +97,8 @@ export default function ProductivityDashboard() {
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showTaskChat, setShowTaskChat] = useState<string | null>(null);
+  const [newComment, setNewComment] = useState<Record<string, string>>({});
 
   const [newTask, setNewTask] = useState({
     title: '',
@@ -249,6 +258,8 @@ export default function ProductivityDashboard() {
       project: projectObj?.name || newTask.project || 'General',
       projectId: newTask.project,
       createdAt: new Date().toISOString(),
+      progress: 0,
+      comments: [],
     };
 
     setTasks([task, ...tasks]);
@@ -340,6 +351,33 @@ export default function ProductivityDashboard() {
     toast.success('Project deleted');
   };
 
+  const handleAddComment = (taskId: string) => {
+    const commentText = newComment[taskId]?.trim();
+    if (!commentText) return;
+    
+    const updatedTasks = tasks.map(t => {
+      if (t.id === taskId) {
+        return {
+          ...t,
+          comments: [...t.comments, {
+            id: generateId(),
+            author: user?.firstName || 'You',
+            text: commentText,
+            timestamp: new Date().toISOString(),
+          }]
+        };
+      }
+      return t;
+    });
+    setTasks(updatedTasks);
+    setNewComment({ ...newComment, [taskId]: '' });
+    toast.success('Comment added');
+  };
+
+  const handleUpdateProgress = (taskId: string, progress: number) => {
+    setTasks(tasks.map(t => t.id === taskId ? { ...t, progress } : t));
+  };
+
   const stats = {
     totalTasks: tasks.length,
     completed: tasks.filter(t => t.status === 'completed').length,
@@ -365,7 +403,7 @@ export default function ProductivityDashboard() {
           {activeView === 'tasks' && (
             <button
               onClick={() => setShowAddTask(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-orange-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-orange-500/25 transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-accent text-white rounded-xl font-medium hover:shadow-lg hover:shadow-orange-500/25 transition-all"
             >
               <Plus className="w-5 h-5" />
               NEW TASK
@@ -374,7 +412,7 @@ export default function ProductivityDashboard() {
           {activeView === 'projects' && (
             <button
               onClick={() => setShowAddProject(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-orange-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-orange-500/25 transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-accent text-white rounded-xl font-medium hover:shadow-lg hover:shadow-orange-500/25 transition-all"
             >
               <Plus className="w-5 h-5" />
               NEW PROJECT
@@ -383,7 +421,7 @@ export default function ProductivityDashboard() {
           {activeView === 'calendar' && (
             <button
               onClick={() => setShowAddEvent(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-orange-500 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-orange-500/25 transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-accent text-white rounded-xl font-medium hover:shadow-lg hover:shadow-orange-500/25 transition-all"
             >
               <Plus className="w-5 h-5" />
               SCHEDULE MEETING
@@ -395,12 +433,12 @@ export default function ProductivityDashboard() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
         {[
-          { label: 'TOTAL TASKS', value: stats.totalTasks, icon: ListTodo, color: 'from-blue-500 to-cyan-500' },
-          { label: 'COMPLETED', value: stats.completed, icon: CheckCircle, color: 'from-green-500 to-emerald-500' },
-          { label: 'IN PROGRESS', value: stats.inProgress, icon: Clock, color: 'from-amber-500 to-orange-500' },
-          { label: 'OVERDUE', value: stats.overdue, icon: AlertCircle, color: 'from-red-500 to-pink-500' },
-          { label: 'PROJECTS', value: stats.activeProjects, icon: Briefcase, color: 'from-purple-500 to-pink-500' },
-          { label: 'MEETINGS', value: stats.upcomingMeetings, icon: Calendar, color: 'from-indigo-500 to-purple-500' },
+          { label: 'TOTAL TASKS', value: stats.totalTasks, icon: ListTodo, color: 'from-primary to-secondary' },
+          { label: 'COMPLETED', value: stats.completed, icon: CheckCircle, color: 'from-accent to-accentDark' },
+          { label: 'IN PROGRESS', value: stats.inProgress, icon: Clock, color: 'from-secondary to-primary' },
+          { label: 'OVERDUE', value: stats.overdue, icon: AlertCircle, color: 'from-accentDark to-primary' },
+          { label: 'PROJECTS', value: stats.activeProjects, icon: Briefcase, color: 'from-accent to-primary' },
+          { label: 'MEETINGS', value: stats.upcomingMeetings, icon: Calendar, color: 'from-secondary to-accent' },
         ].map((stat, index) => (
           <div 
             key={stat.label}
@@ -430,7 +468,7 @@ export default function ProductivityDashboard() {
             onClick={() => setActiveView(tab.id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all ${
               activeView === tab.id
-                ? 'bg-gradient-to-r from-blue-500 to-orange-500 text-white shadow-lg'
+                ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg'
                 : `${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} hover:bg-white/10`
             }`}
           >
@@ -459,7 +497,7 @@ export default function ProductivityDashboard() {
               <ListTodo className={`w-16 h-16 mx-auto mb-4 ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`} />
               <h3 className={`text-xl font-bold uppercase tracking-wide mb-2 ${isDark ? 'text-dark-text' : 'text-light-text'}`}>No Tasks Yet</h3>
               <p className={`${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'} mb-6`}>Create your first task to get started</p>
-              <button onClick={() => setShowAddTask(true)} className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-6 py-3 rounded-xl font-medium inline-flex items-center gap-2">
+              <button onClick={() => setShowAddTask(true)} className="bg-gradient-to-r from-primary to-accent text-white px-6 py-3 rounded-xl font-medium inline-flex items-center gap-2">
                 <Plus className="w-5 h-5" /> Create Task
               </button>
             </div>
@@ -481,6 +519,28 @@ export default function ProductivityDashboard() {
                           {task.title}
                         </h3>
                         <p className={`text-sm mt-1 ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{task.description || 'No description'}</p>
+                        
+                        <div className="mt-3">
+                          <div className="flex justify-between mb-1">
+                            <span className={`text-xs font-medium ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>Progress</span>
+                            <span className={`text-xs font-bold ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{task.progress || 0}%</span>
+                          </div>
+                          <div className={`h-1.5 rounded-full overflow-hidden w-32 ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'}`}>
+                            <div 
+                              className="h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all" 
+                              style={{ width: `${task.progress || 0}%` }} 
+                            />
+                          </div>
+                          <input 
+                            type="range" 
+                            min="0" 
+                            max="100" 
+                            value={task.progress || 0}
+                            onChange={(e) => handleUpdateProgress(task.id, parseInt(e.target.value))}
+                            className="w-32 mt-1 h-1 bg-transparent appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-orange-500"
+                          />
+                        </div>
+                        
                         <div className="flex items-center gap-3 mt-3 flex-wrap">
                           <span className={`px-2 py-1 text-xs font-medium rounded-lg border ${getPriorityColor(task.priority)}`}>{task.priority.toUpperCase()}</span>
                           <span className={`text-xs ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}><Clock className="w-3 h-3 inline mr-1" />{task.dueDate}</span>
@@ -490,11 +550,55 @@ export default function ProductivityDashboard() {
                       </div>
                     </div>
                     <div className="flex gap-2">
+                      <button 
+                        onClick={() => setShowTaskChat(showTaskChat === task.id ? null : task.id)} 
+                        className={`p-2 rounded-lg transition-all relative ${isDark ? 'hover:bg-dark-bg-tertiary' : 'hover:bg-light-bg-tertiary'}`}
+                      >
+                        <MessageSquare className={`w-5 h-5 ${showTaskChat === task.id ? 'text-orange-500' : ''}`} />
+                        {(task.comments?.length || 0) > 0 && (
+                          <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 rounded-full text-white text-xs flex items-center justify-center">
+                            {task.comments?.length || 0}
+                          </span>
+                        )}
+                      </button>
                       <button onClick={() => handleDeleteTask(task.id)} className={`p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all ${isDark ? 'hover:bg-dark-bg-tertiary' : 'hover:bg-light-bg-tertiary'}`}>
                         <Trash2 className="w-5 h-5 text-red-500" />
                       </button>
                     </div>
                   </div>
+                  
+                  {showTaskChat === task.id && (
+                    <div className={`mt-4 p-4 rounded-lg ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'}`}>
+                      <div className="space-y-3 max-h-48 overflow-y-auto mb-3">
+                        {(task.comments?.length || 0) === 0 ? (
+                          <p className={`text-sm ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>No comments yet</p>
+                        ) : (
+                          (task.comments || []).map((comment) => (
+                            <div key={comment.id} className="text-sm">
+                              <span className="font-semibold">{comment.author}:</span>
+                              <span className={`ml-2 ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{comment.text}</span>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          placeholder="Add a comment..."
+                          value={newComment[task.id] || ''}
+                          onChange={(e) => setNewComment({ ...newComment, [task.id]: e.target.value })}
+                          onKeyPress={(e) => e.key === 'Enter' && handleAddComment(task.id)}
+                          className={`flex-1 px-3 py-2 rounded-lg text-sm border ${isDark ? 'bg-dark-bg border-dark-border text-dark-text' : 'bg-white border-light-border text-light-text'}`}
+                        />
+                        <button
+                          onClick={() => handleAddComment(task.id)}
+                          className="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600"
+                        >
+                          Send
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -510,7 +614,7 @@ export default function ProductivityDashboard() {
               <Briefcase className={`w-16 h-16 mx-auto mb-4 ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`} />
               <h3 className={`text-xl font-bold uppercase tracking-wide mb-2 ${isDark ? 'text-dark-text' : 'text-light-text'}`}>No Projects Yet</h3>
               <p className={`${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'} mb-6`}>Create your first project</p>
-              <button onClick={() => setShowAddProject(true)} className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-6 py-3 rounded-xl font-medium inline-flex items-center gap-2">
+              <button onClick={() => setShowAddProject(true)} className="bg-gradient-to-r from-primary to-accent text-white px-6 py-3 rounded-xl font-medium inline-flex items-center gap-2">
                 <Plus className="w-5 h-5" /> Create Project
               </button>
             </div>
@@ -532,7 +636,7 @@ export default function ProductivityDashboard() {
                     <span className={`text-xs font-bold ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{project.progress}%</span>
                   </div>
                   <div className={`h-2 rounded-full overflow-hidden ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'}`}>
-                    <div className="h-full bg-gradient-to-r from-blue-500 to-orange-500 rounded-full" style={{ width: `${project.progress}%` }} />
+                    <div className="h-full bg-gradient-to-r from-primary to-accent rounded-full" style={{ width: `${project.progress}%` }} />
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
@@ -540,7 +644,7 @@ export default function ProductivityDashboard() {
                     {project.teamMembers.slice(0, 3).map((memberId, i) => {
                       const member = teamMembers.find(m => m.id === memberId);
                       return (
-                        <div key={i} className={`w-8 h-8 rounded-full border-2 ${isDark ? 'border-dark-card' : 'border-light-card'} bg-gradient-to-br from-blue-500 to-orange-500 flex items-center justify-center`}>
+                        <div key={i} className={`w-8 h-8 rounded-full border-2 ${isDark ? 'border-dark-card' : 'border-light-card'} bg-gradient-to-br from-primary to-accent flex items-center justify-center`}>
                           <span className="text-white text-xs font-bold">{member?.name?.[0] || '?'}</span>
                         </div>
                       );
@@ -589,7 +693,7 @@ export default function ProductivityDashboard() {
               <Calendar className={`w-16 h-16 mx-auto mb-4 ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`} />
               <h3 className={`text-xl font-bold uppercase tracking-wide mb-2 ${isDark ? 'text-dark-text' : 'text-light-text'}`}>No Meetings Scheduled</h3>
               <p className={`${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'} mb-6`}>Schedule your first meeting</p>
-              <button onClick={() => setShowAddEvent(true)} className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-6 py-3 rounded-xl font-medium inline-flex items-center gap-2">
+              <button onClick={() => setShowAddEvent(true)} className="bg-gradient-to-r from-primary to-accent text-white px-6 py-3 rounded-xl font-medium inline-flex items-center gap-2">
                 <Plus className="w-5 h-5" /> Schedule Meeting
               </button>
             </div>
@@ -648,7 +752,7 @@ export default function ProductivityDashboard() {
             teamMembers.map((member, index) => (
               <div key={member.id} className={`backdrop-blur-sm rounded-xl p-5 border ${isDark ? 'bg-dark-card/80 border-dark-border' : 'bg-light-card/80 border-light-border'}`}>
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="w-14 h-14 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center shadow-lg">
                     <span className="text-white font-bold text-lg">{member.name.split(' ').map(n => n[0]).join('')}</span>
                   </div>
                   <div>
@@ -671,16 +775,42 @@ export default function ProductivityDashboard() {
       {/* Files View */}
       {activeView === 'files' && (
         <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {projects.map(project => (
-              <div key={project.id} className={`backdrop-blur-sm rounded-xl p-4 border ${isDark ? 'bg-dark-card/80 border-dark-border' : 'bg-light-card/80 border-light-border'}`}>
-                <h3 className={`font-bold uppercase tracking-wide mb-3 ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{project.name}</h3>
-                <label className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg cursor-pointer bg-gradient-to-r from-blue-500 to-orange-500 text-white transition hover:shadow-lg`}>
-                  <Upload className="w-5 h-5" />
-                  <span>Upload Files</span>
-                  <input type="file" multiple className="hidden" onChange={(e) => handleFileUpload(e, project.id)} />
-                </label>
-              </div>
+          <div className="flex flex-col md:flex-row gap-4 justify-between">
+            <div className="relative flex-1 max-w-md">
+              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`} />
+              <input
+                type="text"
+                placeholder="Search files..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={`w-full pl-10 pr-4 py-2 rounded-lg border ${isDark ? 'bg-dark-bg-tertiary border-dark-border text-dark-text' : 'bg-light-bg-secondary border-light-border text-light-text'}`}
+              />
+            </div>
+            <div className="flex gap-2">
+              <label className={`flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer bg-gradient-to-r from-primary to-accent text-white transition hover:shadow-lg`}>
+                <Upload className="w-4 h-4" />
+                <span>Upload</span>
+                <input type="file" multiple className="hidden" onChange={(e) => {
+                  const targetProject = projects[0]?.id || 'general';
+                  handleFileUpload(e, targetProject);
+                }} />
+              </label>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {['All', 'PDF', 'Image', 'Document', 'Spreadsheet', 'Presentation'].map(type => (
+              <button
+                key={type}
+                onClick={() => setSearchQuery(type === 'All' ? '' : type)}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                  (searchQuery === '' && type === 'All') || searchQuery.toLowerCase() === type.toLowerCase()
+                    ? 'bg-gradient-to-r from-primary to-accent text-white'
+                    : `${isDark ? 'bg-dark-bg-tertiary text-dark-text-secondary' : 'bg-light-bg-tertiary text-light-text-secondary'}`
+                }`}
+              >
+                {type}
+              </button>
             ))}
           </div>
 
@@ -688,27 +818,57 @@ export default function ProductivityDashboard() {
             <div className={`backdrop-blur-sm rounded-xl p-12 border text-center ${isDark ? 'bg-dark-card/80 border-dark-border' : 'bg-light-card/80 border-light-border'}`}>
               <FileText className={`w-16 h-16 mx-auto mb-4 ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`} />
               <h3 className={`text-xl font-bold uppercase tracking-wide mb-2 ${isDark ? 'text-dark-text' : 'text-light-text'}`}>No Files Uploaded</h3>
-              <p className={`${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>Upload files to projects</p>
+              <p className={`${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>Upload files to start storing</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {files.map((file, index) => {
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {files
+                .filter(file => {
+                  if (!searchQuery || searchQuery === 'All') return true;
+                  const type = file.type.toLowerCase();
+                  if (searchQuery.toLowerCase() === 'pdf') return type.includes('pdf');
+                  if (searchQuery.toLowerCase() === 'image') return type.includes('image');
+                  if (searchQuery.toLowerCase() === 'document') return type.includes('word') || type.includes('document');
+                  if (searchQuery.toLowerCase() === 'spreadsheet') return type.includes('sheet') || type.includes('excel');
+                  if (searchQuery.toLowerCase() === 'presentation') return type.includes('presentation') || type.includes('powerpoint');
+                  return file.name.toLowerCase().includes(searchQuery.toLowerCase());
+                })
+                .map((file, index) => {
                 const project = projects.find(p => p.id === file.projectId);
+                const getFileIcon = () => {
+                  const type = file.type.toLowerCase();
+                  if (type.includes('pdf')) return <FileText className="w-6 h-6 text-red-400" />;
+                  if (type.includes('image')) return <FileText className="w-6 h-6 text-green-400" />;
+                  if (type.includes('word') || type.includes('document')) return <FileText className="w-6 h-6 text-blue-400" />;
+                  if (type.includes('sheet') || type.includes('excel')) return <FileText className="w-6 h-6 text-emerald-400" />;
+                  if (type.includes('presentation') || type.includes('powerpoint')) return <FileText className="w-6 h-6 text-orange-400" />;
+                  return <FileText className="w-6 h-6 text-gray-400" />;
+                };
                 return (
-                  <div key={file.id} className={`backdrop-blur-sm rounded-xl p-4 border ${isDark ? 'bg-dark-card/80 border-dark-border' : 'bg-light-card/80 border-light-border'}`}>
+                  <div key={file.id} className={`backdrop-blur-sm rounded-xl p-4 border hover:shadow-lg transition-all ${isDark ? 'bg-dark-card/80 border-dark-border hover:border-blue-500/50' : 'bg-light-card/80 border-light-border hover:border-orange-500/50'}`}>
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-blue-400" />
+                      <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                        {getFileIcon()}
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className={`font-medium truncate ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{file.name}</h4>
-                        <p className={`text-xs ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{project?.name || 'Unknown'} - {(file.size / 1024).toFixed(1)} KB</p>
-                        <p className={`text-xs ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{file.uploadedBy} - {new Date(file.uploadedAt).toLocaleDateString()}</p>
+                        <p className={`text-xs ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{(file.size / 1024).toFixed(1)} KB</p>
+                        <p className={`text-xs ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{project?.name || 'General'}</p>
                       </div>
                     </div>
-                    <div className="mt-3 flex gap-2">
-                      <a href={file.url} target="_blank" className={`flex-1 text-center py-2 rounded-lg text-xs ${isDark ? 'bg-dark-bg-tertiary hover:bg-dark-border' : 'bg-light-bg-tertiary hover:bg-light-border'}`}>View</a>
-                      <button onClick={() => setFiles(files.filter(f => f.id !== file.id))} className="px-3 py-2 rounded-lg text-red-500 hover:bg-red-500/10"><Trash2 className="w-4 h-4" /></button>
+                    <div className="mt-3 pt-3 border-t border-gray-200/10 flex items-center justify-between">
+                      <span className={`text-xs ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{new Date(file.uploadedAt).toLocaleDateString()}</span>
+                      <div className="flex gap-1">
+                        <a href={file.url} target="_blank" className={`p-2 rounded-lg ${isDark ? 'hover:bg-dark-bg-tertiary' : 'hover:bg-light-bg-tertiary'}`}>
+                          <Eye className="w-4 h-4" />
+                        </a>
+                        <button onClick={() => {
+                          setFiles(files.filter(f => f.id !== file.id));
+                          toast.success('File deleted');
+                        }} className="p-2 rounded-lg text-red-500 hover:bg-red-500/10">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -772,7 +932,7 @@ export default function ProductivityDashboard() {
               </div>
               <div className="flex justify-end gap-3 pt-4">
                 <button onClick={() => setShowAddTask(false)} className={`px-4 py-2 rounded-lg ${isDark ? 'hover:bg-dark-bg-tertiary' : 'hover:bg-light-bg-tertiary'}`}>Cancel</button>
-                <button onClick={handleCreateTask} className="px-4 py-2 bg-gradient-to-r from-blue-500 to-orange-500 text-white rounded-lg hover:shadow-lg">Create Task</button>
+                <button onClick={handleCreateTask} className="px-4 py-2 bg-gradient-to-r from-primary to-accent text-white rounded-lg hover:shadow-lg">Create Task</button>
               </div>
             </div>
           </div>
@@ -829,7 +989,7 @@ export default function ProductivityDashboard() {
               </div>
               <div className="flex justify-end gap-3 pt-4">
                 <button onClick={() => setShowAddProject(false)} className={`px-4 py-2 rounded-lg ${isDark ? 'hover:bg-dark-bg-tertiary' : 'hover:bg-light-bg-tertiary'}`}>Cancel</button>
-                <button onClick={handleCreateProject} className="px-4 py-2 bg-gradient-to-r from-blue-500 to-orange-500 text-white rounded-lg hover:shadow-lg">Create Project</button>
+                <button onClick={handleCreateProject} className="px-4 py-2 bg-gradient-to-r from-primary to-accent text-white rounded-lg hover:shadow-lg">Create Project</button>
               </div>
             </div>
           </div>
@@ -898,7 +1058,7 @@ export default function ProductivityDashboard() {
               </div>
               <div className="flex justify-end gap-3 pt-4">
                 <button onClick={() => setShowAddEvent(false)} className={`px-4 py-2 rounded-lg ${isDark ? 'hover:bg-dark-bg-tertiary' : 'hover:bg-light-bg-tertiary'}`}>Cancel</button>
-                <button onClick={handleCreateEvent} className="px-4 py-2 bg-gradient-to-r from-blue-500 to-orange-500 text-white rounded-lg hover:shadow-lg">Schedule Meeting</button>
+                <button onClick={handleCreateEvent} className="px-4 py-2 bg-gradient-to-r from-primary to-accent text-white rounded-lg hover:shadow-lg">Schedule Meeting</button>
               </div>
             </div>
           </div>

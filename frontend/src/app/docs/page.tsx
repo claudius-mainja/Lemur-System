@@ -7,7 +7,7 @@ const docsSections = [
   {
     title: 'GETTING STARTED',
     icon: Rocket,
-    color: 'from-blue-500 to-blue-600',
+    color: 'from-accent to-accentDark',
     content: `Welcome to LemurSystem! This section will guide you through the initial setup and configuration of your ERP system.
 
 ## Quick Start Guide
@@ -53,7 +53,7 @@ Manage users with granular permissions:
   {
     title: 'CORE MODULES',
     icon: Database,
-    color: 'from-blue-600 to-cyan-500',
+    color: 'from-primary to-secondary',
     content: `LemurSystem offers comprehensive modules for all your business needs.
 
 ## HR Management
@@ -150,7 +150,7 @@ End-to-end supply chain management:
   {
     title: 'INTEGRATIONS',
     icon: Code,
-    color: 'from-orange-500 to-orange-600',
+    color: 'from-accentDark to-accent',
     content: `Extend LemurSystem with powerful integrations.
 
 ## API Reference
@@ -214,7 +214,7 @@ Alternative API option:
   {
     title: 'SECURITY',
     icon: Shield,
-    color: 'from-orange-600 to-amber-500',
+    color: 'from-accent to-accentDark',
     content: `Enterprise-grade security for your data.
 
 ## Authentication
@@ -265,7 +265,7 @@ Enterprise single sign-on:
   {
     title: 'REPORTS',
     icon: FileText,
-    color: 'from-blue-500 to-cyan-500',
+    color: 'from-primary to-secondary',
     content: `Powerful reporting and analytics.
 
 ## Financial Reports
@@ -332,7 +332,7 @@ Flexible export formats:
   {
     title: 'SUPPORT',
     icon: MessageCircle,
-    color: 'from-orange-500 to-orange-600',
+    color: 'from-accentDark to-accent',
     content: `We're here to help you succeed.
 
 ## Help Center
@@ -421,31 +421,31 @@ export default function DocsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-900 overflow-x-hidden">
+    <div className="min-h-screen bg-dark-bg overflow-x-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div 
           className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px]"
-          style={{ background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #f97316 100%)', top: '10%', left: '10%' }}
+          style={{ background: 'linear-gradient(135deg, #7e49de 0%, #412576 50%, #0b2f40 100%)', top: '10%', left: '10%' }}
         />
         <div 
           className="absolute w-[500px] h-[500px] rounded-full opacity-15 blur-[80px]"
-          style={{ background: 'linear-gradient(135deg, #f97316 0%, #fb923c 50%, #f59e0b 100%)', bottom: '20%', right: '10%' }}
+          style={{ background: 'linear-gradient(135deg, #0b2f40 0%, #184250 50%, #7e49de 100%)', bottom: '20%', right: '10%' }}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(37,99,235,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(37,99,235,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(11,47,64,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(11,47,64,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-bg/80 backdrop-blur-xl border-b border-dark-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-blue-500 to-orange-500 rounded-2xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-br from-accent to-accentDark rounded-2xl flex items-center justify-center">
                 <span className="text-white font-bold text-xl">L</span>
               </div>
               <div>
-                <span className="font-bold text-2xl text-white font-serif">LemurSystem</span>
-                <p className="text-xs text-slate-400 -mt-1">Enterprise ERP</p>
+                <span className="font-bold text-2xl text-white">LEMUR<span className="text-accent">SYSTEM</span></span>
+                <p className="text-xs text-dark-text-muted uppercase tracking-widest">Enterprise ERP</p>
               </div>
             </div>
             <div className="hidden lg:flex items-center gap-1">
@@ -464,7 +464,7 @@ export default function DocsPage() {
                   className={`px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium ${
                     item.name === 'DOCS' 
                       ? 'text-white bg-white/10' 
-                      : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      : 'text-dark-text-secondary hover:text-white hover:bg-white/5'
                   }`}
                 >
                   {item.name}
@@ -472,22 +472,22 @@ export default function DocsPage() {
               ))}
             </div>
             <div className="hidden lg:flex items-center gap-3">
-              <a href="/login" className="px-5 py-2.5 text-slate-400 hover:text-white transition-all duration-300 font-medium">
-                Log in
+              <a href="/login" className="px-5 py-2.5 text-dark-text-secondary hover:text-white transition-all duration-300 font-medium uppercase tracking-wider text-sm">
+                Sign In
               </a>
-              <a href="/login" className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5">
-                Start Free Trial
+              <a href="/login" className="px-6 py-2.5 bg-gradient-to-r from-accent to-accentDark text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 hover:-translate-y-0.5">
+                GET STARTED
               </a>
             </div>
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 text-slate-400">
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 text-dark-text-secondary">
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 px-4 py-6 space-y-3">
+          <div className="lg:hidden bg-dark-bg/95 backdrop-blur-xl border-t border-dark-border px-4 py-6 space-y-3">
             {['Home', 'Features', 'Pricing', 'Industries', 'Docs', 'About', 'Contact'].map((item) => (
-              <a key={item} href={item === 'Home' ? '/' : `/${item.toLowerCase()}`} className="block py-3 text-slate-400 hover:text-white">
+              <a key={item} href={item === 'Home' ? '/' : `/${item.toLowerCase()}`} className="block py-3 text-dark-text-secondary hover:text-white">
                 {item}
               </a>
             ))}
@@ -498,18 +498,18 @@ export default function DocsPage() {
       {/* Hero Section */}
       <section className="pt-40 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-500/20 border border-blue-500/30 rounded-full text-sm mb-8">
-            <BookOpen className="w-4 h-4 text-blue-400" />
-            <span className="text-blue-400 font-medium">DOCUMENTATION</span>
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent/20 border border-accent/30 rounded-full text-sm mb-8">
+            <BookOpen className="w-4 h-4 text-accent" />
+            <span className="text-accent font-medium uppercase">Documentation</span>
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif uppercase">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 uppercase">
             COMPLETE
             <br />
-            <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-accent via-[#9e79ef] to-accentDark bg-clip-text text-transparent">
               REFERENCE GUIDE
             </span>
           </h1>
-          <p className="text-lg sm:text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-dark-text-secondary mb-10 leading-relaxed max-w-2xl mx-auto">
             Everything you need to know about LemurSystem. Comprehensive guides, tutorials, and references for all modules and features.
           </p>
           
@@ -521,18 +521,18 @@ export default function DocsPage() {
                 placeholder="Search documentation..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-6 py-4 bg-slate-800 border border-slate-700 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
+                className="w-full px-6 py-4 bg-dark-card border border-dark-border rounded-2xl text-white placeholder-dark-text-muted focus:outline-none focus:border-accent transition"
               />
-              <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+              <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-dark-text-muted" />
             </div>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
             {stats.map((stat, i) => (
-              <div key={i} className="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+              <div key={i} className="bg-dark-card/50 border border-dark-border rounded-xl p-4">
                 <div className="text-2xl font-bold text-white">{stat.value}</div>
-                <div className="text-xs text-slate-400">{stat.label}</div>
+                <div className="text-xs text-dark-text-muted uppercase">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -544,12 +544,12 @@ export default function DocsPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, i) => (
-              <div key={i} className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 hover:border-blue-500/30 transition-all duration-300">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-orange-500 rounded-xl flex items-center justify-center mb-4">
+              <div key={i} className="bg-dark-card/50 border border-dark-border rounded-2xl p-6 hover:border-accent/30 transition-all duration-300">
+                <div className="w-12 h-12 bg-gradient-to-br from-accent to-accentDark rounded-xl flex items-center justify-center mb-4">
                   <feature.icon className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-white font-semibold mb-1">{feature.title}</h3>
-                <p className="text-slate-400 text-sm">{feature.desc}</p>
+                <p className="text-dark-text-muted text-sm">{feature.desc}</p>
               </div>
             ))}
           </div>
@@ -557,13 +557,13 @@ export default function DocsPage() {
       </section>
 
       {/* Documentation Content */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-slate-800/30">
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-dark-bg-secondary/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 font-serif">
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 uppercase">
               DOCUMENTATION SECTIONS
             </h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">
+            <p className="text-dark-text-secondary max-w-2xl mx-auto">
               Click on any section to explore detailed documentation
             </p>
           </div>
@@ -572,7 +572,7 @@ export default function DocsPage() {
             {filteredSections.map((section, index) => (
               <div 
                 key={index}
-                className="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden hover:border-blue-500/30 transition-all duration-300"
+                className="bg-dark-card/80 border border-dark-border rounded-2xl overflow-hidden hover:border-accent/30 transition-all duration-300"
               >
                 <button
                   onClick={() => setExpandedSection(expandedSection === index ? -1 : index)}
@@ -582,32 +582,32 @@ export default function DocsPage() {
                     <div className={`w-12 h-12 bg-gradient-to-br ${section.color} rounded-xl flex items-center justify-center`}>
                       <section.icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-xl font-semibold text-white">{section.title}</h3>
+                    <h3 className="text-xl font-semibold text-white uppercase">{section.title}</h3>
                   </div>
-                  <ChevronRight className={`w-6 h-6 text-slate-400 transition-transform ${expandedSection === index ? 'rotate-90' : ''}`} />
+                  <ChevronRight className={`w-6 h-6 text-dark-text-muted transition-transform ${expandedSection === index ? 'rotate-90' : ''}`} />
                 </button>
                 
                 {expandedSection === index && (
-                  <div className="px-6 pb-6 border-t border-slate-700">
+                  <div className="px-6 pb-6 border-t border-dark-border">
                     <div className="pt-6">
                       <div className="prose prose-invert max-w-none">
                         {section.content.split('\n').map((line, i) => {
                           if (line.startsWith('## ')) {
-                            return <h3 key={i} className="text-xl font-bold text-white mt-6 mb-3">{line.replace('## ', '')}</h3>;
+                            return <h3 key={i} className="text-xl font-bold text-white mt-6 mb-3 uppercase">{line.replace('## ', '')}</h3>;
                           }
                           if (line.startsWith('**') && line.endsWith('**')) {
-                            return <p key={i} className="text-orange-400 font-semibold my-2">{line.replace(/\*\*/g, '')}</p>;
+                            return <p key={i} className="text-accent font-semibold my-2">{line.replace(/\*\*/g, '')}</p>;
                           }
                           if (line.startsWith('- ')) {
-                            return <li key={i} className="text-slate-300 ml-4">{line.replace('- ', '')}</li>;
+                            return <li key={i} className="text-dark-text-secondary ml-4">{line.replace('- ', '')}</li>;
                           }
                           if (line.match(/^\d+\./)) {
-                            return <li key={i} className="text-slate-300 ml-4 list-decimal">{line.replace(/^\d+\.\s/, '')}</li>;
+                            return <li key={i} className="text-dark-text-secondary ml-4 list-decimal">{line.replace(/^\d+\.\s/, '')}</li>;
                           }
                           if (line.trim() === '') {
                             return <br key={i} />;
                           }
-                          return <p key={i} className="text-slate-300 my-1">{line}</p>;
+                          return <p key={i} className="text-dark-text-secondary my-1">{line}</p>;
                         })}
                       </div>
                     </div>
@@ -623,73 +623,73 @@ export default function DocsPage() {
       <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 font-serif">
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 uppercase">
               QUICK LINKS
             </h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 text-center hover:border-blue-500/30 transition-all">
-              <Play className="w-12 h-12 text-blue-400 mx-auto mb-4" />
+            <div className="bg-dark-card/50 border border-dark-border rounded-2xl p-8 text-center hover:border-accent/30 transition-all">
+              <Play className="w-12 h-12 text-accent mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">Video Tutorials</h3>
-              <p className="text-slate-400 mb-4">Watch step-by-step guides to get started quickly</p>
-              <span className="text-blue-400 text-sm font-medium">Coming Soon</span>
+              <p className="text-dark-text-secondary mb-4">Watch step-by-step guides to get started quickly</p>
+              <span className="text-accent text-sm font-medium">Coming Soon</span>
             </div>
-            <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 text-center hover:border-orange-500/30 transition-all">
-              <Download className="w-12 h-12 text-orange-400 mx-auto mb-4" />
+            <div className="bg-dark-card/50 border border-dark-border rounded-2xl p-8 text-center hover:border-accent/30 transition-all">
+              <Download className="w-12 h-12 text-accent mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">Download Guides</h3>
-              <p className="text-slate-400 mb-4">PDF guides for offline reading and reference</p>
-              <span className="text-orange-400 text-sm font-medium">Coming Soon</span>
+              <p className="text-dark-text-secondary mb-4">PDF guides for offline reading and reference</p>
+              <span className="text-accent text-sm font-medium">Coming Soon</span>
             </div>
-            <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 text-center hover:border-cyan-500/30 transition-all">
-              <HelpCircle className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
+            <div className="bg-dark-card/50 border border-dark-border rounded-2xl p-8 text-center hover:border-accent/30 transition-all">
+              <HelpCircle className="w-12 h-12 text-accent mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">FAQs</h3>
-              <p className="text-slate-400 mb-4">Answers to the most commonly asked questions</p>
-              <span className="text-cyan-400 text-sm font-medium">Coming Soon</span>
+              <p className="text-dark-text-secondary mb-4">Answers to the most commonly asked questions</p>
+              <span className="text-accent text-sm font-medium">Coming Soon</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 via-blue-500 to-orange-500 relative overflow-hidden">
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-accentDark via-accent to-primary relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 font-serif">
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 uppercase">
             NEED MORE HELP?
           </h2>
-          <p className="text-blue-100 text-lg mb-10">
+          <p className="text-white/80 text-lg mb-10">
             Can't find what you're looking for? Our support team is ready to assist you.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="/contact" className="w-full sm:w-auto px-8 py-4 bg-white text-blue-600 font-bold rounded-2xl hover:bg-blue-50 transition-all duration-300 hover:-translate-y-2 flex items-center justify-center gap-2">
-              Contact Support <Mail className="w-5 h-5" />
+            <a href="/contact" className="w-full sm:w-auto px-8 py-4 bg-white text-accent font-bold rounded-2xl hover:bg-white/90 transition-all duration-300 hover:-translate-y-2 flex items-center justify-center gap-2">
+              CONTACT SUPPORT <Mail className="w-5 h-5" />
             </a>
             <a href="/login" className="w-full sm:w-auto px-8 py-4 border-2 border-white text-white font-bold rounded-2xl hover:bg-white/10 transition-all duration-300">
-              Get Started
+              GET STARTED
             </a>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 border-t border-slate-800 py-16 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-dark-bg-secondary border-t border-dark-border py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-orange-500 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-accent to-accentDark rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-lg">L</span>
                 </div>
-                <span className="font-bold text-xl text-white font-serif">LemurSystem</span>
+                <span className="font-bold text-xl text-white">LEMUR<span className="text-accent">SYSTEM</span></span>
               </div>
-              <p className="text-slate-400 text-sm">
+              <p className="text-dark-text-muted text-sm">
                 Cloud-based ERP solution for SADC businesses.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold text-white mb-4">Product</h4>
-              <ul className="space-y-3 text-slate-400 text-sm">
+              <h4 className="font-semibold text-white mb-4 uppercase">Product</h4>
+              <ul className="space-y-3 text-dark-text-muted text-sm">
                 <li><a href="/features" className="hover:text-white transition">Features</a></li>
                 <li><a href="/pricing" className="hover:text-white transition">Pricing</a></li>
                 <li><a href="/industries" className="hover:text-white transition">Industries</a></li>
@@ -697,23 +697,23 @@ export default function DocsPage() {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-white mb-4">Company</h4>
-              <ul className="space-y-3 text-slate-400 text-sm">
+              <h4 className="font-semibold text-white mb-4 uppercase">Company</h4>
+              <ul className="space-y-3 text-dark-text-muted text-sm">
                 <li><a href="/about" className="hover:text-white transition">About</a></li>
                 <li><a href="#" className="hover:text-white transition">Blog</a></li>
                 <li><a href="#" className="hover:text-white transition">Careers</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-white mb-4">Legal</h4>
-              <ul className="space-y-3 text-slate-400 text-sm">
+              <h4 className="font-semibold text-white mb-4 uppercase">Legal</h4>
+              <ul className="space-y-3 text-dark-text-muted text-sm">
                 <li><a href="#" className="hover:text-white transition">Privacy Policy</a></li>
                 <li><a href="#" className="hover:text-white transition">Terms of Service</a></li>
               </ul>
             </div>
           </div>
-          <div className="pt-8 border-t border-slate-800">
-            <p className="text-slate-400 text-sm text-center">
+          <div className="pt-8 border-t border-dark-border">
+            <p className="text-dark-text-muted text-sm text-center">
               © 2026 LemurSystem. A product of Blacklemur Innovations. All rights reserved.
             </p>
           </div>

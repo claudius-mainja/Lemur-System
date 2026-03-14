@@ -9,7 +9,7 @@ const industries = [
     name: 'Retail & E-Commerce',
     description: 'Manage multiple stores, inventory, and online sales seamlessly',
     icon: ShoppingCart,
-    color: 'from-blue-500 to-blue-600',
+    color: 'from-accent to-accentDark',
     features: ['Point of Sale', 'Inventory Management', 'E-commerce Integration', 'Customer Loyalty'],
     countries: ['South Africa', 'Botswana', 'Namibia', 'Zimbabwe'],
   },
@@ -17,7 +17,7 @@ const industries = [
     name: 'Manufacturing',
     description: 'Track production, manage supplies, and optimize operations',
     icon: Factory,
-    color: 'from-blue-600 to-cyan-500',
+    color: 'from-primary to-secondary',
     features: ['Production Planning', 'Supply Chain', 'Quality Control', 'Cost Tracking'],
     countries: ['South Africa', 'Zambia', 'Mozambique', 'Tanzania'],
   },
@@ -25,7 +25,7 @@ const industries = [
     name: 'Logistics & Transport',
     description: 'Fleet management, routing, and delivery tracking',
     icon: Truck,
-    color: 'from-orange-500 to-orange-600',
+    color: 'from-accentDark to-accent',
     features: ['Fleet Management', 'Route Optimization', 'Driver Tracking', 'Fuel Management'],
     countries: ['South Africa', 'Kenya', 'Uganda', 'DRC'],
   },
@@ -33,7 +33,7 @@ const industries = [
     name: 'Healthcare',
     description: 'Patient management, appointments, and medical records',
     icon: Heart,
-    color: 'from-orange-600 to-amber-500',
+    color: 'from-accent to-accentDark',
     features: ['Patient Records', 'Appointment Scheduling', 'Billing', 'Inventory'],
     countries: ['South Africa', 'Nigeria', 'Ghana', 'Ethiopia'],
   },
@@ -41,7 +41,7 @@ const industries = [
     name: 'Hospitality',
     description: 'Hotel management, reservations, and guest services',
     icon: Palmtree,
-    color: 'from-orange-500 to-orange-600',
+    color: 'from-primary to-secondary',
     features: ['Room Management', 'Restaurant POS', 'Guest Profiles', 'Revenue Management'],
     countries: ['South Africa', 'Mauritius', 'Seychelles', 'Kenya'],
   },
@@ -49,7 +49,7 @@ const industries = [
     name: 'Education',
     description: 'School management, student records, and academics',
     icon: GraduationCap,
-    color: 'from-blue-500 to-blue-600',
+    color: 'from-accentDark to-accent',
     features: ['Student Management', 'Fee Collection', 'Attendance', 'Examination'],
     countries: ['South Africa', 'Zimbabwe', 'Botswana', 'Lesotho'],
   },
@@ -57,7 +57,7 @@ const industries = [
     name: 'Real Estate',
     description: 'Property management, leasing, and sales tracking',
     icon: Home,
-    color: 'from-blue-600 to-cyan-500',
+    color: 'from-accent to-accentDark',
     features: ['Property Listings', 'Lease Management', 'Tenant Portal', 'Maintenance'],
     countries: ['South Africa', 'Namibia', 'Zambia', 'Malawi'],
   },
@@ -65,7 +65,7 @@ const industries = [
     name: 'Professional Services',
     description: 'Consulting, legal, and professional firm management',
     icon: Briefcase,
-    color: 'from-orange-600 to-amber-500',
+    color: 'from-primary to-secondary',
     features: ['Project Management', 'Time Tracking', 'Client Portal', 'Invoicing'],
     countries: ['South Africa', 'Botswana', 'Mauritius', 'Kenya'],
   },
@@ -95,15 +95,15 @@ export default function IndustriesPage() {
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div 
           className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px] animate-blob"
-          style={{ background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 50%, #f97316 100%)', top: '10%', right: '10%' }}
+          style={{ background: 'linear-gradient(135deg, #7e49de 0%, #412576 50%, #0b2f40 100%)', top: '10%', right: '10%' }}
         />
         <div 
           className="absolute w-[500px] h-[500px] rounded-full opacity-15 blur-[80px] animate-blob"
-          style={{ background: 'linear-gradient(135deg, #2563eb 0%, #06b6d4 50%, #10b981 100%)', bottom: '20%', left: '10%', animationDelay: '2s' }}
+          style={{ background: 'linear-gradient(135deg, #0b2f40 0%, #184250 50%, #7e49de 100%)', bottom: '20%', left: '10%', animationDelay: '2s' }}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(37,99,235,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(37,99,235,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
-        <Hexagon className="absolute top-40 right-40 w-20 h-20 text-pink-500/10 animate-float" />
-        <Circle className="absolute bottom-40 left-40 w-16 h-16 text-cyan-500/10 animate-float" style={{ animationDelay: '0.5s' }} />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(11,47,64,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(11,47,64,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+        <Hexagon className="absolute top-40 right-40 w-20 h-20 text-accent/10 animate-float" />
+        <Circle className="absolute bottom-40 left-40 w-16 h-16 text-primary/10 animate-float" style={{ animationDelay: '0.5s' }} />
       </div>
 
       {/* Navigation */}
@@ -121,19 +121,19 @@ export default function IndustriesPage() {
             </Link>
             <div className="hidden lg:flex items-center gap-1">
               {[
-                { name: 'Home', href: '/' },
-                { name: 'Features', href: '/features' },
-                { name: 'Pricing', href: '/pricing' },
-                { name: 'Industries', href: '/industries' },
-                { name: 'Docs', href: '/docs' },
-                { name: 'About', href: '/about' },
-                { name: 'Contact', href: '/contact' },
+                { name: 'HOME', href: '/' },
+                { name: 'FEATURES', href: '/features' },
+                { name: 'PRICING', href: '/pricing' },
+                { name: 'INDUSTRIES', href: '/industries' },
+                { name: 'DOCS', href: '/docs' },
+                { name: 'ABOUT', href: '/about' },
+                { name: 'CONTACT', href: '/contact' },
               ].map((item) => (
                 <Link 
                   key={item.name}
                   href={item.href}
                   className={`px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium ${
-                    item.name === 'Industries' 
+                    item.name === 'INDUSTRIES' 
                       ? 'text-white bg-white/10' 
                       : 'text-dark-text-secondary hover:text-white hover:bg-white/5'
                   }`}
@@ -143,11 +143,11 @@ export default function IndustriesPage() {
               ))}
             </div>
             <div className="hidden lg:flex items-center gap-3">
-              <Link href="/login" className="px-5 py-2.5 text-dark-text-secondary hover:text-white transition-all duration-300 font-medium">
-                Log in
+              <Link href="/login" className="px-5 py-2.5 text-dark-text-secondary hover:text-white transition-all duration-300 font-medium uppercase tracking-wider text-sm">
+                Sign In
               </Link>
-              <Link href="/login" className="px-6 py-2.5 bg-gradient-to-r from-primary to-blue-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5">
-                Start Free Trial
+              <Link href="/login" className="px-6 py-2.5 bg-gradient-to-r from-accent to-accentDark text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 hover:-translate-y-0.5">
+                GET STARTED
               </Link>
             </div>
             <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 text-dark-text-secondary">
@@ -169,14 +169,14 @@ export default function IndustriesPage() {
       {/* Hero Section */}
       <section className="pt-40 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-pink-500/20 border border-pink-500/30 rounded-full text-sm mb-8 animate-fade-in">
-            <Globe className="w-4 h-4 text-pink-400" />
-            <span className="text-pink-400 font-medium">SADC REGION</span>
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent/20 border border-accent/30 rounded-full text-sm mb-8 animate-fade-in">
+            <Globe className="w-4 h-4 text-accent" />
+            <span className="text-accent font-medium uppercase">SADC Region</span>
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif uppercase">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 uppercase">
             Built for
             <br />
-            <span className="bg-gradient-to-r from-pink-400 via-rose-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-accent via-[#9e79ef] to-accentDark bg-clip-text text-transparent">
               African Businesses
             </span>
           </h1>
@@ -185,11 +185,11 @@ export default function IndustriesPage() {
             Local currencies, languages, and compliance built-in.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-pink-500 via-rose-500 to-orange-500 text-white font-bold rounded-2xl hover:shadow-2xl hover:shadow-rose-500/30 transition-all duration-300 hover:-translate-y-2 flex items-center justify-center gap-2">
-              Start Free Trial <ArrowRight className="w-5 h-5" />
+            <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-accent to-accentDark text-white font-bold rounded-2xl hover:shadow-2xl hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-2 flex items-center justify-center gap-2">
+              START FREE TRIAL <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href="/contact" className="w-full sm:w-auto px-8 py-4 border-2 border-dark-border text-dark-text-secondary font-bold rounded-2xl hover:border-white hover:text-white transition-all duration-300 hover:-translate-y-1">
-              Contact Sales
+            <Link href="/contact" className="w-full sm:w-auto px-8 py-4 border-2 border-white/20 text-white/60 font-bold rounded-2xl hover:border-white hover:text-white transition-all duration-300 hover:-translate-y-1">
+              CONTACT SALES
             </Link>
           </div>
         </div>
@@ -200,7 +200,7 @@ export default function IndustriesPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {sadcCountries.map((country, i) => (
-              <div key={i} className="bg-dark-card/50 border border-dark-border rounded-2xl p-4 text-center hover:border-pink-500/30 transition-all duration-300 hover:-translate-y-1">
+              <div key={i} className="bg-dark-card/50 border border-dark-border rounded-2xl p-4 text-center hover:border-accent/30 transition-all duration-300 hover:-translate-y-1">
                 <div className="text-3xl mb-2">{country.flag}</div>
                 <div className="text-white font-semibold text-sm">{country.name}</div>
                 <div className="text-dark-text-muted text-xs">{country.currency}</div>
@@ -214,7 +214,7 @@ export default function IndustriesPage() {
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-dark-bg-secondary/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 font-serif">
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 uppercase">
               INDUSTRIES WE SERVE
             </h2>
             <p className="text-lg text-dark-text-secondary max-w-2xl mx-auto">
@@ -226,7 +226,7 @@ export default function IndustriesPage() {
             {industries.map((industry, index) => (
               <div
                 key={index}
-                className="group bg-dark-card border border-dark-border rounded-2xl p-6 hover:border-pink-500/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-pink-500/10"
+                className="group bg-dark-card border border-dark-border rounded-2xl p-6 hover:border-accent/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-accent/10"
               >
                 <div className={`w-12 h-12 bg-gradient-to-br ${industry.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
                   <industry.icon className="w-6 h-6 text-white" />
@@ -236,7 +236,7 @@ export default function IndustriesPage() {
                 <ul className="space-y-2">
                   {industry.features.map((feature, i) => (
                     <li key={i} className="flex items-center gap-2 text-xs text-dark-text-muted">
-                      <Check className="w-3 h-3 text-pink-400 flex-shrink-0" />
+                      <Check className="w-3 h-3 text-accent flex-shrink-0" />
                       {feature}
                     </li>
                   ))}
@@ -248,23 +248,23 @@ export default function IndustriesPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-pink-600 via-rose-600 to-orange-600 relative overflow-hidden">
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-accentDark via-accent to-primary relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 font-serif uppercase">
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 uppercase">
             Ready to Scale in SADC?
           </h2>
-          <p className="text-rose-100 text-lg mb-10">
+          <p className="text-white/80 text-lg mb-10">
             Join hundreds of businesses across Southern Africa using LemurSystem
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-white text-pink-600 font-bold rounded-2xl hover:bg-rose-50 transition-all duration-300 hover:-translate-y-2 flex items-center justify-center gap-2">
-              Start Free Trial <ArrowRight className="w-5 h-5" />
+            <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-white text-accent font-bold rounded-2xl hover:bg-white/90 transition-all duration-300 hover:-translate-y-2 flex items-center justify-center gap-2">
+              START FREE TRIAL <ArrowRight className="w-5 h-5" />
             </Link>
             <Link href="/contact" className="w-full sm:w-auto px-8 py-4 border-2 border-white text-white font-bold rounded-2xl hover:bg-white/10 transition-all duration-300">
-              Contact Sales
+              CONTACT SALES
             </Link>
           </div>
         </div>

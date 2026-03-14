@@ -12,51 +12,50 @@ import {
   Heart, Plane, Star, Sparkles, Rocket, Target,
   Layers, Briefcase, HeadphonesIcon, Megaphone,
   ChevronRight, Play, Award, Handshake, Clock,
-  Hexagon, Triangle, Circle, Square, Diamond
+  Hexagon, Triangle, Circle, Square, Diamond,
+  ArrowUpRight, Check, Minus, Lock, Globe2, Zap as LightningBolt,
+  CheckCircle2, Map
 } from 'lucide-react';
 
-const allPages = [
-  { name: 'Dashboard HR', href: '/dashboard/hr', icon: Users, color: 'from-blue-500 to-cyan-500' },
-  { name: 'Dashboard Finance', href: '/dashboard/finance', icon: Wallet, color: 'from-purple-500 to-pink-500' },
-  { name: 'Dashboard CRM', href: '/dashboard/crm', icon: BarChart3, color: 'from-rose-500 to-orange-500' },
-  { name: 'Dashboard Payroll', href: '/dashboard/payroll', icon: PiggyBank, color: 'from-green-500 to-emerald-500' },
-  { name: 'Dashboard Supply Chain', href: '/dashboard/supply-chain', icon: Package, color: 'from-amber-500 to-yellow-500' },
-  { name: 'Productivity', href: '/dashboard/productivity', icon: FileText, color: 'from-violet-500 to-purple-500' },
-  { name: 'HR Application', href: '/applications/hr', icon: Users, color: 'from-blue-400 to-blue-600' },
-  { name: 'Finance App', href: '/applications/finance', icon: Wallet, color: 'from-purple-400 to-purple-600' },
-  { name: 'CRM App', href: '/applications/crm', icon: BarChart3, color: 'from-pink-400 to-rose-600' },
-  { name: 'Payroll App', href: '/applications/payroll', icon: PiggyBank, color: 'from-green-400 to-green-600' },
-  { name: 'Supply Chain', href: '/applications/supply-chain', icon: Truck, color: 'from-orange-400 to-orange-600' },
-  { name: 'Services', href: '/applications/services', icon: HeadphonesIcon, color: 'from-teal-400 to-cyan-600' },
-  { name: 'Marketing', href: '/applications/marketing', icon: Megaphone, color: 'from-indigo-400 to-indigo-600' },
-  { name: 'Productivity App', href: '/applications/productivity', icon: FileText, color: 'from-cyan-400 to-blue-500' },
-  { name: 'Features', href: '/features', icon: Zap, color: 'from-yellow-400 to-orange-500' },
-  { name: 'Pricing', href: '/pricing', icon: CreditCard, color: 'from-emerald-400 to-green-600' },
-  { name: 'Industries', href: '/industries', icon: Building, color: 'from-slate-400 to-slate-600' },
-  { name: 'Documentation', href: '/docs', icon: FileText, color: 'from-gray-400 to-gray-600' },
-  { name: 'About', href: '/about', icon: Award, color: 'from-amber-400 to-yellow-600' },
-  { name: 'Contact', href: '/contact', icon: Mail, color: 'from-rose-400 to-pink-600' },
+const applications = [
+  { name: 'HUMAN RESOURCES', href: '/applications/hr', icon: Users, color: 'from-primary to-secondary', desc: 'Employee management, leave tracking, recruitment' },
+  { name: 'FINANCE', href: '/applications/finance', icon: Wallet, color: 'from-accent to-accentDark', desc: 'Invoicing, accounting, financial reports' },
+  { name: 'CRM', href: '/applications/crm', icon: BarChart3, color: 'from-accentDark to-accent', desc: 'Customer relationships, leads, sales pipeline' },
+  { name: 'PAYROLL', href: '/applications/payroll', icon: PiggyBank, color: 'from-secondary to-primary', desc: 'Salary processing, tax calculations, payslips' },
+  { name: 'SUPPLY CHAIN', href: '/applications/supply-chain', icon: Truck, color: 'from-primary to-accent', desc: 'Inventory, procurement, vendor management' },
+  { name: 'PRODUCTIVITY', href: '/applications/productivity', icon: FileText, color: 'from-secondary to-accent', desc: 'Tasks, projects, team collaboration' },
+  { name: 'MARKETING', href: '/applications/marketing', icon: Megaphone, color: 'from-accent to-accentDark', desc: 'Campaigns, email marketing, analytics' },
+  { name: 'SERVICES', href: '/applications/services', icon: HeadphonesIcon, color: 'from-primary to-secondary', desc: 'Customer support, ticketing, helpdesk' },
 ];
 
 const stats = [
-  { value: '10K+', label: 'Active Users', icon: Users },
-  { value: '99.9%', label: 'Uptime', icon: Cloud },
-  { value: '50+', label: 'Integrations', icon: Layers },
-  { value: '24/7', label: 'Support', icon: HeadphonesIcon },
+  { value: '99.9%', label: 'UPTIME GUARANTEE', icon: Cloud },
+  { value: '50+', label: 'INTEGRATIONS', icon: Layers },
+  { value: '24/7', label: 'SUPPORT', icon: HeadphonesIcon },
+  { value: 'SADC', label: 'READY', icon: Globe },
 ];
 
-const testimonials = [
-  { name: 'Sarah Johnson', role: 'CEO, TechStart', text: 'LemurSystem transformed our business operations completely.' },
-  { name: 'Michael Chen', role: 'Director, MegaCorp', text: 'The best ERP solution we have ever used. Highly recommended!' },
-  { name: 'Emily Davis', role: 'Manager, InnovateCo', text: 'Outstanding support and incredible features. Worth every penny.' },
+const whyChoose = [
+  { icon: Globe, title: 'BUILT FOR AFRICAN BUSINESS', desc: 'Designed specifically for SADC region businesses with local currencies, tax laws, and compliance requirements' },
+  { icon: Zap, title: 'EASY TO USE', desc: 'Simple, intuitive interface that anyone can use without technical training - no IT team required' },
+  { icon: Shield, title: 'SAFE & SECURE', desc: 'Bank-level security with encrypted data, automatic backups, and reliable cloud infrastructure' },
+  { icon: TrendingUp, title: 'GROWS WITH YOU', desc: 'Start small and scale up as your business grows - add more users, modules, and features when needed' },
+  { icon: Clock, title: 'SAVE TIME & MONEY', desc: 'Replace multiple expensive systems with one affordable solution - cut costs by up to 60%' },
+  { icon: HeadphonesIcon, title: 'LOCAL SUPPORT', desc: 'Get help from our SADC-based support team who understand your business needs' },
+];
+
+const features = [
+  { icon: Shield, title: 'BANK-LEVEL SECURITY', desc: '256-bit encryption with SOC2 compliance' },
+  { icon: Cloud, title: 'CLOUD BASED', desc: 'Access from anywhere, any device' },
+  { icon: Zap, title: 'FAST SETUP', desc: 'Get started in minutes, not months' },
+  { icon: Handshake, title: 'SADC COMPLIANT', desc: 'Built for African regulations' },
 ];
 
 export default function WelcomePage() {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeDemo, setActiveDemo] = useState(0);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -65,18 +64,11 @@ export default function WelcomePage() {
   }, [isAuthenticated, router]);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
     };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveDemo((prev) => (prev + 1) % allPages.slice(0, 8).length);
-    }, 3000);
-    return () => clearInterval(interval);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   if (isAuthenticated) {
@@ -84,101 +76,79 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg overflow-x-hidden">
-      {/* Animated Background */}
+    <div className="min-h-screen bg-gradient-to-br from-[#0a1a20] via-[#0b2f40] to-[#061c26] overflow-x-hidden">
+      {/* Background Pattern */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {/* Gradient Orbs */}
-        <div 
-          className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px] animate-blob"
-          style={{ 
-            background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #06b6d4 100%)',
-            top: '10%',
-            left: '10%',
-            transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`
-          }}
-        />
-        <div 
-          className="absolute w-[500px] h-[500px] rounded-full opacity-15 blur-[80px] animate-blob"
-          style={{ 
-            background: 'linear-gradient(135deg, #f97316 0%, #fb923c 50%, #f59e0b 100%)',
-            bottom: '20%',
-            right: '10%',
-            animationDelay: '2s',
-            transform: `translate(${-mousePosition.x * 0.015}px, ${-mousePosition.y * 0.015}px)`
-          }}
-        />
-        
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(37,99,235,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(37,99,235,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
-        
-        {/* Floating Shapes */}
-        <Hexagon className="absolute top-20 right-20 w-20 h-20 text-primary/10 animate-float" />
-        <Triangle className="absolute bottom-40 left-20 w-16 h-16 text-accent/10 animate-float" style={{ animationDelay: '1s' }} />
-        <Circle className="absolute top-1/3 left-1/4 w-12 h-12 text-purple-500/10 animate-float" style={{ animationDelay: '0.5s' }} />
-        <Square className="absolute bottom-1/4 right-1/3 w-14 h-14 text-cyan-500/10 animate-float" style={{ animationDelay: '1.5s' }} />
-        <Diamond className="absolute top-1/2 right-1/4 w-10 h-10 text-green-500/10 animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-0 left-0 w-full h-full opacity-[0.03]">
+          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+                <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" strokeWidth="0.5"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+          </svg>
+        </div>
+        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-gradient-radial from-accent/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-gradient-radial from-primary/10 to-transparent rounded-full blur-3xl" />
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-bg/80 backdrop-blur-xl border-b border-dark-border">
+      <nav className={`relative z-50 border-b transition-all duration-500 ${scrolled ? 'bg-[#0b2f40]/95 backdrop-blur-lg border-white/10' : 'bg-transparent border-white/5'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <div className="flex items-center gap-3 group cursor-pointer">
-              <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary via-blue-500 to-accent rounded-2xl flex items-center justify-center animate-float-3d">
-                  <span className="text-white font-bold text-xl">L</span>
-                </div>
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-2xl opacity-50 blur-lg group-hover:opacity-75 transition-opacity" />
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="w-12 h-12 bg-gradient-to-br from-accent to-accentDark rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-accent/30 transition-all duration-300 group-hover:scale-105">
+                <span className="text-white font-bold text-xl">L</span>
               </div>
               <div>
-                <span className="font-bold text-2xl text-white font-serif tracking-tight">LemurSystem</span>
-                <p className="text-xs text-dark-text-muted -mt-1">Enterprise ERP</p>
+                <span className="font-bold text-2xl text-white tracking-tight">LEMUR<span className="text-accent">SYSTEM</span></span>
+                <p className="text-xs text-white/50 tracking-[0.2em] uppercase">Enterprise ERP</p>
               </div>
-            </div>
+            </Link>
 
             {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="hidden lg:flex items-center gap-8">
               {[
-                { name: 'Features', href: '/features' },
-                { name: 'Pricing', href: '/pricing' },
-                { name: 'Industries', href: '/industries' },
-                { name: 'Docs', href: '/docs' },
-                { name: 'About', href: '/about' },
-                { name: 'Contact', href: '/contact' },
-              ].map((item, i) => (
+                { name: 'FEATURES', href: '/features' },
+                { name: 'PRICING', href: '/pricing' },
+                { name: 'INDUSTRIES', href: '/industries' },
+                { name: 'DOCS', href: '/docs' },
+                { name: 'ABOUT', href: '/about' },
+                { name: 'CONTACT', href: '/contact' },
+              ].map((item) => (
                 <Link 
                   key={item.name}
                   href={item.href}
-                  className="px-4 py-2 text-dark-text-secondary hover:text-white hover:bg-white/5 rounded-xl transition-all duration-300 text-sm font-medium"
-                  style={{ animationDelay: `${i * 0.1}s` }}
+                  className="text-sm font-semibold text-white/70 hover:text-white tracking-wider transition-all duration-300 relative group"
                 >
                   {item.name}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-300" />
                 </Link>
               ))}
             </div>
 
             {/* Auth Buttons */}
-            <div className="hidden lg:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-4">
               <Link 
                 href="/login" 
-                className="px-5 py-2.5 text-dark-text-secondary hover:text-white transition-all duration-300 font-medium"
+                className="px-6 py-2.5 text-white/70 font-semibold tracking-wider text-sm hover:text-white transition-colors"
               >
-                Log in
+                SIGN IN
               </Link>
               <Link 
-                href="/login" 
-                className="px-6 py-2.5 bg-gradient-to-r from-primary to-blue-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 group"
+                href="/login?register=true" 
+                className="px-8 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-bold tracking-wider text-sm rounded-lg hover:shadow-lg hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-0.5"
               >
-                Start Free Trial
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                GET STARTED
               </Link>
             </div>
 
             {/* Mobile Menu Button */}
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-              className="lg:hidden p-2 text-dark-text-secondary hover:text-white"
+              className="lg:hidden p-2 text-white/70 hover:text-white"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -187,27 +157,27 @@ export default function WelcomePage() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-dark-bg/95 backdrop-blur-xl border-t border-dark-border px-4 py-6 space-y-3 animate-fade-in-down">
+          <div className="lg:hidden bg-[#0b2f40]/98 backdrop-blur-xl border-t border-white/10 px-4 py-6 space-y-3">
             {[
-              { name: 'Features', href: '/features' },
-              { name: 'Pricing', href: '/pricing' },
-              { name: 'Industries', href: '/industries' },
-              { name: 'Documentation', href: '/docs' },
-              { name: 'About', href: '/about' },
-              { name: 'Contact', href: '/contact' },
+              { name: 'FEATURES', href: '/features' },
+              { name: 'PRICING', href: '/pricing' },
+              { name: 'INDUSTRIES', href: '/industries' },
+              { name: 'DOCUMENTATION', href: '/docs' },
+              { name: 'ABOUT', href: '/about' },
+              { name: 'CONTACT', href: '/contact' },
             ].map((item) => (
               <Link 
                 key={item.name}
                 href={item.href} 
-                className="block py-3 text-dark-text-secondary hover:text-white transition"
+                className="block py-3 text-white/70 font-semibold tracking-wider text-sm hover:text-white transition-colors"
               >
                 {item.name}
               </Link>
             ))}
-            <div className="pt-4 border-t border-dark-border space-y-3">
-              <Link href="/login" className="block py-3 text-dark-text-secondary">Log in</Link>
-              <Link href="/login" className="block text-center px-5 py-3 bg-gradient-to-r from-primary to-blue-600 text-white font-medium rounded-xl">
-                Start Free Trial
+            <div className="pt-4 border-t border-white/10 space-y-3">
+              <Link href="/login" className="block py-3 text-white/70 font-semibold tracking-wider text-sm">SIGN IN</Link>
+              <Link href="/login?register=true" className="block text-center px-6 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-bold tracking-wider text-sm rounded-lg">
+                GET STARTED
               </Link>
             </div>
           </div>
@@ -215,48 +185,40 @@ export default function WelcomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-40 pb-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <section className="relative pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-12 gap-12 items-center">
           {/* Left Content */}
-          <div className="text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30 rounded-full text-sm mb-8 animate-fade-in">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-primary font-medium">Next-Gen Cloud ERP Platform</span>
+          <div className="lg:col-span-7 text-center lg:text-left">
+            <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-white/5 border border-white/10 rounded-full mb-8">
+              <span className="w-2 h-2 bg-accent rounded-full animate-pulse" />
+              <span className="text-white/60 font-medium tracking-wider text-sm uppercase">#1 ERP for SADC Businesses</span>
             </div>
             
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-serif uppercase">
-              <span className="bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
-                Transform
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-primary via-blue-400 to-accent bg-clip-text text-transparent">
-                Your Business
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-8 tracking-tight">
+              <span className="block">RUN YOUR BUSINESS</span>
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-accent via-[#9e79ef] to-accentDark">
+                ALL IN ONE PLACE
               </span>
             </h1>
             
-            <p className="text-lg sm:text-xl text-dark-text-secondary mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              Experience the future of enterprise management. 
-              All-in-one platform with AI-powered insights, 
-              real-time analytics, and seamless integration.
+            <p className="text-xl text-white/50 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
+              The complete business management solution trusted by companies across Africa. 
+              Manage HR, Finance, Customers, Inventory, and more - without any technical knowledge needed.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5 mb-12">
               <Link 
-                href="/login" 
-                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary via-blue-500 to-blue-600 text-white font-bold rounded-2xl hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 hover:-translate-y-2 group relative overflow-hidden"
+                href="/login?register=true" 
+                className="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-accent to-accentDark text-white font-bold tracking-wider rounded-xl hover:shadow-xl hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-3"
               >
-                <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                <span className="relative flex items-center justify-center gap-2">
-                  Start Free Trial
-                  <Rocket className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
-                </span>
+                START FREE TRIAL
+                <ArrowRight className="w-5 h-5" />
               </Link>
               <Link 
                 href="/contact" 
-                className="w-full sm:w-auto px-8 py-4 border-2 border-dark-border text-dark-text-secondary font-bold rounded-2xl hover:border-primary hover:text-white transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-10 py-4 border border-white/20 text-white/70 font-bold tracking-wider rounded-xl hover:border-white/40 hover:text-white hover:bg-white/5 transition-all duration-300 flex items-center justify-center gap-3"
               >
-                <Play className="w-5 h-5" />
-                Watch Demo
+                TALK TO US
               </Link>
             </div>
 
@@ -265,91 +227,71 @@ export default function WelcomePage() {
               {stats.map((stat, i) => (
                 <div 
                   key={i}
-                  className="bg-dark-card/50 backdrop-blur border border-dark-border rounded-2xl p-4 hover:border-primary/50 transition-all duration-300 hover:-translate-y-1"
-                  style={{ animationDelay: `${i * 0.1}s` }}
+                  className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-5 hover:border-white/20 hover:bg-white/10 transition-all duration-300"
                 >
-                  <stat.icon className="w-6 h-6 text-primary mb-2" />
-                  <div className="text-2xl font-bold text-white">{stat.value}</div>
-                  <div className="text-xs text-dark-text-muted">{stat.label}</div>
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <stat.icon className="w-5 h-5 text-accent" />
+                    <div className="text-3xl font-bold text-white">{stat.value}</div>
+                  </div>
+                  <div className="text-xs text-white/40 uppercase tracking-wider">{stat.label}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Right - Interactive Dashboard Preview */}
-          <div className="relative">
-            {/* Glow Effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-primary via-blue-500 to-accent rounded-3xl blur-2xl opacity-30" />
-            
-            {/* Main Card */}
-            <div className="relative bg-dark-card border border-dark-border rounded-3xl overflow-hidden animate-float shadow-2xl">
-              {/* Header */}
-              <div className="bg-dark-bg-secondary px-6 py-4 flex items-center justify-between border-b border-dark-border">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full bg-red-500" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                  <div className="w-3 h-3 rounded-full bg-green-500" />
+          {/* Right - Dashboard Preview */}
+          <div className="lg:col-span-5 relative hidden lg:block">
+            <div className="absolute inset-0 bg-gradient-to-r from-accent to-accentDark rounded-3xl blur-2xl opacity-30" />
+            <div className="relative bg-[#0b2a38] border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+              <div className="bg-[#061c26] px-6 py-4 flex items-center justify-between border-b border-white/10">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500/50" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/50" />
                 </div>
-                <div className="text-sm text-dark-text-muted">LemurSystem Dashboard</div>
+                <div className="text-sm text-white/40 uppercase tracking-wider">LemurSystem Dashboard</div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-xs text-green-500">Live</span>
+                  <span className="text-xs text-green-500 uppercase">Live</span>
                 </div>
               </div>
 
-              {/* App Grid */}
-              <div className="p-8">
-                <div className="text-center mb-6">
-                  <p className="text-dark-text-muted text-sm uppercase tracking-widest">Interactive Preview</p>
-                </div>
-                
-                <div className="grid grid-cols-4 gap-4">
-                  {allPages.slice(0, 8).map((page, i) => (
+              <div className="p-6">
+                <div className="grid grid-cols-4 gap-3">
+                  {applications.slice(0, 8).map((app, i) => (
                     <Link 
                       key={i} 
-                      href={page.href}
-                      className={`group relative transition-all duration-500 ${activeDemo === i ? 'scale-110' : 'hover:scale-105'}`}
+                      href={app.href}
+                      className="group flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-300 hover:bg-white/5"
                     >
-                      <div className={`
-                        w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-2
-                        bg-gradient-to-br ${page.color} opacity-80 group-hover:opacity-100
-                        transition-all duration-300 group-hover:shadow-lg
-                        ${activeDemo === i ? 'shadow-lg shadow-white/20' : ''}
-                      `}>
-                        <page.icon className="w-7 h-7 text-white" />
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${app.color} shadow-lg group-hover:scale-110 transition-transform`}>
+                        <app.icon className="w-5 h-5 text-white" />
                       </div>
-                      <p className="text-center text-xs text-dark-text-muted group-hover:text-white transition-colors">
-                        {page.name.split(' ')[0]}
-                      </p>
-                      
-                      {activeDemo === i && (
-                        <div className="absolute inset-0 rounded-2xl border-2 border-primary animate-pulse-border" />
-                      )}
+                      <span className="text-xs text-white/50 uppercase tracking-wider">{app.name.split(' ')[0]}</span>
                     </Link>
                   ))}
                 </div>
 
-                {/* Demo Stats */}
-                <div className="mt-8 grid grid-cols-3 gap-4">
-                  <div className="bg-dark-bg-secondary rounded-xl p-4 text-center">
-                    <div className="text-2xl font-bold text-white">98%</div>
-                    <div className="text-xs text-dark-text-muted">Efficiency</div>
-                    <div className="h-1 bg-dark-border rounded-full mt-2 overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-primary to-cyan-500 w-[98%]" />
+                <div className="mt-4 grid grid-cols-3 gap-3">
+                  <div className="bg-[#061c26] rounded-xl p-3 border border-white/5">
+                    <div className="text-lg font-bold text-white">98%</div>
+                    <div className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Efficiency</div>
+                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-primary to-accent w-[98%]" />
                     </div>
                   </div>
-                  <div className="bg-dark-bg-secondary rounded-xl p-4 text-center">
-                    <div className="text-2xl font-bold text-white">2.4k</div>
-                    <div className="text-xs text-dark-text-muted">Transactions</div>
-                    <div className="h-1 bg-dark-border rounded-full mt-2 overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500 w-[75%]" />
+                  <div className="bg-[#061c26] rounded-xl p-3 border border-white/5">
+                    <div className="text-lg font-bold text-white">2.4k</div>
+                    <div className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Transactions</div>
+                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-accent to-accentDark w-[75%]" />
                     </div>
                   </div>
-                  <div className="bg-dark-bg-secondary rounded-xl p-4 text-center">
-                    <div className="text-2xl font-bold text-white">99+</div>
-                    <div className="text-xs text-dark-text-muted">Performance</div>
-                    <div className="h-1 bg-dark-border rounded-full mt-2 overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-green-500 to-emerald-500 w-[99%]" />
+                  <div className="bg-[#061c26] rounded-xl p-3 border border-white/5">
+                    <div className="text-lg font-bold text-white">99+</div>
+                    <div className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Performance</div>
+                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-secondary to-primary w-[99%]" />
                     </div>
                   </div>
                 </div>
@@ -359,39 +301,38 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      {/* All Pages Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-dark-bg-secondary/50">
+      {/* Applications Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#061c26]/50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/20 text-primary rounded-full text-sm font-medium mb-4">
-              <Layers className="w-4 h-4" />
-              Complete Platform
+          <div className="text-center mb-14">
+            <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-accent/10 text-accent rounded-full text-sm font-bold uppercase tracking-wider mb-6">
+              <Layers className="w-5 h-5" />
+              ALL-IN-ONE SOLUTION
             </div>
-            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 font-serif">
-              Explore All Modules
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 tracking-tight">
+              EVERYTHING YOU NEED
             </h2>
-            <p className="text-lg text-dark-text-secondary max-w-2xl mx-auto">
-              From HR to Finance, CRM to Supply Chain - everything your business needs
+            <p className="text-white/40 max-w-2xl mx-auto text-lg font-light">
+              8 powerful business applications that work together seamlessly - 
+              no need to buy or learn multiple systems
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {allPages.map((page, i) => (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {applications.map((app, i) => (
               <Link 
                 key={i} 
-                href={page.href}
-                className="group bg-dark-card border border-dark-border rounded-2xl p-5 hover:border-primary/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10"
-                style={{ animationDelay: `${i * 0.05}s` }}
+                href={app.href}
+                className="group bg-[#0b2a38]/50 border border-white/5 rounded-2xl p-5 hover:border-accent/30 hover:bg-[#0b2a38] transition-all duration-300"
               >
-                <div className={`w-12 h-12 bg-gradient-to-br ${page.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <page.icon className="w-6 h-6 text-white" />
+                <div className={`w-12 h-12 bg-gradient-to-br ${app.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-lg transition-all duration-300`}>
+                  <app.icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-white font-semibold mb-1 group-hover:text-primary transition-colors">
-                  {page.name}
-                </h3>
-                <div className="flex items-center gap-1 text-dark-text-muted text-sm">
-                  <span>Explore</span>
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <h3 className="text-white font-bold text-sm mb-2 uppercase tracking-wider">{app.name}</h3>
+                <p className="text-white/40 text-xs font-light mb-3">{app.desc}</p>
+                <div className="flex items-center gap-2 text-accent text-xs font-bold uppercase tracking-wider">
+                  <span>LEARN MORE</span>
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-2 transition-transform" />
                 </div>
               </Link>
             ))}
@@ -400,65 +341,52 @@ export default function WelcomePage() {
       </section>
 
       {/* Features Strip */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary via-blue-600 to-blue-700 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-        <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
-        
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="grid md:grid-cols-4 gap-8">
-            {[
-              { icon: Shield, title: 'Bank-Level Security', desc: '256-bit encryption with SOC2 compliance' },
-              { icon: Cloud, title: 'Cloud Native', desc: '99.99% uptime with global CDN' },
-              { icon: Zap, title: 'Lightning Fast', desc: 'Optimized for speed on any device' },
-              { icon: Handshake, title: 'SADC Ready', desc: 'Built for African businesses' },
-            ].map((feature, i) => (
-              <div key={i} className="text-center">
-                <div className="w-16 h-16 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <feature.icon className="w-8 h-8 text-white" />
+      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary via-[#184250] to-secondary">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-6">
+            {features.map((feature, i) => (
+              <div key={i} className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+                  <feature.icon className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="text-white font-bold mb-2">{feature.title}</h3>
-                <p className="text-blue-200 text-sm">{feature.desc}</p>
+                <div>
+                  <h3 className="text-white font-bold text-xs uppercase tracking-wider mb-0.5">{feature.title}</h3>
+                  <p className="text-white/50 text-xs">{feature.desc}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Why Choose Section */}
       <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-accent/20 text-accent rounded-full text-sm font-medium mb-4">
-              <Star className="w-4 h-4" />
-              Testimonials
+            <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-accent/10 text-accent rounded-full text-sm font-bold uppercase tracking-wider mb-6">
+              <CheckCircle2 className="w-5 h-5" />
+              WHY CHOOSE LEMURSYSTEM
             </div>
-            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 font-serif">
-              Loved by Businesses
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 tracking-tight">
+              PERFECT FOR AFRICAN BUSINESSES
             </h2>
+            <p className="text-white/40 max-w-2xl mx-auto text-lg font-light">
+              Built specifically for small and medium businesses in Southern Africa - 
+              no complicated setup, no technical skills needed
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, i) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {whyChoose.map((item, i) => (
               <div 
                 key={i}
-                className="bg-dark-card border border-dark-border rounded-2xl p-8 hover:border-primary/30 transition-all duration-300 hover:-translate-y-2"
+                className="bg-[#0b2a38]/50 border border-white/5 rounded-3xl p-8 hover:border-white/10 transition-all duration-300"
               >
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, j) => (
-                    <Star key={j} className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-                  ))}
+                <div className="w-14 h-14 bg-gradient-to-br from-accent to-accentDark rounded-2xl flex items-center justify-center mb-5">
+                  <item.icon className="w-7 h-7 text-white" />
                 </div>
-                <p className="text-dark-text-secondary mb-6 leading-relaxed">"{testimonial.text}"</p>
-                <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${['from-blue-500', 'from-purple-500', 'from-green-500'][i]} to-transparent flex items-center justify-center text-white font-bold`}>
-                    {testimonial.name[0]}
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold">{testimonial.name}</div>
-                    <div className="text-dark-text-muted text-sm">{testimonial.role}</div>
-                  </div>
-                </div>
+                <h3 className="text-white font-bold text-lg mb-3 uppercase tracking-wide">{item.title}</h3>
+                <p className="text-white/50 font-light leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -466,102 +394,99 @@ export default function WelcomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-blue-600/20 to-accent/20" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,99,235,0.2)_0%,transparent_70%)]" />
-        
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl sm:text-6xl font-bold text-white mb-6 font-serif uppercase">
-            Ready to <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Transform</span>?
-          </h2>
-          <p className="text-xl text-dark-text-secondary mb-10 max-w-2xl mx-auto">
-            Join thousands of businesses already using LemurSystem to streamline their operations.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link 
-              href="/login" 
-              className="w-full sm:w-auto px-10 py-5 bg-gradient-to-r from-primary via-blue-500 to-blue-600 text-white font-bold rounded-2xl hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 hover:-translate-y-2 flex items-center justify-center gap-3 group"
-            >
-              Start Your Free Trial
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link 
-              href="/contact" 
-              className="w-full sm:w-auto px-10 py-5 border-2 border-dark-border text-dark-text-secondary font-bold rounded-2xl hover:border-white hover:text-white transition-all duration-300"
-            >
-              Contact Sales
-            </Link>
+      <section className="py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="relative bg-[#0b2a38] border border-white/10 rounded-3xl p-12 text-center overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
+            
+            <div className="relative z-10">
+              <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 tracking-tight">
+                READY TO <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-accentDark">SIMPLIFY</span> YOUR BUSINESS?
+              </h2>
+              <p className="text-white/40 mb-10 max-w-lg mx-auto text-lg font-light">
+                Join hundreds of businesses already using LemurSystem to save time, 
+                reduce costs, and grow their operations.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
+                <Link 
+                  href="/login?register=true" 
+                  className="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-accent to-accentDark text-white font-bold tracking-wider rounded-xl hover:shadow-xl hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-3"
+                >
+                  START FREE TRIAL
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+                <Link 
+                  href="/contact" 
+                  className="w-full sm:w-auto px-10 py-4 border border-white/20 text-white/70 font-bold tracking-wider rounded-xl hover:border-white/40 hover:text-white transition-all duration-300"
+                >
+                  CONTACT US
+                </Link>
+              </div>
+              <p className="mt-8 text-white/30 text-sm uppercase tracking-wider">
+                14-day free trial • No credit card required • Cancel anytime
+              </p>
+            </div>
           </div>
-          <p className="mt-6 text-dark-text-muted">
-            14-day free trial • No credit card required • Cancel anytime
-          </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-dark-bg-secondary border-t border-dark-border py-16 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-[#061c26] border-t border-white/5 py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
-            {/* Brand */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-10">
             <div className="lg:col-span-2">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-primary to-blue-700 rounded-xl flex items-center justify-center">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 bg-gradient-to-br from-accent to-accentDark rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-lg">L</span>
                 </div>
-                <span className="font-bold text-xl text-white font-serif">LemurSystem</span>
+                <span className="font-bold text-xl text-white tracking-tight">LEMUR<span className="text-accent">SYSTEM</span></span>
               </div>
-              <p className="text-dark-text-muted text-sm mb-6 max-w-sm">
+              <p className="text-white/40 text-sm mb-5 max-w-xs font-light">
                 The most comprehensive cloud-based ERP solution for SADC businesses. 
                 Simple, powerful, and built for growth.
               </p>
-              <div className="flex items-center gap-2 text-dark-text-muted text-sm">
-                <Cloud className="w-4 h-4" />
-                Powered by cloud infrastructure
+              <div className="flex items-center gap-2 text-white/30 text-sm">
+                <Globe2 className="w-4 h-4" />
+                <span className="uppercase tracking-wider text-xs">Serving All SADC Countries</span>
               </div>
             </div>
             
-            {/* Links */}
             <div>
-              <h4 className="font-semibold text-white mb-4">Product</h4>
-              <ul className="space-y-3 text-dark-text-muted text-sm">
-                <li><Link href="/features" className="hover:text-white transition">Features</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition">Pricing</Link></li>
-                <li><Link href="/industries" className="hover:text-white transition">Industries</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition">Contact</Link></li>
+              <h4 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">PRODUCT</h4>
+              <ul className="space-y-3 text-white/40 text-sm">
+                <li><Link href="/features" className="hover:text-white transition-colors">FEATURES</Link></li>
+                <li><Link href="/pricing" className="hover:text-white transition-colors">PRICING</Link></li>
+                <li><Link href="/industries" className="hover:text-white transition-colors">INDUSTRIES</Link></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">CONTACT</Link></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="font-semibold text-white mb-4">Company</h4>
-              <ul className="space-y-3 text-dark-text-muted text-sm">
-                <li><Link href="/about" className="hover:text-white transition">About</Link></li>
-                <li><a href="#" className="hover:text-white transition">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition">Careers</a></li>
-                <li><Link href="/contact" className="hover:text-white transition">Contact</Link></li>
+              <h4 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">COMPANY</h4>
+              <ul className="space-y-3 text-white/40 text-sm">
+                <li><Link href="/about" className="hover:text-white transition-colors">ABOUT</Link></li>
+                <li><a href="#" className="hover:text-white transition-colors">BLOG</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">CAREERS</a></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">CONTACT</Link></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="font-semibold text-white mb-4">Legal</h4>
-              <ul className="space-y-3 text-dark-text-muted text-sm">
-                <li><a href="#" className="hover:text-white transition">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-white transition">Security</a></li>
-                <li><a href="#" className="hover:text-white transition">GDPR</a></li>
+              <h4 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">LEGAL</h4>
+              <ul className="space-y-3 text-white/40 text-sm">
+                <li><a href="#" className="hover:text-white transition-colors">PRIVACY POLICY</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">TERMS OF SERVICE</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">SECURITY</a></li>
               </ul>
             </div>
           </div>
           
-          <div className="pt-8 border-t border-dark-border flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-dark-text-muted text-sm">
+          <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-white/30 text-sm uppercase tracking-wider">
               © 2026 LemurSystem. A product of Blacklemur Innovations. All rights reserved.
             </p>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-dark-text-muted text-sm">
-                <Globe className="w-4 h-4" />
-                SADC Countries Supported
-              </div>
-            </div>
           </div>
         </div>
       </footer>
