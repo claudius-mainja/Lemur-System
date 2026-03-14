@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,7 +9,7 @@ import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { useAuthStore, PLAN_CONFIG } from '@/stores/auth.store';
 import { 
-  Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, Building2, Users, DollarSign, Package, BarChart3, Globe, MapPin
+  Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, Building2, Users, DollarSign, Package, BarChart3, Globe, MapPin, UserPlus
 } from 'lucide-react';
 
 const SADC_COUNTRIES = [
@@ -83,9 +83,13 @@ type RegisterForm = z.infer<typeof registerSchema>;
 
 export default function CreateAccountPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [numUsers, setNumUsers] = useState(1);
   const { register: registerUser } = useAuthStore();
+  
+  const defaultPlan = (searchParams.get('plan') as 'starter' | 'professional' | 'enterprise') || 'starter';
 
   const form = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
@@ -98,9 +102,28 @@ export default function CreateAccountPage() {
       industry: 'technology',
       country: 'ZA',
       currency: 'ZAR',
-      plan: 'starter',
+      plan: defaultPlan,
     },
   });
+  
+  useEffect(() => {
+    const plan = searchParams.get('plan') as 'starter' | 'professional' | 'enterprise';
+    if (plan && ['starter', 'professional', 'enterprise'].includes(plan)) {
+      form.setValue('plan', plan);
+      if (plan === 'starter') setNumUsers(1);
+      else if (plan === 'professional') setNumUsers(10);
+    }
+  }, [searchParams, form]);
+
+  const selectedPlan = form.watch('plan');
+  const planConfig = PLAN_CONFIG[selectedPlan];
+  const maxUsers = planConfig?.maxUsers || 1;
+  const minUsers = 1;
+  
+  const calculateTotal = () => {
+    if (!planConfig?.price) return null;
+    return planConfig.price * numUsers;
+  };
 
   const onRegister = async (data: RegisterForm) => {
     setIsLoading(true);
@@ -120,7 +143,7 @@ export default function CreateAccountPage() {
       
       if (result.success) {
         toast.success(`Welcome to ${data.organizationName}!`);
-        router.push('/payment');
+        router.push(`/payment?plan=${data.plan}&users=${numUsers}`);
       } else {
         toast.error(result.error || 'Registration failed');
       }
@@ -345,11 +368,15 @@ export default function CreateAccountPage() {
                       type="radio"
                       {...form.register('plan')}
                       value={plan}
+                      onClick={() => {
+                        if (plan === 'starter') setNumUsers(1);
+                        else if (plan === 'professional') setNumUsers(10);
+                      }}
                       className="sr-only"
                     />
                     <p className="font-bold text-center text-sm uppercase tracking-wider text-white">{plan}</p>
                     {planDetails[plan].price && (
-                      <p className="text-xs text-center text-white/40 mt-1">${planDetails[plan].price}/mo</p>
+                      <p className="text-xs text-center text-white/40 mt-1">${planDetails[plan].price}/user</p>
                     )}
                     {!planDetails[plan].price && (
                       <p className="text-xs text-center text-white/40 mt-1">Custom</p>
@@ -358,6 +385,38 @@ export default function CreateAccountPage() {
                 ))}
               </div>
             </div>
+            
+            {PLAN_CONFIG[selectedPlan]?.price && (
+              <div>
+                <label className="block text-sm font-bold text-white/60 mb-3 uppercase tracking-wider flex items-center gap-2">
+                  <UserPlus className="w-4 h-4" />
+                  Number of Users
+                </label>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-white/60 text-sm">Users: <span className="text-white font-bold">{numUsers}</span></span>
+                    <span className="text-accent font-bold">
+                      ${calculateTotal()?.toFixed(2)}/month
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={minUsers}
+                    max={typeof maxUsers === 'number' ? maxUsers : 100}
+                    value={numUsers}
+                    onChange={(e) => setNumUsers(parseInt(e.target.value))}
+                    className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-accent"
+                  />
+                  <div className="flex justify-between mt-2 text-xs text-white/30">
+                    <span>1 user</span>
+                    <span>Max: {typeof maxUsers === 'number' ? maxUsers : 'Unlimited'}</span>
+                  </div>
+                  <p className="text-white/40 text-xs mt-3">
+                    ${PLAN_CONFIG[selectedPlan]?.price}/user/month × {numUsers} users
+                  </p>
+                </div>
+              </div>
+            )}
 
             <button
               type="submit"
