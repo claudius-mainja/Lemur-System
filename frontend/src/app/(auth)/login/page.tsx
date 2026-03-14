@@ -491,7 +491,7 @@ export default function LoginPage() {
               onClick={() => setIsLogin(!isLogin)}
               className="text-accent font-bold uppercase tracking-wider hover:underline"
             >
-              {isLogin ? 'START FREE TRIAL' : 'SIGN IN'}
+              {isLogin ? 'CREATE ACCOUNT' : 'SIGN IN'}
             </button>
           </p>
         </div>

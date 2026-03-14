@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { 
   Users, Wallet, PiggyBank, Package, FileText, Calendar, 
   BarChart3, Mail, Shield, Zap, Globe, TrendingUp, 
@@ -82,7 +84,6 @@ const features = [
 ];
 
 export default function FeaturesPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeModule, setActiveModule] = useState(0);
 
   return (
@@ -103,88 +104,31 @@ export default function FeaturesPage() {
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-radial from-primary/5 to-transparent rounded-full blur-3xl" />
       </div>
 
-      {/* Navigation */}
-      <nav className="relative z-50 border-b border-white/5 bg-[#0b2535]/90 backdrop-blur-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-12 h-12 bg-gradient-to-br from-accent to-accentDark rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-accent/30 transition-all duration-300 group-hover:scale-105">
-                <span className="text-white font-bold text-xl">L</span>
-              </div>
-              <div>
-                <span className="font-bold text-2xl text-white tracking-tight">LEMUR<span className="text-accent">SYSTEM</span></span>
-                <p className="text-xs text-white/50 tracking-[0.2em] uppercase">Enterprise ERP</p>
-              </div>
-            </Link>
-            <div className="hidden lg:flex items-center gap-8">
-              {[
-                { name: 'HOME', href: '/' },
-                { name: 'FEATURES', href: '/features' },
-                { name: 'PRICING', href: '/pricing' },
-                { name: 'INDUSTRIES', href: '/industries' },
-                { name: 'DOCS', href: '/docs' },
-                { name: 'ABOUT', href: '/about' },
-                { name: 'CONTACT', href: '/contact' },
-              ].map((item) => (
-                <Link 
-                  key={item.name}
-                  href={item.href}
-                  className="text-sm font-semibold text-white/60 hover:text-white tracking-wider transition-all duration-300 relative group"
-                >
-                  {item.name}
-                  {item.name === 'FEATURES' && (
-                    <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-accent" />
-                  )}
-                </Link>
-              ))}
-            </div>
-            <div className="hidden lg:flex items-center gap-4">
-              <Link href="/login" className="px-6 py-2.5 text-white/60 font-semibold tracking-wider text-sm hover:text-white transition-colors">
-                SIGN IN
-              </Link>
-              <Link href="/login" className="px-8 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-bold tracking-wider text-sm rounded-lg hover:shadow-lg hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-0.5">
-                GET STARTED
-              </Link>
-            </div>
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 text-white/60">
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-        {mobileMenuOpen && (
-          <div className="lg:hidden bg-[#0b2535]/98 backdrop-blur-xl border-t border-white/10 px-4 py-4 space-y-2">
-            {['HOME', 'FEATURES', 'PRICING', 'INDUSTRIES', 'DOCS', 'ABOUT', 'CONTACT'].map((item) => (
-              <Link key={item} href={item === 'HOME' ? '/' : `/${item.toLowerCase()}`} className="block py-2 text-white/60 font-semibold tracking-wider text-sm hover:text-white">
-                {item}
-              </Link>
-            ))}
-          </div>
-        )}
-      </nav>
+      <Navbar activePage="features" />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-full mb-8">
-            <Sparkles className="w-5 h-5 text-accent" />
-            <span className="text-white/60 font-bold tracking-widest text-sm uppercase">POWERFUL FEATURES</span>
+      <section className="relative pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-[calc(100vh-4rem)] flex items-center">
+        <div className="text-center max-w-4xl mx-auto w-full">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-6">
+            <Sparkles className="w-4 h-4 text-accent" />
+            <span className="text-white/60 text-xs uppercase">Powerful Features</span>
           </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-8 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-5">
             EVERYTHING YOU NEED
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-accent via-[#9e79ef] to-accentDark">
               TO RUN YOUR BUSINESS
             </span>
           </h1>
-          <p className="text-xl text-white/40 mb-12 leading-relaxed max-w-2xl mx-auto font-light">
+          <p className="text-base text-white/40 mb-8 max-w-xl mx-auto">
             8 integrated modules that work seamlessly together. 
-            From HR to accounting, we have got you covered.
+            From HR to accounting, we've got you covered.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
-            <Link href="/login" className="px-10 py-4 bg-gradient-to-r from-accent to-accentDark text-white font-bold tracking-wider rounded-xl hover:shadow-xl hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-1 flex items-center gap-3">
-              START FREE TRIAL <ArrowRight className="w-5 h-5" />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/create-account" className="px-8 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-medium rounded-lg hover:shadow-xl hover:shadow-accent/30 transition-all flex items-center gap-2">
+              Create Account <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/pricing" className="px-10 py-4 border border-white/20 text-white/60 font-bold tracking-wider rounded-xl hover:border-white/40 hover:text-white hover:bg-white/5 transition-all duration-300">
-              VIEW PRICING
+            <Link href="/pricing" className="px-8 py-3 border border-white/20 text-white/60 rounded-lg hover:border-white/40 hover:text-white transition-all">
+              View Pricing
             </Link>
           </div>
         </div>
@@ -287,25 +231,25 @@ export default function FeaturesPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-[#0b2535] border border-white/10 rounded-3xl p-12 text-center relative overflow-hidden">
+          <div className="bg-[#0b2535] border border-white/10 rounded-3xl p-8 text-center relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10" />
             <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
             <div className="relative z-10">
-              <h2 className="text-4xl font-bold text-white mb-6 uppercase tracking-tight">
-                READY TO GET STARTED?
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 uppercase">
+                Ready to Get Started?
               </h2>
-              <p className="text-white/40 mb-10 max-w-md mx-auto text-lg font-light">
+              <p className="text-white/40 mb-6 max-w-md mx-auto text-sm">
                 Start your free trial today and see how LemurSystem can transform your business.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
-                <Link href="/login" className="px-10 py-4 bg-gradient-to-r from-accent to-accentDark text-white font-bold tracking-wider rounded-xl hover:shadow-xl hover:shadow-accent/30 transition-all duration-300 hover:-translate-y-1">
-                  START FREE TRIAL
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Link href="/create-account" className="px-8 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-medium rounded-lg hover:shadow-xl hover:shadow-accent/30 transition-all">
+                  Create Account
                 </Link>
-                <Link href="/contact" className="px-10 py-4 border border-white/20 text-white/60 font-bold tracking-wider rounded-xl hover:border-white/40 hover:text-white transition-all duration-300">
-                  CONTACT SALES
+                <Link href="/contact" className="px-8 py-3 border border-white/20 text-white/60 rounded-lg hover:border-white/40 hover:text-white transition-all">
+                  Contact Sales
                 </Link>
               </div>
             </div>
@@ -313,22 +257,7 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#061520] border-t border-white/5 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-accent to-accentDark rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">L</span>
-              </div>
-              <span className="font-bold text-xl text-white tracking-tight">LEMUR<span className="text-accent">SYSTEM</span></span>
-            </div>
-            <p className="text-white/30 text-sm uppercase tracking-wider">
-              © 2026 LemurSystem. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
