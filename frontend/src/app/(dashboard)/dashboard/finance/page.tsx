@@ -259,11 +259,13 @@ export default function FinanceDashboard() {
 
   const [newCustomer, setNewCustomer] = useState({
     name: '',
+    company: '',
     email: '',
     phone: '',
     address: '',
     city: '',
     country: '',
+    serviceType: '',
   });
 
   const [newQuotation, setNewQuotation] = useState({
@@ -280,6 +282,7 @@ export default function FinanceDashboard() {
     sku: '',
     description: '',
     category: '',
+    type: 'product',
     unitPrice: 0,
     quantity: 0,
     minQuantity: 0,
@@ -343,10 +346,12 @@ export default function FinanceDashboard() {
       name: newCustomer.name,
       email: newCustomer.email,
       phone: newCustomer.phone,
-      company: newCustomer.name,
+      company: newCustomer.company,
       address: newCustomer.address,
       city: newCustomer.city,
       country: newCustomer.country || 'ZA',
+      serviceType: newCustomer.serviceType,
+      type: newCustomer.serviceType || 'customer',
       status: 'customer' as const,
       source: 'manual',
       totalSpent: 0,
@@ -372,7 +377,7 @@ export default function FinanceDashboard() {
     
     setCustomers([...customers, customer as any]);
     setShowCreateCustomer(false);
-    setNewCustomer({ name: '', email: '', phone: '', address: '', city: '', country: '' });
+    setNewCustomer({ name: '', company: '', email: '', phone: '', address: '', city: '', country: '', serviceType: '' });
     toast.success('Customer created successfully');
   };
 
@@ -431,7 +436,7 @@ export default function FinanceDashboard() {
     
     setProducts([...products, product as any]);
     setShowCreateProduct(false);
-    setNewProduct({ name: '', sku: '', description: '', category: '', unitPrice: 0, quantity: 0, minQuantity: 0 });
+    setNewProduct({ name: '', sku: '', description: '', category: '', type: 'product', unitPrice: 0, quantity: 0, minQuantity: 0 });
     toast.success('Product created successfully');
   };
 
@@ -1391,15 +1396,26 @@ export default function FinanceDashboard() {
               <h2 className="text-xl font-bold">Add Customer</h2>
             </div>
             <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-                <input
-                  type="text"
-                  value={newCustomer.name}
-                  onChange={(e) => setNewCustomer({ ...newCustomer, name: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                  required
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                  <input
+                    type="text"
+                    value={newCustomer.name}
+                    onChange={(e) => setNewCustomer({ ...newCustomer, name: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                  <input
+                    type="text"
+                    value={newCustomer.company}
+                    onChange={(e) => setNewCustomer({ ...newCustomer, company: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
@@ -1419,6 +1435,22 @@ export default function FinanceDashboard() {
                   onChange={(e) => setNewCustomer({ ...newCustomer, phone: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Service Type / Industry</label>
+                <select
+                  value={newCustomer.serviceType}
+                  onChange={(e) => setNewCustomer({ ...newCustomer, serviceType: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                >
+                  <option value="">Select Service Type</option>
+                  <option value="consulting">Consulting</option>
+                  <option value="software">Software Development</option>
+                  <option value="manufacturing">Manufacturing</option>
+                  <option value="retail">Retail</option>
+                  <option value="services">Professional Services</option>
+                  <option value="other">Other</option>
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
@@ -1568,7 +1600,7 @@ export default function FinanceDashboard() {
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Product/Service Name *</label>
                 <input
                   type="text"
                   value={newProduct.name}
@@ -1579,20 +1611,22 @@ export default function FinanceDashboard() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                  <select
+                    value={newProduct.type}
+                    onChange={(e) => setNewProduct({ ...newProduct, type: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                  >
+                    <option value="product">Product</option>
+                    <option value="service">Service</option>
+                  </select>
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">SKU</label>
                   <input
                     type="text"
                     value={newProduct.sku}
                     onChange={(e) => setNewProduct({ ...newProduct, sku: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                  <input
-                    type="text"
-                    value={newProduct.category}
-                    onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                   />
                 </div>

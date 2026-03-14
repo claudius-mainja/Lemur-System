@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-import { ArrowRight, Check, Menu, X, ChevronRight, BarChart3, Users, DollarSign, Mail, Phone, Target, TrendingUp } from 'lucide-react';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import { ArrowRight, Check, ChevronRight, BarChart3, Users, DollarSign, Mail, Phone, Target, TrendingUp } from 'lucide-react';
 
 const features = [
   { title: 'Lead Management', description: 'Track leads through the entire sales lifecycle from first contact to close', items: ['Lead capture forms', 'Lead scoring', 'Lead assignment', 'Lead nurturing', 'Conversion tracking'] },
@@ -21,32 +22,17 @@ const stats = [
 ];
 
 export default function CRMPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
-    <div className="min-h-screen bg-dark-bg overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520] overflow-x-hidden">
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px]" style={{ background: 'linear-gradient(135deg, #0b2f40 0%, #184250 50%, #7e49de 100%)', top: '10%', right: '10%' }} />
         <div className="absolute w-[500px] h-[500px] rounded-full opacity-15 blur-[80px]" style={{ background: 'linear-gradient(135deg, #7e49de 0%, #9e79ef 50%, #412576 100%)', bottom: '20%', left: '10%' }} />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(11,47,64,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(11,47,64,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
       </div>
 
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-bg/80 backdrop-blur-xl border-b border-dark-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary via-secondary to-accent rounded-2xl flex items-center justify-center">
-                <span className="text-white font-bold text-xl">L</span>
-              </div>
-              <div>
-                <span className="font-bold text-2xl text-white font-serif">LemurSystem</span>
-                <p className="text-xs text-dark-text-muted -mt-1">Enterprise ERP</p>
-              </div>
-            </Link>
-            <div className="hidden lg:flex items-center gap-1">
-              {[{ name: 'HOME', href: '/' }, { name: 'FEATURES', href: '/features' }, { name: 'PRICING', href: '/pricing' }, { name: 'INDUSTRIES', href: '/industries' }, { name: 'DOCS', href: '/docs' }, { name: 'ABOUT', href: '/about' }, { name: 'CONTACT', href: '/contact' }].map((item) => (
-                <Link key={item.name} href={item.href} className="px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium text-dark-text-secondary hover:text-white hover:bg-white/5">
-                  {item.name}
+      <Navbar activePage="applications" />
+
+      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                 </Link>
               ))}
             </div>
@@ -104,7 +90,7 @@ export default function CRMPage() {
         <div className="max-w-4xl mx-auto text-center"><h2 className="text-3xl font-bold text-white mb-6 uppercase">START YOUR FREE TRIAL</h2><Link href="/login" className="px-8 py-4 bg-white text-accent font-semibold rounded-xl inline-flex items-center gap-2">Get Started <ArrowRight className="w-5 h-5" /></Link></div>
       </section>
 
-      <footer className="bg-dark-bg-secondary border-t border-dark-border text-white py-12"><div className="max-w-7xl mx-auto text-center"><p className="text-dark-text-muted">© 2026 LemurSystem. A product of Blacklemur Innovations.</p></div></footer>
+      <Footer />
     </div>
   );
 }
