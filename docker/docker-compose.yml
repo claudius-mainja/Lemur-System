@@ -16,15 +16,14 @@ services:
     networks:
       - lemur-network
 
-  # Backend API
+  # Backend API (Python/FastAPI)
   api:
     build:
       context: ../backend
       dockerfile: Dockerfile
     container_name: lemursystem-api
     environment:
-      - NODE_ENV=production
-      - PORT=3001
+      - PYTHON_ENV=production
       - DATABASE_TYPE=postgres
       - DATABASE_URL=postgresql://erpuser:erppassword@db:5432/erp
       - DATABASE_HOST=db
@@ -34,8 +33,9 @@ services:
       - DATABASE_DATABASE=erp
       - REDIS_URL=redis://redis:6379
       - JWT_SECRET=lemursystem-super-secret-jwt-key-2024
-      - JWT_EXPIRES_IN=15m
-      - JWT_REFRESH_EXPIRES_IN=7d
+      - JWT_ALGORITHM=HS256
+      - JWT_EXPIRES_IN=900
+      - JWT_REFRESH_EXPIRES_IN=604800
     depends_on:
       db:
         condition: service_healthy
@@ -44,6 +44,8 @@ services:
     networks:
       - lemur-network
     restart: unless-stopped
+    ports:
+      - "3001:3001"
 
   # Frontend Web App
   frontend:
