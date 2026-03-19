@@ -20,9 +20,10 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-type TabId = 'hr' | 'finance' | 'supply-chain' | 'crm' | 'payroll' | 'productivity' | 'email' | 'documents' | 'integrations' | 'automations' | 'users';
+type TabId = 'hr' | 'finance' | 'supply-chain' | 'crm' | 'payroll' | 'productivity' | 'email' | 'documents' | 'integrations' | 'automations' | 'users' | 'admin';
 
 const tabs = [
+  { id: 'admin' as TabId, name: 'ADMIN', icon: Crown, color: 'from-accent to-accentDark', bgColor: 'bg-accent', adminOnly: true },
   { id: 'hr' as TabId, name: 'HUMAN RESOURCES', icon: Users, color: 'from-primary to-secondary', bgColor: 'bg-primary' },
   { id: 'finance' as TabId, name: 'FINANCE', icon: Wallet, color: 'from-accent to-accentDark', bgColor: 'bg-accent' },
   { id: 'crm' as TabId, name: 'CRM', icon: BarChart3, color: 'from-accent to-accentDark', bgColor: 'bg-accent' },
@@ -104,7 +105,7 @@ export default function DashboardLayout({
       router.push('/login');
     } else if (user) {
       const roleModules: Record<string, string> = {
-        admin: '/dashboard/hr',
+        admin: '/dashboard/admin',
         hr: '/dashboard/hr',
         finance: '/dashboard/finance',
         accountant: '/dashboard/finance',
