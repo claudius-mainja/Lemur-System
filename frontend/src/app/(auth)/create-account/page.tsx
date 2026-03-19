@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -81,7 +81,7 @@ const planDetails = {
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
-export default function CreateAccountPage() {
+function CreateAccountContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
@@ -89,7 +89,7 @@ export default function CreateAccountPage() {
   const [numUsers, setNumUsers] = useState(1);
   const { register: registerUser } = useAuthStore();
   
-  const defaultPlan = (searchParams.get('plan') as 'starter' | 'professional' | 'enterprise') || 'starter';
+  const defaultPlan = (searchParams?.get('plan') as 'starter' | 'professional' | 'enterprise') || 'starter';
 
   const form = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
@@ -107,7 +107,7 @@ export default function CreateAccountPage() {
   });
   
   useEffect(() => {
-    const plan = searchParams.get('plan') as 'starter' | 'professional' | 'enterprise';
+    const plan = searchParams?.get('plan') as 'starter' | 'professional' | 'enterprise';
     if (plan && ['starter', 'professional', 'enterprise'].includes(plan)) {
       form.setValue('plan', plan);
       if (plan === 'starter') setNumUsers(1);
@@ -129,7 +129,7 @@ export default function CreateAccountPage() {
     setIsLoading(true);
     try {
       const country = SADC_COUNTRIES.find(c => c.code === data.country) || SADC_COUNTRIES[0];
-      const result = registerUser({
+      const result = await registerUser({
         email: data.email,
         password: data.password,
         firstName: data.firstName,
@@ -437,5 +437,17 @@ export default function CreateAccountPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CreateAccountPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]">
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+      </div>
+    }>
+      <CreateAccountContent />
+    </Suspense>
   );
 }

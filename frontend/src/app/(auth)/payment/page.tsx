@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore, PLAN_CONFIG, SubscriptionPlan } from '@/stores/auth.store';
 import toast from 'react-hot-toast';
@@ -20,6 +20,18 @@ interface PlanDetails {
 }
 
 export default function PaymentPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]">
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+      </div>
+    }>
+      <PaymentContent />
+    </Suspense>
+  );
+}
+
+function PaymentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useAuthStore();
@@ -34,8 +46,8 @@ export default function PaymentPage() {
     cvv: '',
   });
 
-  const planParam = (searchParams.get('plan') as SubscriptionPlan) || user?.subscription || 'starter';
-  const usersParam = parseInt(searchParams.get('users') || '1');
+  const planParam = (searchParams?.get('plan') as SubscriptionPlan) || user?.subscription || 'starter';
+  const usersParam = parseInt(searchParams?.get('users') || '1');
   
   useEffect(() => {
     setNumUsers(usersParam);

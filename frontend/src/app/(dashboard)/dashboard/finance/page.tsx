@@ -152,7 +152,7 @@ export default function FinanceDashboard() {
   // Form states
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
-  const organizationId = useAuthStore.getState().user?.organizationId;
+  const organizationId = useAuthStore.getState().user?.organization_id;
 
   const loadDashboardStats = useCallback(async () => {
     try {

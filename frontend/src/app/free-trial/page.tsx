@@ -77,7 +77,7 @@ export default function FreeTrialPage() {
       const country = SADC_COUNTRIES.find(c => c.code === data.country) || SADC_COUNTRIES[0];
       const trialEndDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
       
-      const result = registerUser({
+      const result = await registerUser({
         email: data.email,
         password: data.password,
         firstName: data.firstName,
