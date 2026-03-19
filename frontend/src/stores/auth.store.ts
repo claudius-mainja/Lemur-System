@@ -67,6 +67,7 @@ interface User {
   isActive?: boolean;
   is_active?: boolean;
   phone?: string;
+  serverTime?: string;
 }
 
 interface AuthState {
@@ -75,8 +76,10 @@ interface AuthState {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  serverTime: string | null;
   setAuth: (user: User, accessToken: string, refreshToken: string) => void;
   setUser: (userData: Partial<User>) => void;
+  setServerTime: (time: string) => void;
   logout: () => void;
   setLoading: (loading: boolean) => void;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
@@ -128,6 +131,7 @@ export const useAuthStore = create<AuthState>()(
       refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
+      serverTime: null,
 
       setAuth: (user, accessToken, refreshToken) =>
         set({
@@ -142,6 +146,8 @@ export const useAuthStore = create<AuthState>()(
         set((state) => ({
           user: state.user ? { ...state.user, ...userData } : null,
         })),
+
+      setServerTime: (time) => set({ serverTime: time }),
 
       logout: () => {
         try {
@@ -182,12 +188,14 @@ export const useAuthStore = create<AuthState>()(
           
           if (data.access_token) {
             const user = mapApiUser(data.user);
+            const serverTime = data.server_time || new Date().toISOString();
             set({
-              user,
+              user: { ...user, serverTime },
               accessToken: data.access_token,
               refreshToken: data.refresh_token,
               isAuthenticated: true,
               isLoading: false,
+              serverTime,
             });
             return { success: true };
           }
@@ -203,7 +211,6 @@ export const useAuthStore = create<AuthState>()(
       register: async (data) => {
         set({ isLoading: true });
         try {
-          // Register the user
           const response = await authApi.register({
             email: data.email,
             password: data.password,
@@ -220,12 +227,14 @@ export const useAuthStore = create<AuthState>()(
           
           if (loginData.access_token) {
             const user = mapApiUser(loginData.user);
+            const serverTime = loginData.server_time || new Date().toISOString();
             set({
-              user,
+              user: { ...user, serverTime },
               accessToken: loginData.access_token,
               refreshToken: loginData.refresh_token,
               isAuthenticated: true,
               isLoading: false,
+              serverTime,
             });
             return { success: true };
           }
@@ -245,6 +254,7 @@ export const useAuthStore = create<AuthState>()(
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
+        serverTime: state.serverTime,
       }),
     }
   )

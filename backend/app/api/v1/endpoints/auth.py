@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from typing import Optional
+from datetime import datetime, timezone
 import uuid
 
 from app.db.database import get_db
@@ -85,25 +86,29 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
     
     access_token = create_access_token(user.id)
     refresh_token = create_refresh_token(user.id)
+    server_time = datetime.now(timezone.utc)
     
     return TokenResponse(
         access_token=access_token,
         refresh_token=refresh_token,
+        server_time=server_time,
         user=UserResponse(
             id=user.id,
             email=user.email,
             first_name=user.first_name,
             last_name=user.last_name,
-            role=user.role,
+            role=user.role.value if hasattr(user.role, 'value') else str(user.role),
             department=user.department,
+            phone=user.phone,
             organization_id=user.organization_id,
             organization_name=user.organization_name,
-            industry=user.industry,
-            subscription=user.subscription,
+            industry=user.industry.value if hasattr(user.industry, 'value') else str(user.industry),
+            subscription=user.subscription.value if hasattr(user.subscription, 'value') else str(user.subscription),
             currency=user.currency,
             country=user.country,
             is_active=user.is_active,
-            is_on_trial=user.is_on_trial
+            is_on_trial=user.is_on_trial,
+            server_time=server_time
         )
     )
 
@@ -125,10 +130,12 @@ def login(credentials: UserLogin, db: Session = Depends(get_db)):
     
     access_token = create_access_token(user.id)
     refresh_token = create_refresh_token(user.id)
+    server_time = datetime.now(timezone.utc)
     
     return TokenResponse(
         access_token=access_token,
         refresh_token=refresh_token,
+        server_time=server_time,
         user=UserResponse(
             id=user.id,
             email=user.email,
@@ -136,6 +143,7 @@ def login(credentials: UserLogin, db: Session = Depends(get_db)):
             last_name=user.last_name,
             role=user.role.value if hasattr(user.role, 'value') else str(user.role),
             department=user.department,
+            phone=user.phone,
             organization_id=user.organization_id,
             organization_name=user.organization_name,
             industry=user.industry.value if hasattr(user.industry, 'value') else str(user.industry),
@@ -143,7 +151,8 @@ def login(credentials: UserLogin, db: Session = Depends(get_db)):
             currency=user.currency,
             country=user.country,
             is_active=user.is_active,
-            is_on_trial=user.is_on_trial
+            is_on_trial=user.is_on_trial,
+            server_time=server_time
         )
     )
 
