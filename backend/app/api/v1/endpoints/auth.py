@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 import uuid
 
 from app.db.database import get_db
-from app.models.models import User
+from app.models.models import User, UserRole
 from app.schemas.schemas import UserCreate, UserLogin, UserResponse, TokenResponse, MessageResponse
 from app.core.security import (
     get_password_hash, 
@@ -65,12 +65,14 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
     user_id = str(uuid.uuid4())
     organization_id = str(uuid.uuid4())
     
+    # First user in organization is always admin
     user = User(
         id=user_id,
         email=user_data.email,
         password_hash=get_password_hash(user_data.password),
         first_name=user_data.first_name,
         last_name=user_data.last_name,
+        role=UserRole.ADMIN,
         organization_id=organization_id,
         organization_name=user_data.organization_name,
         industry=user_data.industry,
