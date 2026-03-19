@@ -156,6 +156,35 @@ export interface AppSettings {
   taxRate: number;
 }
 
+export interface TenantProfile {
+  id: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  department: string;
+  position: string;
+  accessLevel: 'full' | 'limited' | 'view_only';
+  permissions: string[];
+  modules: string[];
+  createdAt: string;
+  updatedAt: string;
+  isActive: boolean;
+  organizationId: string;
+  avatarUrl?: string;
+  phone?: string;
+}
+
+export interface SystemMetrics {
+  totalUsers: number;
+  activeUsers: number;
+  totalStorage: number;
+  storageUsed: number;
+  apiCalls: number;
+  uptime: number;
+  lastBackup: string;
+  activeSessions: number;
+}
+
 interface DataState {
   employees: Employee[];
   leaveRequests: LeaveRequest[];
@@ -167,6 +196,7 @@ interface DataState {
   inventory: InventoryItem[];
   payroll: PayrollRecord[];
   settings: AppSettings;
+  tenantProfiles: TenantProfile[];
   
   setEmployees: (employees: Employee[]) => void;
   addEmployee: (employee: Omit<Employee, 'id'>) => void;
@@ -205,6 +235,11 @@ interface DataState {
   updatePayrollRecord: (id: string, data: Partial<PayrollRecord>) => void;
   
   updateSettings: (settings: Partial<AppSettings>) => void;
+  
+  setTenantProfiles: (profiles: TenantProfile[]) => void;
+  addTenantProfile: (profile: Omit<TenantProfile, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  updateTenantProfile: (id: string, data: Partial<TenantProfile>) => void;
+  deleteTenantProfile: (id: string) => void;
 }
 
 const generateId = () => Math.random().toString(36).substring(2, 15);
@@ -237,6 +272,54 @@ const initialPayroll: PayrollRecord[] = [];
 
 const initialLeaveRequests: LeaveRequest[] = [];
 
+const initialTenantProfiles: TenantProfile[] = [
+  {
+    id: '1',
+    userId: 'user-1',
+    userName: 'Admin User',
+    userEmail: 'admin@company.com',
+    department: 'Administration',
+    position: 'System Administrator',
+    accessLevel: 'full',
+    permissions: ['all'],
+    modules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'settings', 'users'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isActive: true,
+    organizationId: 'org-1',
+  },
+  {
+    id: '2',
+    userId: 'user-2',
+    userName: 'HR Manager',
+    userEmail: 'hr@company.com',
+    department: 'Human Resources',
+    position: 'HR Manager',
+    accessLevel: 'limited',
+    permissions: ['hr', 'employees', 'leave'],
+    modules: ['hr', 'productivity'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isActive: true,
+    organizationId: 'org-1',
+  },
+  {
+    id: '3',
+    userId: 'user-3',
+    userName: 'Finance Manager',
+    userEmail: 'finance@company.com',
+    department: 'Finance',
+    position: 'Finance Manager',
+    accessLevel: 'limited',
+    permissions: ['finance', 'invoices', 'expenses'],
+    modules: ['finance', 'payroll'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isActive: true,
+    organizationId: 'org-1',
+  },
+];
+
 export const useDataStore = create<DataState>()(
   persist(
     (set) => ({
@@ -250,6 +333,7 @@ export const useDataStore = create<DataState>()(
       inventory: initialInventory,
       payroll: initialPayroll,
       settings: emptySettings,
+      tenantProfiles: initialTenantProfiles,
 
       setEmployees: (employees) => set({ employees }),
       
@@ -382,6 +466,33 @@ export const useDataStore = create<DataState>()(
       updateSettings: (settings) =>
         set((state) => ({
           settings: { ...state.settings, ...settings },
+        })),
+
+      setTenantProfiles: (profiles) => set({ tenantProfiles: profiles }),
+      
+      addTenantProfile: (profile) =>
+        set((state) => ({
+          tenantProfiles: [
+            ...state.tenantProfiles,
+            {
+              ...profile,
+              id: generateId(),
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            },
+          ],
+        })),
+
+      updateTenantProfile: (id, data) =>
+        set((state) => ({
+          tenantProfiles: state.tenantProfiles.map((p) =>
+            p.id === id ? { ...p, ...data, updatedAt: new Date().toISOString() } : p
+          ),
+        })),
+
+      deleteTenantProfile: (id) =>
+        set((state) => ({
+          tenantProfiles: state.tenantProfiles.filter((p) => p.id !== id),
         })),
     }),
     {
