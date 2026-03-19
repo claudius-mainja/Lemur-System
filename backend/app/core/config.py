@@ -8,16 +8,16 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
 
     # Database
-    DATABASE_TYPE: str = "postgres"
-    DATABASE_URL: str = os.getenv(
-        "DATABASE_URL",
-        "postgresql://erpuser:erppassword@localhost:5432/erp"
-    )
+    DATABASE_TYPE: str = os.getenv("DATABASE_TYPE", "postgres")
     DATABASE_HOST: str = os.getenv("DATABASE_HOST", "localhost")
     DATABASE_PORT: int = int(os.getenv("DATABASE_PORT", "5432"))
-    DATABASE_USERNAME: str = os.getenv("DATABASE_USERNAME", "erpuser")
-    DATABASE_PASSWORD: str = os.getenv("DATABASE_PASSWORD", "erppassword")
-    DATABASE_DATABASE: str = os.getenv("DATABASE_DATABASE", "erp")
+    DATABASE_USERNAME: str = os.getenv("DATABASE_USERNAME", "postgres")
+    DATABASE_PASSWORD: str = os.getenv("DATABASE_PASSWORD", "1923")
+    DATABASE_DATABASE: str = os.getenv("DATABASE_DATABASE", "postgres")
+    
+    @property
+    def DATABASE_URL(self) -> str:
+        return f"postgresql://{self.DATABASE_USERNAME}:{self.DATABASE_PASSWORD}@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_DATABASE}"
 
     # Redis
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379")
@@ -30,9 +30,13 @@ class Settings(BaseSettings):
 
     # Security
     SECRET_KEY: str = os.getenv("SECRET_KEY", "lemursystem-secret-key-2024")
+    
+    # CORS
+    CORS_ORIGINS: list = ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"]
 
     class Config:
         env_file = ".env"
         case_sensitive = True
+        extra = "ignore"  # Allow extra fields
 
 settings = Settings()

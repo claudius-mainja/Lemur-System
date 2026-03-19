@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1.endpoints import auth, employees, customers, invoices, products, payroll, supply_chain, crm
+from app.api.v1.endpoints import auth, employees, customers, invoices, products, payroll, supply_chain, crm, users, tenants
 from app.core.config import settings
 
 app = FastAPI(
@@ -19,14 +19,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Base routes
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
-app.include_router(employees.router, prefix="/api/v1/employees", tags=["Human Resources"])
-app.include_router(customers.router, prefix="/api/v1/customers", tags=["Customers"])
-app.include_router(invoices.router, prefix="/api/v1/invoices", tags=["Finance - Invoices"])
-app.include_router(products.router, prefix="/api/v1/products", tags=["Finance - Products"])
+
+# Users routes
+app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
+
+# Tenants routes
+app.include_router(tenants.router, prefix="/api/v1/tenants", tags=["Tenants"])
+
+# HR Module routes
+app.include_router(employees.router, prefix="/api/v1/hr", tags=["Human Resources"])
+
+# Finance Module routes  
+app.include_router(invoices.router, prefix="/api/v1/finance", tags=["Finance - Invoices"])
+app.include_router(customers.router, prefix="/api/v1/crm", tags=["CRM"])
+
+# Products routes (Finance Inventory)
+app.include_router(products.router, prefix="/api/v1/inventory", tags=["Inventory"])
+
+# Supply Chain routes
+app.include_router(supply_chain.router, prefix="/api/v1/supply-chain", tags=["Supply Chain"])
+
+# CRM routes
+app.include_router(crm.router, prefix="/api/v1/crm", tags=["CRM"])
+
+# Payroll routes
 app.include_router(payroll.router, prefix="/api/v1/payroll", tags=["Payroll"])
-app.include_router(supply_chain.router, prefix="/api/v1/inventory", tags=["Supply Chain"])
-app.include_router(crm.router, prefix="/api/v1/leads", tags=["CRM"])
 
 @app.get("/")
 async def root():

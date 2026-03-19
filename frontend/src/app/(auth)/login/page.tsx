@@ -131,7 +131,7 @@ export default function LoginPage() {
   const onLogin = async (data: LoginForm) => {
     setIsLoading(true);
     try {
-      const result = useAuthStore.getState().login(data.email, data.password);
+      const result = await useAuthStore.getState().login(data.email, data.password);
       if (result.success) {
         const user = useAuthStore.getState().user;
         toast.success('Welcome back!');
@@ -149,8 +149,7 @@ export default function LoginPage() {
   const onRegisterOrg = async (data: RegisterForm) => {
     setIsLoading(true);
     try {
-      const country = SADC_COUNTRIES.find(c => c.code === data.country) || SADC_COUNTRIES[0];
-      const result = useAuthStore.getState().register({
+      const result = await useAuthStore.getState().register({
         email: data.email,
         password: data.password,
         firstName: data.firstName,
@@ -158,13 +157,13 @@ export default function LoginPage() {
         organizationName: data.organizationName,
         industry: data.industry as any,
         country: data.country,
-        currency: country.currency,
+        currency: data.currency,
         plan: data.plan,
       });
       
       if (result.success) {
-        toast.success(`Welcome to ${data.organizationName}! Complete your subscription to get started.`);
-        router.push('/payment');
+        toast.success(`Welcome to ${data.organizationName}!`);
+        router.push('/dashboard/hr');
       } else {
         toast.error(result.error || 'Registration failed');
       }

@@ -208,5 +208,7 @@ class LeaveRequest(Base):
     days = Column(Integer, default=1)
     reason = Column(Text, nullable=True)
     status = Column(String, default="pending")
+    approved_by = Column(String, nullable=True)
+    approved_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

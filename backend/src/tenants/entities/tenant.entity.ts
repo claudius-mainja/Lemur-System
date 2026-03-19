@@ -1,19 +1,26 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from "typeorm";
 
 export enum SubscriptionPlan {
-  STARTER = 'starter',
-  PROFESSIONAL = 'professional',
-  ENTERPRISE = 'enterprise',
+  STARTER = "starter",
+  PROFESSIONAL = "professional",
+  ENTERPRISE = "enterprise",
 }
 
 export const PLAN_FEATURES = {
   [SubscriptionPlan.STARTER]: {
-    name: 'Starter',
-    price: 10.60,
+    name: "Starter",
+    price: 10.6,
     maxUsers: 6,
-    modules: ['hr', 'finance', 'supply-chain'],
+    modules: ["hr", "finance", "supply-chain"],
     storageGB: 10,
-    features: ['email_support', 'basic_reporting', 'mobile_app'],
+    features: ["email_support", "basic_reporting", "mobile_app"],
     apiAccess: false,
     customIntegrations: false,
     sso: false,
@@ -25,12 +32,28 @@ export const PLAN_FEATURES = {
     customTraining: false,
   },
   [SubscriptionPlan.PROFESSIONAL]: {
-    name: 'Professional',
-    price: 20.50,
+    name: "Professional",
+    price: 20.5,
     maxUsers: 50,
-    modules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain'],
+    modules: [
+      "hr",
+      "finance",
+      "crm",
+      "payroll",
+      "productivity",
+      "supply-chain",
+    ],
     storageGB: 100,
-    features: ['email_support', 'priority_support', 'basic_reporting', 'advanced_analytics', 'mobile_app', 'api_access', 'custom_integrations', 'sso'],
+    features: [
+      "email_support",
+      "priority_support",
+      "basic_reporting",
+      "advanced_analytics",
+      "mobile_app",
+      "api_access",
+      "custom_integrations",
+      "sso",
+    ],
     apiAccess: true,
     customIntegrations: true,
     sso: true,
@@ -42,12 +65,37 @@ export const PLAN_FEATURES = {
     customTraining: false,
   },
   [SubscriptionPlan.ENTERPRISE]: {
-    name: 'Enterprise',
+    name: "Enterprise",
     price: null,
     maxUsers: null,
-    modules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'email', 'documents'],
+    modules: [
+      "hr",
+      "finance",
+      "crm",
+      "payroll",
+      "productivity",
+      "supply-chain",
+      "email",
+      "documents",
+    ],
     storageGB: null,
-    features: ['email_support', 'priority_support', 'dedicated_support_24_7', 'basic_reporting', 'advanced_analytics', 'custom_reporting', 'mobile_app', 'api_access', 'custom_integrations', 'sso', 'advanced_security', 'dedicated_account_manager', 'on_premise', 'sla_guarantee', 'custom_training'],
+    features: [
+      "email_support",
+      "priority_support",
+      "dedicated_support_24_7",
+      "basic_reporting",
+      "advanced_analytics",
+      "custom_reporting",
+      "mobile_app",
+      "api_access",
+      "custom_integrations",
+      "sso",
+      "advanced_security",
+      "dedicated_account_manager",
+      "on_premise",
+      "sla_guarantee",
+      "custom_training",
+    ],
     apiAccess: true,
     customIntegrations: true,
     sso: true,
@@ -60,9 +108,9 @@ export const PLAN_FEATURES = {
   },
 };
 
-@Entity('tenants')
+@Entity("tenants")
 export class Tenant {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column({ unique: true })
@@ -83,16 +131,16 @@ export class Tenant {
   @Column({ nullable: true })
   country: string;
 
-  @Column({ default: 'active' })
+  @Column({ default: "active" })
   status: string;
 
-  @Column({ default: 'UTC' })
+  @Column({ default: "UTC" })
   timezone: string;
 
-  @Column({ default: 'USD' })
+  @Column({ default: "USD" })
   currency: string;
 
-  @Column({ default: 'en' })
+  @Column({ default: "en" })
   language: string;
 
   @Column({ nullable: true })
@@ -107,14 +155,14 @@ export class Tenant {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column({ 
-    type: 'enum', 
-    enum: SubscriptionPlan, 
-    default: SubscriptionPlan.STARTER 
+  @Column({
+    type: "enum",
+    enum: SubscriptionPlan,
+    default: SubscriptionPlan.STARTER,
   })
   plan: SubscriptionPlan;
 
-  @Column({ type: 'simple-array', nullable: true })
+  @Column({ type: "simple-array", nullable: true })
   modules: string[];
 
   @Column({ default: false })

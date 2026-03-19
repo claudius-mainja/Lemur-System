@@ -44,11 +44,11 @@ export default function AboutPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520] overflow-x-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div 
+        <div
           className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px]"
           style={{ background: 'linear-gradient(135deg, #7e49de 0%, #412576 50%, #0b2f40 100%)', top: '10%', right: '10%' }}
         />
-        <div 
+        <div
           className="absolute w-[500px] h-[500px] rounded-full opacity-15 blur-[80px]"
           style={{ background: 'linear-gradient(135deg, #0b2f40 0%, #184250 50%, #7e49de 100%)', bottom: '20%', left: '10%' }}
         />
@@ -71,7 +71,7 @@ export default function AboutPage() {
             </span>
           </h1>
           <p className="text-base text-white/40 mb-8 max-w-xl mx-auto">
-            We're on a mission to transform how businesses across SADC operate, 
+            We're on a mission to transform how businesses across SADC operate,
             innovate, and grow with world-class ERP solutions.
           </p>
         </div>
@@ -102,8 +102,8 @@ export default function AboutPage() {
               </div>
               <h3 className="text-2xl font-bold text-white mb-4 uppercase">OUR MISSION</h3>
               <p className="text-dark-text-secondary leading-relaxed">
-                To provide affordable, powerful, and user-friendly enterprise software 
-                that helps SADC businesses streamline operations, increase productivity, 
+                To provide affordable, powerful, and user-friendly enterprise software
+                that helps SADC businesses streamline operations, increase productivity,
                 and achieve sustainable growth.
               </p>
             </div>
@@ -113,8 +113,8 @@ export default function AboutPage() {
               </div>
               <h3 className="text-2xl font-bold text-white mb-4 uppercase">OUR VISION</h3>
               <p className="text-dark-text-secondary leading-relaxed">
-                To become the leading ERP platform in Africa, enabling businesses 
-                of all sizes to compete globally through digital transformation 
+                To become the leading ERP platform in Africa, enabling businesses
+                of all sizes to compete globally through digital transformation
                 and operational excellence.
               </p>
             </div>

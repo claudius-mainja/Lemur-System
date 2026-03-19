@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-type TabId = 'hr' | 'finance' | 'supply-chain' | 'crm' | 'payroll' | 'productivity' | 'email' | 'documents' | 'integrations' | 'automations';
+type TabId = 'hr' | 'finance' | 'supply-chain' | 'crm' | 'payroll' | 'productivity' | 'email' | 'documents' | 'integrations' | 'automations' | 'users';
 
 const tabs = [
   { id: 'hr' as TabId, name: 'HUMAN RESOURCES', icon: Users, color: 'from-primary to-secondary', bgColor: 'bg-primary' },
@@ -33,6 +33,7 @@ const tabs = [
   { id: 'documents' as TabId, name: 'DOCUMENTS', icon: FileText, color: 'from-primary to-secondary', bgColor: 'bg-primary' },
   { id: 'integrations' as TabId, name: 'INTEGRATIONS', icon: LinkIcon, color: 'from-accent to-accentDark', bgColor: 'bg-accent' },
   { id: 'automations' as TabId, name: 'AUTOMATIONS', icon: Zap as typeof Settings, color: 'from-accentDark to-accent', bgColor: 'bg-accentDark' },
+  { id: 'users' as TabId, name: 'USERS', icon: Shield, color: 'from-purple-500 to-pink-500', bgColor: 'bg-purple-500', adminOnly: true },
 ];
 
 const subscriptionFeatures = {
@@ -312,7 +313,7 @@ export default function DashboardLayout({
         <div className="border-t border-white/10">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex gap-2 overflow-x-auto py-3 -mb-3 scrollbar-hide">
-              {tabs.filter(tab => enabledModules.includes(tab.id)).map((tab, index) => (
+              {tabs.filter(tab => (enabledModules.includes(tab.id) || (tab.adminOnly && user?.role === 'admin'))).map((tab, index) => (
                 <Link
                   key={tab.id}
                   href={`/dashboard/${tab.id}`}
@@ -520,7 +521,7 @@ export default function DashboardLayout({
                 YOUR BUSINESS MODULES
               </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {tabs.filter(tab => enabledModules.includes(tab.id)).map((tab, index) => {
+              {tabs.filter(tab => (enabledModules.includes(tab.id) || (tab.adminOnly && user?.role === 'admin'))).map((tab, index) => {
                 return (
                 <Link 
                   key={tab.id}

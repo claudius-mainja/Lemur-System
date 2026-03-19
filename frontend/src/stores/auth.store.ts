@@ -1,17 +1,19 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { authApi, employeesApi } from '@/services/api';
 
 export type Industry = 'technology' | 'retail' | 'manufacturing' | 'healthcare' | 'education' | 'finance' | 'construction' | 'hospitality' | 'transportation' | 'agriculture' | 'mining' | 'telecommunications' | 'realestate' | 'legal' | 'consulting' | 'other';
 export type SubscriptionPlan = 'starter' | 'professional' | 'enterprise';
-export type UserRole = 'admin' | 'hr' | 'finance' | 'marketing' | 'manager' | 'employee';
+export type UserRole = 'admin' | 'hr' | 'finance' | 'manager' | 'employee' | 'accountant' | 'ordinary';
 
 export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
-  admin: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'settings'],
+  admin: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'settings', 'users'],
   hr: ['hr', 'productivity'],
   finance: ['finance', 'payroll'],
-  marketing: ['crm', 'productivity'],
+  accountant: ['finance', 'reports'],
   manager: ['hr', 'finance', 'crm', 'productivity'],
-  employee: ['productivity'],
+  employee: ['productivity', 'profile'],
+  ordinary: ['profile'],
 };
 
 export const PLAN_CONFIG = {
@@ -44,28 +46,27 @@ export const PLAN_CONFIG = {
 interface User {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
+  firstName?: string;
+  lastName?: string;
   role: UserRole;
   department?: string;
   avatarUrl?: string;
-  organizationId: string;
-  organizationName: string;
-  industry: Industry;
-  subscription: SubscriptionPlan;
+  organization_id?: string;
+  organization_name?: string;
+  organizationName?: string;
+  industry?: Industry;
+  subscription?: SubscriptionPlan;
   modules: string[];
-  currency: string;
-  timezone: string;
-  country: string;
-  isOnTrial: boolean;
+  currency?: string;
+  timezone?: string;
+  country?: string;
+  isOnTrial?: boolean;
   trialEndsAt?: string;
   isActive?: boolean;
-}
-
-interface StoredUser {
-  email: string;
-  password: string;
-  user: User;
+  is_active?: boolean;
+  phone?: string;
 }
 
 interface AuthState {
@@ -78,7 +79,7 @@ interface AuthState {
   setUser: (userData: Partial<User>) => void;
   logout: () => void;
   setLoading: (loading: boolean) => void;
-  login: (email: string, password: string) => { success: boolean; error?: string };
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   register: (data: {
     email: string;
     password: string;
@@ -89,27 +90,35 @@ interface AuthState {
     country: string;
     currency: string;
     plan: SubscriptionPlan;
-  }) => { success: boolean; error?: string };
+  }) => Promise<{ success: boolean; error?: string }>;
+  clearAuth: () => void;
 }
 
 const generateId = () => Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
 
-const getStoredUsers = (): StoredUser[] => {
-  if (typeof window === 'undefined') return [];
-  const stored = localStorage.getItem('erp-users');
-  return stored ? JSON.parse(stored) : [];
-};
-
-const saveUser = (user: StoredUser) => {
-  const users = getStoredUsers();
-  const existingIndex = users.findIndex(u => u.email === user.email);
-  if (existingIndex >= 0) {
-    users[existingIndex] = user;
-  } else {
-    users.push(user);
-  }
-  localStorage.setItem('erp-users', JSON.stringify(users));
-};
+const mapApiUser = (apiUser: any): User => ({
+  id: apiUser.id,
+  email: apiUser.email,
+  first_name: apiUser.first_name,
+  last_name: apiUser.last_name,
+  firstName: apiUser.first_name,
+  lastName: apiUser.last_name,
+  role: (apiUser.role as UserRole) || 'admin',
+  department: apiUser.department,
+  organization_id: apiUser.organization_id,
+  organization_name: apiUser.organization_name,
+  organizationName: apiUser.organization_name,
+  industry: apiUser.industry || 'other',
+  subscription: apiUser.subscription || apiUser.plan || 'starter',
+  modules: ROLE_PERMISSIONS[apiUser.role as UserRole] || ROLE_PERMISSIONS.employee,
+  currency: apiUser.currency || 'ZAR',
+  timezone: 'Africa/Johannesburg',
+  country: apiUser.country || 'ZA',
+  isOnTrial: apiUser.is_on_trial || true,
+  trialEndsAt: apiUser.trial_ends_at,
+  isActive: apiUser.is_active,
+  phone: apiUser.phone,
+});
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -118,7 +127,7 @@ export const useAuthStore = create<AuthState>()(
       accessToken: null,
       refreshToken: null,
       isAuthenticated: false,
-      isLoading: true,
+      isLoading: false,
 
       setAuth: (user, accessToken, refreshToken) =>
         set({
@@ -134,78 +143,99 @@ export const useAuthStore = create<AuthState>()(
           user: state.user ? { ...state.user, ...userData } : null,
         })),
 
-      logout: () =>
+      logout: () => {
+        try {
+          authApi.logout();
+        } catch (e) {
+          // Ignore logout API errors
+        }
         set({
           user: null,
           accessToken: null,
           refreshToken: null,
           isAuthenticated: false,
           isLoading: false,
-        }),
+        });
+      },
 
       setLoading: (loading) => set({ isLoading: loading }),
 
-      login: (email: string, password: string) => {
-        const users = getStoredUsers();
-        const foundUser = users.find(u => u.email === email && u.password === password);
-        
-        if (foundUser) {
-          const accessToken = generateId();
-          const refreshToken = generateId();
-          set({
-            user: foundUser.user,
-            accessToken,
-            refreshToken,
-            isAuthenticated: true,
-            isLoading: false,
-          });
-          return { success: true };
+      clearAuth: () => {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('erp-auth');
+          localStorage.removeItem('erp-users');
         }
-        
-        return { success: false, error: 'Invalid email or password' };
-      },
-
-      register: (data) => {
-        const users = getStoredUsers();
-        
-        if (users.find(u => u.email === data.email)) {
-          return { success: false, error: 'User with this email already exists' };
-        }
-
-        const organizationId = generateId();
-        const modules = [...PLAN_CONFIG[data.plan].modules];
-        
-        const newUser: User = {
-          id: generateId(),
-          email: data.email,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          role: 'admin',
-          organizationId,
-          organizationName: data.organizationName,
-          industry: data.industry,
-          subscription: data.plan,
-          modules,
-          currency: data.currency,
-          timezone: 'Africa/Johannesburg',
-          country: data.country,
-          isOnTrial: true,
-          trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        };
-
-        saveUser({ email: data.email, password: data.password, user: newUser });
-
-        const accessToken = generateId();
-        const refreshToken = generateId();
         set({
-          user: newUser,
-          accessToken,
-          refreshToken,
-          isAuthenticated: true,
+          user: null,
+          accessToken: null,
+          refreshToken: null,
+          isAuthenticated: false,
           isLoading: false,
         });
+      },
 
-        return { success: true };
+      login: async (email: string, password: string) => {
+        set({ isLoading: true });
+        try {
+          const response = await authApi.login(email, password);
+          const data = response.data;
+          
+          if (data.access_token) {
+            const user = mapApiUser(data.user);
+            set({
+              user,
+              accessToken: data.access_token,
+              refreshToken: data.refresh_token,
+              isAuthenticated: true,
+              isLoading: false,
+            });
+            return { success: true };
+          }
+          
+          return { success: false, error: 'Invalid response from server' };
+        } catch (error: any) {
+          set({ isLoading: false });
+          const message = error.response?.data?.detail || error.response?.data?.message || 'Login failed. Please check your credentials.';
+          return { success: false, error: message };
+        }
+      },
+
+      register: async (data) => {
+        set({ isLoading: true });
+        try {
+          // Register the user
+          const response = await authApi.register({
+            email: data.email,
+            password: data.password,
+            first_name: data.firstName,
+            last_name: data.lastName,
+            organization_name: data.organizationName,
+            industry: data.industry,
+            country: data.country,
+            currency: data.currency,
+            plan: data.plan,
+          });
+          
+          const loginData = response.data;
+          
+          if (loginData.access_token) {
+            const user = mapApiUser(loginData.user);
+            set({
+              user,
+              accessToken: loginData.access_token,
+              refreshToken: loginData.refresh_token,
+              isAuthenticated: true,
+              isLoading: false,
+            });
+            return { success: true };
+          }
+          
+          return { success: false, error: 'Registration response invalid' };
+        } catch (error: any) {
+          set({ isLoading: false });
+          const message = error.response?.data?.detail || error.response?.data?.message || 'Registration failed. Please try again.';
+          return { success: false, error: message };
+        }
       },
     }),
     {
