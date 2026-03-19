@@ -102,8 +102,23 @@ export default function DashboardLayout({
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/login');
+    } else if (user) {
+      const roleModules: Record<string, string> = {
+        admin: '/dashboard/hr',
+        hr: '/dashboard/hr',
+        finance: '/dashboard/finance',
+        accountant: '/dashboard/finance',
+        manager: '/dashboard/hr',
+        employee: '/dashboard/productivity',
+        ordinary: '/dashboard/profile',
+      };
+      
+      if (pathname === '/dashboard' || pathname === '/dashboard/') {
+        const redirectTo = roleModules[user.role] || '/dashboard/hr';
+        router.push(redirectTo);
+      }
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, user, pathname]);
 
   useEffect(() => {
     if (pathname) {

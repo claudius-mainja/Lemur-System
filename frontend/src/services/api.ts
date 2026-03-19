@@ -517,9 +517,40 @@ export const payrollApi = {
   
   markPaid: (id: string) => api.post(`/payroll/runs/${id}/mark-paid`, {}),
   
+  // Payroll Records
+  getPayroll: (params?: { employee_id?: string; status?: string }) => 
+    api.get('/payroll/payroll', { params }),
+  
+  getPayrollRecord: (id: string) => api.get(`/payroll/payroll/${id}`),
+  
+  createPayroll: (data: {
+    employee_id: string;
+    employee_name: string;
+    basic_salary: number;
+    allowances?: number;
+    overtime?: number;
+    bonuses?: number;
+    pay_period: string;
+    pay_date?: string;
+  }) => api.post('/payroll/payroll', data),
+  
+  updatePayroll: (id: string, data: any) => api.put(`/payroll/payroll/${id}`, data),
+  
+  processAllPayroll: (pay_period: string) => api.post(`/payroll/payroll/process-all`, { pay_period }),
+  
   // Payslips
-  getPayslips: (employeeId: string) => 
+  getPayslips: (params?: { employee_id?: string; pay_period?: string }) => 
+    api.get('/payroll/payslips', { params }),
+  
+  getPayslip: (id: string) => api.get(`/payroll/payslips/${id}`),
+  
+  getEmployeePayslips: (employeeId: string) => 
     api.get(`/payroll/payslips/employee/${employeeId}`),
+  
+  sendPayslip: (id: string) => api.post(`/payroll/payslips/${id}/send`),
+  
+  // Summary
+  getSummary: (pay_period?: string) => api.get('/payroll/summary', { params: { pay_period } }),
   
   // Dashboard
   getDashboardStats: () => api.get('/payroll/dashboard/stats'),
@@ -688,4 +719,149 @@ export const tenantsApi = {
   getSettings: (id: string) => api.get(`/tenants/${id}/settings`),
   
   getModules: (id: string) => api.get(`/tenants/${id}/modules`),
+};
+
+// Productivity API
+export const productivityApi = {
+  // Meetings
+  getMeetings: (params?: { start_date?: string; end_date?: string }) => 
+    api.get('/productivity/meetings', { params }),
+  
+  getMeeting: (id: string) => api.get(`/productivity/meetings/${id}`),
+  
+  createMeeting: (data: {
+    title: string;
+    description?: string;
+    meeting_type?: string;
+    location?: string;
+    meeting_link?: string;
+    start_time: string;
+    end_time: string;
+    attendee_ids?: string;
+    attendee_emails?: string;
+    reminder?: number;
+  }) => api.post('/productivity/meetings', data),
+  
+  updateMeeting: (id: string, data: any) => api.put(`/productivity/meetings/${id}`, data),
+  
+  deleteMeeting: (id: string) => api.delete(`/productivity/meetings/${id}`),
+  
+  // Calendar Events
+  getCalendarEvents: (params?: { start_date?: string; end_date?: string }) => 
+    api.get('/productivity/calendar', { params }),
+  
+  getCalendarEvent: (id: string) => api.get(`/productivity/calendar/${id}`),
+  
+  createCalendarEvent: (data: {
+    title: string;
+    description?: string;
+    event_type?: string;
+    start_date: string;
+    end_date: string;
+    all_day?: boolean;
+    location?: string;
+    reminder?: number;
+    color?: string;
+    attendees?: string;
+  }) => api.post('/productivity/calendar', data),
+  
+  updateCalendarEvent: (id: string, data: any) => api.put(`/productivity/calendar/${id}`, data),
+  
+  deleteCalendarEvent: (id: string) => api.delete(`/productivity/calendar/${id}`),
+  
+  // Tasks
+  getTasks: (params?: { status?: string; assigned_to?: string }) => 
+    api.get('/productivity/tasks', { params }),
+  
+  createTask: (data: {
+    title: string;
+    description?: string;
+    project_id?: string;
+    priority?: string;
+    due_date?: string;
+  }) => api.post('/productivity/tasks', data),
+  
+  updateTask: (id: string, data: any) => api.put(`/productivity/tasks/${id}`, data),
+  
+  completeTask: (id: string) => api.put(`/productivity/tasks/${id}/complete`),
+  
+  deleteTask: (id: string) => api.delete(`/productivity/tasks/${id}`),
+  
+  // Projects
+  getProjects: () => api.get('/productivity/projects'),
+  
+  getProject: (id: string) => api.get(`/productivity/projects/${id}`),
+  
+  createProject: (data: {
+    name: string;
+    description?: string;
+    start_date?: string;
+    end_date?: string;
+    budget?: number;
+  }) => api.post('/productivity/projects', data),
+  
+  updateProject: (id: string, data: any) => api.put(`/productivity/projects/${id}`, data),
+  
+  deleteProject: (id: string) => api.delete(`/productivity/projects/${id}`),
+  
+  // Stats
+  getStats: () => api.get('/productivity/dashboard/stats'),
+};
+
+// Currency API
+export const currencyApi = {
+  getSupportedCurrencies: () => api.get('/currencies'),
+  
+  convertCurrency: (amount: number, fromCurrency: string, toCurrency: string) => 
+    api.post('/currency/convert', { amount, from_currency: fromCurrency, to_currency: toCurrency }),
+  
+  getServerTime: () => api.get('/time'),
+};
+
+// Finance API extras
+export const financeApiExtra = {
+  // Quotations
+  getQuotations: (params?: { page?: number; limit?: number }) => 
+    api.get('/finance/quotations', { params }),
+  
+  createQuotation: (data: any) => api.post('/finance/quotations', data),
+  
+  updateQuotation: (id: string, data: any) => api.put(`/finance/quotations/${id}`, data),
+  
+  deleteQuotation: (id: string) => api.delete(`/finance/quotations/${id}`),
+  
+  // Payments
+  getPayments: () => api.get('/finance/payments'),
+  
+  createPayment: (data: {
+    invoice_id?: string;
+    amount: number;
+    payment_method?: string;
+    reference?: string;
+  }) => api.post('/finance/payments', data),
+  
+  // Expenses
+  getExpenses: () => api.get('/finance/expenses'),
+  
+  createExpense: (data: {
+    category: string;
+    description?: string;
+    amount: number;
+    currency?: string;
+    date?: string;
+    vendor?: string;
+  }) => api.post('/finance/expenses', data),
+  
+  // Transactions
+  getTransactions: () => api.get('/finance/transactions'),
+  
+  createTransaction: (data: {
+    type: string;
+    category?: string;
+    description?: string;
+    amount: number;
+    currency?: string;
+    date?: string;
+    reference?: string;
+  }) => api.post('/finance/transactions', data),
 };

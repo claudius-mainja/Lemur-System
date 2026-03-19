@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+from datetime import datetime, timezone
 import uuid
 
 from app.db.database import get_db
-from app.models.models import User, Tenant
-from app.schemas.schemas import TenantResponse, MessageResponse
+from app.models.models import User
+from app.schemas.schemas import MessageResponse
 from app.api.v1.endpoints.auth import get_current_user
 
 router = APIRouter()
