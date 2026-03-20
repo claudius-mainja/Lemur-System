@@ -432,10 +432,10 @@ export default function DashboardLayout({
       </nav>
 
       {/* Main Content */}
-      <main className={`pt-36 pb-8 transition-all duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      <main className={`pt-28 pb-8 transition-all duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <div className="px-4 sm:px-6 lg:px-8">
           {/* Welcome Banner */}
-          <div className="relative overflow-hidden bg-[#0b2535]/50 border border-white/10 rounded-3xl p-8 mb-8">
+          <div className="relative overflow-hidden bg-[#0b2535]/50 border border-white/10 rounded-3xl p-6 mb-6">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10" />
             <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
@@ -474,7 +474,7 @@ export default function DashboardLayout({
           </div>
 
           {/* Quick Stats */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {[
               { label: 'EMPLOYEES', value: stats.totalEmployees, icon: Users, gradient: 'from-primary to-secondary' },
               { label: 'REVENUE', value: `R${stats.totalRevenue.toLocaleString()}`, icon: DollarSign, gradient: 'from-accent to-accentDark' },
@@ -497,7 +497,7 @@ export default function DashboardLayout({
 
           {/* Alerts Section */}
           {totalNotifications > 0 && (
-            <div className="backdrop-blur-sm rounded-3xl border border-white/10 bg-[#0b2535]/30 mb-8 overflow-hidden animate-fade-in-up">
+            <div className="backdrop-blur-sm rounded-3xl border border-white/10 bg-[#0b2535]/30 mb-6 overflow-hidden animate-fade-in-up">
               <div className="p-6 border-b border-white/10">
                 <h3 className="font-bold uppercase tracking-widest flex items-center gap-4 text-xl text-white">
                   <div className="w-12 h-12 bg-gradient-to-r from-accent to-accentDark rounded-xl flex items-center justify-center">
@@ -531,7 +531,7 @@ export default function DashboardLayout({
           )}
 
           {/* Quick Actions */}
-          <div className="rounded-2xl border border-white/10 bg-[#0b2535]/30 mb-8">
+          <div className="rounded-2xl border border-white/10 bg-[#0b2535]/30 mb-6">
             <div className="px-6 py-5 border-b border-white/10">
               <h3 className="font-bold uppercase tracking-widest flex items-center gap-3 text-white">
                 <Zap className="w-5 h-5 text-accent" />
@@ -587,44 +587,6 @@ export default function DashboardLayout({
                   <span className="text-xs font-bold text-secondary uppercase tracking-wider">Tasks</span>
                 </Link>
               )}
-            </div>
-          </div>
-
-          {/* Module Cards */}
-          <div className="mb-8">
-              <h3 className="font-bold text-xl uppercase tracking-widest mb-6 flex items-center gap-3 text-white">
-                <Building2 className="w-5 h-5 text-accent" />
-                YOUR BUSINESS MODULES
-              </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {tabs.filter(tab => (enabledModules.includes(tab.id) || (tab.adminOnly && user?.role === 'admin'))).map((tab, index) => {
-                return (
-                <Link 
-                  key={tab.id}
-                  href={`/dashboard/${tab.id}`}
-                  className="group rounded-2xl p-5 border border-white/10 bg-[#0b2535]/30 hover:border-white/20 hover:bg-[#0b2535]/50 transition-all duration-200 hover:-translate-y-1"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                    <div className={`w-14 h-14 bg-gradient-to-br ${tab.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:shadow-lg transition-all duration-300`}>
-                      <tab.icon className="w-7 h-7 text-white" />
-                    </div>
-                    <h4 className="font-bold text-white text-lg mb-2 uppercase tracking-wide">{tab.name}</h4>
-                    <p className="text-sm text-white/40 font-light mb-4">
-                      {tab.id === 'hr' && `${stats.totalEmployees} employees`}
-                      {tab.id === 'finance' && `${stats.totalInvoices} invoices`}
-                      {tab.id === 'supply-chain' && `${inventory.length} items`}
-                      {tab.id === 'crm' && `${customers.length} customers`}
-                      {tab.id === 'payroll' && `${payroll.length} records`}
-                      {tab.id === 'productivity' && 'Manage tasks & projects'}
-                      {tab.id === 'email' && 'Communication hub'}
-                      {tab.id === 'documents' && 'File management'}
-                    </p>
-                    <span className="text-sm font-bold text-accent flex items-center gap-2 group-hover:gap-3 transition-all uppercase tracking-wider">
-                      MANAGE <ArrowRight className="w-4 h-4" />
-                    </span>
-                  </Link>
-                );
-              })}
             </div>
           </div>
 
