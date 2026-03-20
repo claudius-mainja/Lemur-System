@@ -114,7 +114,7 @@ const mapApiUser = (apiUser: any): User => ({
   organizationName: apiUser.organization_name,
   industry: apiUser.industry || 'other',
   subscription: apiUser.subscription || apiUser.plan || 'starter',
-  modules: ROLE_PERMISSIONS[apiUser.role as UserRole] || ROLE_PERMISSIONS.employee,
+  modules: apiUser.modules || ROLE_PERMISSIONS[apiUser.role as UserRole] || ROLE_PERMISSIONS.employee,
   currency: apiUser.currency || 'USD',
   timezone: 'Africa/Johannesburg',
   country: apiUser.country || 'ZA',
@@ -188,7 +188,22 @@ export const useAuthStore = create<AuthState>()(
           const data = response.data;
           
           if (data.access_token) {
-            const user = mapApiUser(data.user);
+            let user = mapApiUser(data.user);
+            
+            const storedTenantProfiles = localStorage.getItem('lemur-data-store');
+            if (storedTenantProfiles) {
+              try {
+                const parsed = JSON.parse(storedTenantProfiles);
+                const tenantProfiles = parsed.state?.tenantProfiles || [];
+                const userProfile = tenantProfiles.find((t: any) => t.userEmail === email || t.user_email === email);
+                if (userProfile && userProfile.modules && userProfile.modules.length > 0) {
+                  user = { ...user, modules: userProfile.modules };
+                }
+              } catch (e) {
+                console.log('Could not load tenant profile modules');
+              }
+            }
+            
             const serverTime = data.server_time || new Date().toISOString();
             set({
               user: { ...user, serverTime },
@@ -227,7 +242,11 @@ export const useAuthStore = create<AuthState>()(
           const loginData = response.data;
           
           if (loginData.access_token) {
-            const user = mapApiUser(loginData.user);
+            let user = mapApiUser(loginData.user);
+            
+            const modulesFromPlan = PLAN_CONFIG[data.plan as SubscriptionPlan]?.modules || [];
+            user = { ...user, modules: modulesFromPlan };
+            
             const serverTime = loginData.server_time || new Date().toISOString();
             set({
               user: { ...user, serverTime },

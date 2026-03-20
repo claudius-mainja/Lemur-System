@@ -149,6 +149,9 @@ export default function DashboardPage() {
   };
 
   const getUserModules = () => {
+    if (user?.modules && user.modules.length > 0) {
+      return user.modules;
+    }
     const userRole = user?.role || 'employee';
     const permissions = ROLE_PERMISSIONS[userRole] || [];
     
@@ -629,32 +632,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Activity Feed */}
-      <div className="bg-white/5 border border-white/10 rounded-xl p-5">
-        <h3 className="font-bold text-white uppercase tracking-wider text-sm mb-4 flex items-center gap-2">
-          <Activity className="w-4 h-4 text-accent" />
-          Recent Activity
-        </h3>
-        <div className="space-y-3">
-          {[
-            { icon: Users, color: 'from-blue-500 to-cyan-500', text: 'Employee management system active', time: 'Just now' },
-            { icon: FileText, color: 'from-emerald-500 to-teal-500', text: 'Finance module ready for transactions', time: 'Just now' },
-            { icon: Target, color: 'from-violet-500 to-purple-500', text: 'CRM tracking customer relationships', time: 'Just now' },
-            { icon: Calculator, color: 'from-orange-500 to-amber-500', text: 'Payroll processing available', time: 'Just now' },
-            { icon: Package, color: 'from-indigo-500 to-violet-500', text: 'Supply chain management active', time: 'Just now' },
-          ].map((activity, index) => (
-            <div key={index} className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
-              <div className={`w-10 h-10 bg-gradient-to-br ${activity.color} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                <activity.icon className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-white/80">{activity.text}</p>
-                <p className="text-xs text-white/40">{activity.time}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

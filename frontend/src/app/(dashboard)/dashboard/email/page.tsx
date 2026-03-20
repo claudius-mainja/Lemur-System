@@ -38,7 +38,7 @@ export default function EmailPage() {
   const [showCompose, setShowCompose] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [accounts, setAccounts] = useState<EmailAccount[]>([
-    { id: '1', email: 'user@lemursystem.com', name: 'Main Account', provider: 'LemurMail', unreadCount: 3 },
+    { id: '1', email: 'user@lemursystem.com', name: 'Main Account', provider: 'LemurMail', unreadCount: 0 },
   ]);
   const [activeAccount, setActiveAccount] = useState(accounts[0]);
   
@@ -50,34 +50,12 @@ export default function EmailPage() {
   });
 
   const [emails, setEmails] = useState<Record<EmailFolder, Email[]>>({
-    inbox: [
-      {
-        id: '1',
-        subject: 'Welcome to LemurSystem',
-        preview: 'Thank you for signing up. Here is a quick guide to get you started...',
-        from: 'support@lemursystem.com',
-        to: 'user@lemursystem.com',
-        date: '2024-01-15 10:30 AM',
-        status: 'unread',
-        starred: false,
-        body: 'Thank you for signing up with LemurSystem! We are excited to have you on board. Here is a quick guide to help you get started with your new ERP system.\n\nBest regards,\nThe LemurSystem Team',
-        attachments: [{ name: 'getting-started.pdf', size: '2.4 MB' }],
-      },
-      {
-        id: '2',
-        subject: 'Invoice #INV-2024-001 Generated',
-        preview: 'Your invoice has been generated and is ready for review...',
-        from: 'billing@lemursystem.com',
-        to: 'user@lemursystem.com',
-        date: '2024-01-14 3:45 PM',
-        status: 'unread',
-        starred: true,
-        body: 'Dear Customer,\n\nYour invoice #INV-2024-001 has been generated and is available for your review and payment.\n\nAmount Due: $500.00\nDue Date: January 30, 2024\n\nPlease log in to your account to view and pay your invoice.\n\nBest regards,\nBilling Department',
-      },
-      {
-        id: '3',
-        subject: 'Team Meeting Tomorrow',
-        preview: 'Hi team, just a reminder about our weekly sync meeting tomorrow...',
+    inbox: [],
+    sent: [],
+    drafts: [],
+    archive: [],
+    trash: [],
+  });
         from: 'manager@company.com',
         to: 'user@lemursystem.com',
         date: '2024-01-13 9:15 AM',

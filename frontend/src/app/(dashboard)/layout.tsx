@@ -100,6 +100,9 @@ export default function DashboardLayout({
 
   const subscription = subscriptionFeatures[user?.subscription || 'starter'];
   const userInitials = user ? `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}` : 'U';
+  
+  const userModules = user?.modules || [];
+  const enabledModules = userModules.length > 0 ? userModules : subscription.allowedModules;
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -156,8 +159,6 @@ export default function DashboardLayout({
     totalRevenue: invoices.filter(i => i.status === 'paid').reduce((sum, i) => sum + i.total, 0),
     inventoryValue: inventory.reduce((sum, i) => sum + i.totalValue, 0),
   };
-
-  const enabledModules = subscription.allowedModules;
 
   const handleLogout = () => {
     logout();
