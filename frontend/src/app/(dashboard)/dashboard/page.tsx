@@ -455,62 +455,40 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Modules Grid - Styled like Quick Actions */}
-      <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-        <h3 className="font-bold text-white uppercase tracking-wider text-sm mb-4 flex items-center gap-2">
+      {/* Modules Grid - Compact */}
+      <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+        <div className="flex items-center gap-2 mb-3">
           <Sparkles className="w-4 h-4 text-accent" />
-          Your Modules
-        </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <h3 className="font-bold text-white uppercase tracking-wider text-xs">Your Modules</h3>
+        </div>
+        <div className="flex flex-wrap gap-2">
           {MODULE_CONFIG.filter(mod => userModules.includes(mod.id)).map((module) => (
             <Link
               key={module.id}
               href={`/dashboard/${module.id}`}
-              className={`group relative flex flex-col items-center gap-1 p-3 bg-gradient-to-br ${module.gradient} rounded-xl text-white transition-all hover:scale-105 hover:shadow-lg`}
+              className={`flex items-center gap-2 px-3 py-2 bg-gradient-to-r ${module.gradient} rounded-lg text-white transition-all hover:scale-105 hover:shadow-lg`}
             >
-              <module.icon className="w-5 h-5" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">{module.name}</span>
+              <module.icon className="w-4 h-4" />
+              <span className="text-xs font-bold uppercase tracking-wider">{module.name}</span>
             </Link>
           ))}
           {userModules.includes('automations') && (
             <Link
               href="/dashboard/automations"
-              className="group relative flex flex-col items-center gap-1 p-3 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl text-white transition-all hover:scale-105 hover:shadow-lg"
+              className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-pink-500 to-rose-500 rounded-lg text-white transition-all hover:scale-105 hover:shadow-lg"
             >
-              <Zap className="w-5 h-5" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">Auto</span>
+              <Zap className="w-4 h-4" />
+              <span className="text-xs font-bold uppercase tracking-wider">Automations</span>
             </Link>
           )}
           {userModules.includes('settings') && (
             <Link
               href="/dashboard/settings/users"
-              className="group relative flex flex-col items-center gap-1 p-3 bg-gradient-to-br from-slate-500 to-gray-600 rounded-xl text-white transition-all hover:scale-105 hover:shadow-lg"
+              className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-slate-500 to-gray-600 rounded-lg text-white transition-all hover:scale-105 hover:shadow-lg"
             >
-              <Shield className="w-5 h-5" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">Settings</span>
+              <Shield className="w-4 h-4" />
+              <span className="text-xs font-bold uppercase tracking-wider">Settings</span>
             </Link>
-          )}
-        </div>
-      </div>
-
-      {/* Module Sub-Items Preview */}
-      <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-        <h3 className="font-bold text-white uppercase tracking-wider text-sm mb-4 flex items-center gap-2">
-          <Crown className="w-4 h-4 text-accent" />
-          Quick Access
-        </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-          {MODULE_CONFIG.filter(mod => userModules.includes(mod.id)).flatMap(mod => 
-            mod.subItems.slice(0, 2).map((sub, idx) => (
-              <Link
-                key={`${mod.id}-${sub.label}`}
-                href={sub.link}
-                className="flex items-center gap-2 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
-              >
-                <sub.icon className="w-4 h-4 text-white/60" />
-                <span className="text-xs text-white/80 font-medium">{sub.label}</span>
-              </Link>
-            ))
           )}
         </div>
       </div>
