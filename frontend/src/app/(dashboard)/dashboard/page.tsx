@@ -308,29 +308,15 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-white/20 transition-all">
           <div className="flex items-center justify-between mb-2">
             <div className={`w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center`}>
               <Users className="w-5 h-5 text-white" />
             </div>
-            {stats.totalEmployees > 0 && (
-              <span className="flex items-center text-emerald-400 text-xs font-medium">
-                <ArrowUpRight className="w-3 h-3" />
-              </span>
-            )}
           </div>
           <p className="text-2xl font-bold text-white">{stats.totalEmployees}</p>
           <p className="text-xs text-white/40 uppercase tracking-wider">Employees</p>
-        </div>
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-white/20 transition-all">
-          <div className="flex items-center justify-between mb-2">
-            <div className={`w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center`}>
-              <DollarSign className="w-5 h-5 text-white" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-white">{currencySymbol}{stats.totalRevenue.toLocaleString()}</p>
-          <p className="text-xs text-white/40 uppercase tracking-wider">Revenue</p>
         </div>
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-white/20 transition-all">
           <div className="flex items-center justify-between mb-2">
@@ -455,42 +441,45 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Modules Grid - Compact */}
-      <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-        <div className="flex items-center gap-2 mb-3">
-          <Sparkles className="w-4 h-4 text-accent" />
-          <h3 className="font-bold text-white uppercase tracking-wider text-xs">Your Modules</h3>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {MODULE_CONFIG.filter(mod => userModules.includes(mod.id)).map((module) => (
-            <Link
-              key={module.id}
-              href={`/dashboard/${module.id}`}
-              className={`flex items-center gap-2 px-3 py-2 bg-gradient-to-r ${module.gradient} rounded-lg text-white transition-all hover:scale-105 hover:shadow-lg`}
-            >
-              <module.icon className="w-4 h-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">{module.name}</span>
-            </Link>
-          ))}
-          {userModules.includes('automations') && (
-            <Link
-              href="/dashboard/automations"
-              className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-pink-500 to-rose-500 rounded-lg text-white transition-all hover:scale-105 hover:shadow-lg"
-            >
-              <Zap className="w-4 h-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">Automations</span>
-            </Link>
-          )}
-          {userModules.includes('settings') && (
-            <Link
-              href="/dashboard/settings/users"
-              className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-slate-500 to-gray-600 rounded-lg text-white transition-all hover:scale-105 hover:shadow-lg"
-            >
-              <Shield className="w-4 h-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">Settings</span>
-            </Link>
-          )}
-        </div>
+      {/* Modules Grid - Icon Only */}
+      <div className="flex flex-wrap gap-2 items-center">
+        {MODULE_CONFIG.filter(mod => userModules.includes(mod.id)).map((module) => (
+          <Link
+            key={module.id}
+            href={`/dashboard/${module.id}`}
+            title={module.name}
+            className={`group flex items-center justify-center w-10 h-10 bg-gradient-to-br ${module.gradient} rounded-lg text-white transition-all hover:scale-110 hover:shadow-lg hover:shadow-primary/20`}
+          >
+            <module.icon className="w-5 h-5" />
+          </Link>
+        ))}
+        {userModules.includes('automations') && (
+          <Link
+            href="/dashboard/automations"
+            title="Automations"
+            className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg text-white transition-all hover:scale-110 hover:shadow-lg hover:shadow-pink-500/20"
+          >
+            <Zap className="w-5 h-5" />
+          </Link>
+        )}
+        {userModules.includes('settings') && (
+          <Link
+            href="/dashboard/settings/users"
+            title="Settings"
+            className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-slate-500 to-gray-600 rounded-lg text-white transition-all hover:scale-110 hover:shadow-lg hover:shadow-slate-500/20"
+          >
+            <Shield className="w-5 h-5" />
+          </Link>
+        )}
+        {userModules.includes('email') && (
+          <Link
+            href="/dashboard/email"
+            title="Email"
+            className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg text-white transition-all hover:scale-110 hover:shadow-lg hover:shadow-amber-500/20"
+          >
+            <Mail className="w-5 h-5" />
+          </Link>
+        )}
       </div>
 
       {/* Two Column Layout */}

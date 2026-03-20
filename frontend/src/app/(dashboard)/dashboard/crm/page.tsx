@@ -8,7 +8,7 @@ import {
   TrendingUp, DollarSign, Star, Edit, Trash2, CheckCircle, XCircle, Clock,
   FileSpreadsheet, Eye, X, Printer, Building2, RefreshCw, Target, Send,
   Facebook, Twitter, Instagram, Linkedin, Link, Unlink, Sparkles, Wand2,
-  Calendar, Clock3, Upload, FileText, MessageSquare, Loader2
+  Calendar, Clock3, Upload, FileText, MessageSquare, Loader2, Image, Video, Film, X as XIcon
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -100,6 +100,7 @@ export default function CRMDashboard() {
   const [aiPrompt, setAiPrompt] = useState('');
   const [aiSource, setAiSource] = useState<'chatgpt' | 'perplexity' | 'gemini'>('chatgpt');
   const [generatedContent, setGeneratedContent] = useState('');
+  const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
 
   const loadDashboardStats = useCallback(async () => {
     try {
@@ -169,8 +170,8 @@ export default function CRMDashboard() {
   };
 
   const handleSchedulePost = async () => {
-    if (!newPost.content.trim()) {
-      toast.error('Please enter post content');
+    if (!newPost.content.trim() && mediaPreviews.length === 0) {
+      toast.error('Please enter post content or add media');
       return;
     }
     if (!newPost.scheduledDate || !newPost.scheduledTime) {
@@ -182,7 +183,7 @@ export default function CRMDashboard() {
     addSocialPost({
       platform: newPost.platform,
       content: newPost.content,
-      mediaUrls: [],
+      mediaUrls: mediaPreviews,
       scheduledFor: scheduledDateTime,
       status: 'scheduled',
       aiGenerated: false,
@@ -196,6 +197,26 @@ export default function CRMDashboard() {
       scheduledTime: '',
       mediaFiles: [],
     });
+    setMediaPreviews([]);
+  };
+
+  const handleMediaUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setMediaPreviews((prev) => [...prev, event.target!.result as string]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeMedia = (index: number) => {
+    setMediaPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleAIGenerate = async () => {
@@ -534,6 +555,52 @@ export default function CRMDashboard() {
               className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white resize-none"
             />
           </div>
+          
+          {/* Media Upload Section */}
+          <div>
+            <label className="block text-sm text-white/60 mb-2">Add Media (Images, Videos, Reels)</label>
+            <div className="flex flex-wrap gap-2 mb-3">
+              <label className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg cursor-pointer hover:bg-white/10 transition">
+                <Image className="w-4 h-4 text-white/60" />
+                <span className="text-sm text-white/60">Image</span>
+                <input type="file" accept="image/*" multiple className="hidden" onChange={handleMediaUpload} />
+              </label>
+              <label className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg cursor-pointer hover:bg-white/10 transition">
+                <Video className="w-4 h-4 text-white/60" />
+                <span className="text-sm text-white/60">Video</span>
+                <input type="file" accept="video/*" multiple className="hidden" onChange={handleMediaUpload} />
+              </label>
+              <label className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg cursor-pointer hover:bg-white/10 transition">
+                <Film className="w-4 h-4 text-white/60" />
+                <span className="text-sm text-white/60">Reel</span>
+                <input type="file" accept="video/mp4,video/webm" multiple className="hidden" onChange={handleMediaUpload} />
+              </label>
+            </div>
+            
+            {/* Media Previews */}
+            {mediaPreviews.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {mediaPreviews.map((preview, index) => (
+                  <div key={index} className="relative group">
+                    {preview.startsWith('data:image') ? (
+                      <img src={preview} alt="" className="w-20 h-20 object-cover rounded-lg" />
+                    ) : preview.startsWith('data:video') ? (
+                      <div className="w-20 h-20 bg-white/10 rounded-lg flex items-center justify-center">
+                        <Video className="w-8 h-8 text-white/60" />
+                      </div>
+                    ) : null}
+                    <button
+                      onClick={() => removeMedia(index)}
+                      className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                    >
+                      <XIcon className="w-3 h-3 text-white" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-white/60 mb-1">Date</label>
@@ -556,7 +623,7 @@ export default function CRMDashboard() {
           </div>
           <div className="flex justify-end gap-3">
             <button
-              onClick={() => setNewPost({ content: '', platform: 'facebook', scheduledDate: '', scheduledTime: '', mediaFiles: [] })}
+              onClick={() => { setNewPost({ content: '', platform: 'facebook', scheduledDate: '', scheduledTime: '', mediaFiles: [] }); setMediaPreviews([]); }}
               className="px-4 py-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg"
             >
               Clear

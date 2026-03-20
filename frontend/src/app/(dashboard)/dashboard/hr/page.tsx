@@ -210,6 +210,16 @@ export default function HRDashboard() {
     clockIn: new Date().toTimeString().slice(0, 5),
     breakDuration: 0,
   });
+  
+  const [newContract, setNewContract] = useState({
+    employeeId: '',
+    title: '',
+    contractType: 'employment',
+    startDate: new Date().toISOString().split('T')[0],
+    endDate: '',
+    salary: 0,
+    terms: '',
+  });
 
   const loadDashboardStats = useCallback(async () => {
     try {
@@ -717,7 +727,7 @@ export default function HRDashboard() {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold text-white">Employee Contracts</h2>
         <button
-          onClick={() => toast.success('Contract creation coming soon')}
+          onClick={() => setShowContractModal(true)}
           className="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-90"
         >
           <Plus className="w-4 h-4" /> New Contract
@@ -1201,6 +1211,40 @@ export default function HRDashboard() {
       reason: '',
     });
     loadLeaveRequests();
+  };
+
+  const handleCreateContract = () => {
+    if (!newContract.employeeId || !newContract.title || !newContract.startDate) {
+      toast.error('Please fill in required fields');
+      return;
+    }
+    const employee = employees.find(e => e.id === newContract.employeeId);
+    const contract: Contract = {
+      id: Math.random().toString(36).substring(2, 15),
+      title: newContract.title,
+      contractType: newContract.contractType,
+      status: 'draft',
+      startDate: newContract.startDate,
+      endDate: newContract.endDate || undefined,
+      salary: newContract.salary,
+      employeeId: newContract.employeeId,
+      employeeName: employee ? `${employee.firstName} ${employee.lastName}` : 'Unknown',
+      employeeEmail: employee?.email,
+      terms: newContract.terms,
+      createdAt: new Date().toISOString(),
+    };
+    setContracts([...contracts, contract]);
+    toast.success('Contract created successfully');
+    setShowContractModal(false);
+    setNewContract({
+      employeeId: '',
+      title: '',
+      contractType: 'employment',
+      startDate: new Date().toISOString().split('T')[0],
+      endDate: '',
+      salary: 0,
+      terms: '',
+    });
   };
 
   return (
@@ -1980,6 +2024,117 @@ export default function HRDashboard() {
                   </>
                 );
               })()}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Contract Creation Modal */}
+      {showContractModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-[#0b2535] rounded-xl p-6 w-full max-w-lg border border-white/10 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-semibold text-white">Create New Contract</h3>
+              <button onClick={() => setShowContractModal(false)} className="text-white/50 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-white/60 mb-1 uppercase tracking-wider">Employee</label>
+                <select
+                  value={newContract.employeeId}
+                  onChange={(e) => setNewContract({ ...newContract, employeeId: e.target.value })}
+                  className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
+                  required
+                >
+                  <option value="">Select Employee</option>
+                  {employees.map((emp) => (
+                    <option key={emp.id} value={emp.id}>{emp.firstName} {emp.lastName}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm text-white/60 mb-1 uppercase tracking-wider">Contract Title</label>
+                <input
+                  type="text"
+                  value={newContract.title}
+                  onChange={(e) => setNewContract({ ...newContract, title: e.target.value })}
+                  placeholder="e.g., Employment Contract"
+                  className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-white/60 mb-1 uppercase tracking-wider">Contract Type</label>
+                  <select
+                    value={newContract.contractType}
+                    onChange={(e) => setNewContract({ ...newContract, contractType: e.target.value })}
+                    className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
+                  >
+                    <option value="employment">Employment</option>
+                    <option value="vendor">Vendor</option>
+                    <option value="client">Client</option>
+                    <option value="nda">NDA</option>
+                    <option value="service">Service</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm text-white/60 mb-1 uppercase tracking-wider">Annual Salary</label>
+                  <input
+                    type="number"
+                    value={newContract.salary}
+                    onChange={(e) => setNewContract({ ...newContract, salary: parseFloat(e.target.value) || 0 })}
+                    className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-white/60 mb-1 uppercase tracking-wider">Start Date</label>
+                  <input
+                    type="date"
+                    value={newContract.startDate}
+                    onChange={(e) => setNewContract({ ...newContract, startDate: e.target.value })}
+                    className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-white/60 mb-1 uppercase tracking-wider">End Date (Optional)</label>
+                  <input
+                    type="date"
+                    value={newContract.endDate}
+                    onChange={(e) => setNewContract({ ...newContract, endDate: e.target.value })}
+                    className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm text-white/60 mb-1 uppercase tracking-wider">Terms & Conditions</label>
+                <textarea
+                  value={newContract.terms}
+                  onChange={(e) => setNewContract({ ...newContract, terms: e.target.value })}
+                  placeholder="Contract terms and conditions..."
+                  rows={4}
+                  className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white resize-none"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button
+                  onClick={() => setShowContractModal(false)}
+                  className="px-4 py-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleCreateContract}
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                >
+                  Create Contract
+                </button>
+              </div>
             </div>
           </div>
         </div>
