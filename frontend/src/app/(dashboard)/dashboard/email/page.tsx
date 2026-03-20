@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuthStore } from '@/stores/auth.store';
 import { 
   Mail, Inbox, Send, Archive, Trash2, Star, Search, Plus, 
   MoreHorizontal, Paperclip, Clock, User, ChevronDown, Reply,
@@ -33,14 +34,13 @@ interface EmailAccount {
 }
 
 export default function EmailPage() {
+  const { user } = useAuthStore();
   const [activeFolder, setActiveFolder] = useState<EmailFolder>('inbox');
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
   const [showCompose, setShowCompose] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [accounts, setAccounts] = useState<EmailAccount[]>([
-    { id: '1', email: 'user@lemursystem.com', name: 'Main Account', provider: 'LemurMail', unreadCount: 0 },
-  ]);
-  const [activeAccount, setActiveAccount] = useState(accounts[0]);
+  const [accounts, setAccounts] = useState<EmailAccount[]>([]);
+  const [activeAccount, setActiveAccount] = useState<EmailAccount | null>(null);
   
   const [composeEmail, setComposeEmail] = useState({
     to: '',
@@ -56,31 +56,22 @@ export default function EmailPage() {
     archive: [],
     trash: [],
   });
-        from: 'manager@company.com',
-        to: 'user@lemursystem.com',
-        date: '2024-01-13 9:15 AM',
-        status: 'read',
-        starred: false,
-        body: 'Hi Team,\n\nJust a reminder about our weekly sync meeting tomorrow at 10 AM.\n\nAgenda:\n- Project updates\n- Q1 planning\n- Team announcements\n\nPlease come prepared with your updates.\n\nBest,\nManager',
-      },
-    ],
-    sent: [
-      {
-        id: '4',
-        subject: 'Re: Invoice Inquiry',
-        preview: 'Thank you for your inquiry. Please find attached...',
-        from: 'user@lemursystem.com',
-        to: 'billing@company.com',
-        date: '2024-01-12 2:30 PM',
-        status: 'read',
-        starred: false,
-        body: 'Dear Support,\n\nThank you for your prompt response. I have reviewed the invoice and everything looks correct.\n\nBest regards,\nUser',
-      },
-    ],
-    drafts: [],
-    archive: [],
-    trash: [],
-  });
+
+  useEffect(() => {
+    const userEmail = user?.email || 'user@lemursystem.com';
+    const account = { id: '1', email: userEmail, name: user?.firstName || 'User', provider: 'LemurMail', unreadCount: 0 };
+    setAccounts([account]);
+    setActiveAccount(account);
+    
+    const storedEmails = localStorage.getItem('lemur-emails');
+    if (storedEmails) {
+      setEmails(JSON.parse(storedEmails));
+    }
+  }, [user]);
+
+  useEffect(() => {
+    localStorage.setItem('lemur-emails', JSON.stringify(emails));
+  }, [emails]);
 
   const folderCounts: Record<EmailFolder, number> = {
     inbox: emails.inbox.filter(e => e.status === 'unread').length,
@@ -114,7 +105,7 @@ export default function EmailPage() {
       id: Date.now().toString(),
       subject: composeEmail.subject,
       preview: composeEmail.body.substring(0, 50) + '...',
-      from: activeAccount.email,
+      from: activeAccount?.email || user?.email || 'user@lemursystem.com',
       to: composeEmail.to,
       date: new Date().toLocaleString(),
       status: 'read',
