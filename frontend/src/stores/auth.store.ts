@@ -114,7 +114,7 @@ const mapApiUser = (apiUser: any): User => ({
   industry: apiUser.industry || 'other',
   subscription: apiUser.subscription || apiUser.plan || 'starter',
   modules: ROLE_PERMISSIONS[apiUser.role as UserRole] || ROLE_PERMISSIONS.employee,
-  currency: apiUser.currency || 'ZAR',
+  currency: apiUser.currency || 'USD',
   timezone: 'Africa/Johannesburg',
   country: apiUser.country || 'ZA',
   isOnTrial: apiUser.is_on_trial || true,
