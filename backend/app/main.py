@@ -2,6 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.endpoints import auth, employees, customers, invoices, products, payroll, supply_chain, crm, users, tenants, productivity
 from app.core.config import settings
+from app.core.security import get_password_hash
+from app.db.database import engine, Base, SessionLocal
+from app.models.models import User, Employee, Department, Customer, Product, Invoice, InvoiceItem, Quotation, QuotationItem, Payment, Expense, Transaction, Lead, Deal, Activity, Contact, Inventory, Vendor, Payroll, Payslip, LeaveRequest, Meeting, CalendarEvent, Task, Project, CurrencyRate
+import uuid
 
 app = FastAPI(
     title="LemurSystem API",
@@ -10,6 +14,81 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc"
 )
+
+@app.on_event("startup")
+async def startup_event():
+    from app.models.models import User, Employee, Department, Customer, Product, Invoice, InvoiceItem, Quotation, QuotationItem, Payment, Expense, Transaction, Lead, Deal, Activity, Contact, Inventory, Vendor, Payroll, Payslip, LeaveRequest, Meeting, CalendarEvent, Task, Project, CurrencyRate
+    Base.metadata.create_all(bind=engine)
+    
+    db = SessionLocal()
+    try:
+        existing_user = db.query(User).filter(User.email == "admin@lemursystem.com").first()
+        if not existing_user:
+            default_tenants = [
+                {
+                    "email": "admin@lemursystem.com",
+                    "password": "LemurAdmin2024!",
+                    "first_name": "Super",
+                    "last_name": "Admin",
+                    "organization_name": "LemurSystem HQ",
+                    "role": "super_admin",
+                    "industry": "technology",
+                    "subscription": "enterprise",
+                    "currency": "USD",
+                    "country": "ZA",
+                },
+                {
+                    "email": "demo@lemursystem.com",
+                    "password": "DemoUser123!",
+                    "first_name": "Demo",
+                    "last_name": "User",
+                    "organization_name": "Demo Organization",
+                    "role": "admin",
+                    "industry": "consulting",
+                    "subscription": "starter",
+                    "currency": "USD",
+                    "country": "ZA",
+                },
+                {
+                    "email": "finance@lemursystem.com",
+                    "password": "FinanceUser123!",
+                    "first_name": "Finance",
+                    "last_name": "Manager",
+                    "organization_name": "Finance Corp",
+                    "role": "admin",
+                    "industry": "finance",
+                    "subscription": "professional",
+                    "currency": "USD",
+                    "country": "ZA",
+                },
+            ]
+            
+            for tenant_data in default_tenants:
+                user = User(
+                    id=str(uuid.uuid4()),
+                    email=tenant_data["email"],
+                    password_hash=get_password_hash(tenant_data["password"]),
+                    first_name=tenant_data["first_name"],
+                    last_name=tenant_data["last_name"],
+                    role=tenant_data["role"],
+                    organization_id=str(uuid.uuid4()),
+                    organization_name=tenant_data["organization_name"],
+                    industry=tenant_data["industry"],
+                    subscription=tenant_data["subscription"],
+                    currency=tenant_data["currency"],
+                    country=tenant_data["country"],
+                    is_active=True,
+                    is_on_trial=True
+                )
+                db.add(user)
+            
+            db.commit()
+            print("Default tenant accounts created successfully!")
+    except Exception as e:
+        print(f"Error creating default tenants: {e}")
+        db.rollback()
+    finally:
+        db.close()
 
 app.add_middleware(
     CORSMiddleware,
@@ -38,6 +117,29 @@ async def root():
 @app.get("/api/v1/health")
 async def health_check():
     return {"status": "healthy", "service": "lemursystem-api"}
+
+@app.get("/api/v1/dev/credentials")
+async def get_dev_credentials():
+    from app.db.database import SessionLocal
+    from app.models.models import User
+    
+    db = SessionLocal()
+    try:
+        users = db.query(User).all()
+        credentials = []
+        for user in users:
+            credentials.append({
+                "email": user.email,
+                "role": user.role.value if hasattr(user.role, 'value') else str(user.role),
+                "organization": user.organization_name,
+                "plan": user.subscription.value if hasattr(user.subscription, 'value') else str(user.subscription),
+            })
+        return {
+            "message": "Default credentials (change these in production!)",
+            "users": credentials
+        }
+    finally:
+        db.close()
 
 @app.get("/api/v1/time")
 async def get_server_time():

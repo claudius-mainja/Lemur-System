@@ -10,10 +10,11 @@ import toast from 'react-hot-toast';
 import { useAuthStore, PLAN_CONFIG } from '@/stores/auth.store';
 import { authApi, tenantsApi } from '@/services/api';
 import { 
-  Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, Building2, Users, DollarSign, Package, BarChart3, Globe, MapPin, Sparkles
+  Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, Building2, Users, DollarSign, Package, BarChart3, Globe, MapPin, Sparkles, ShieldCheck
 } from 'lucide-react';
 
 const SADC_COUNTRIES = [
+  { code: 'US', name: 'United States', currency: 'USD', currencySymbol: '$', timezone: 'America/New_York' },
   { code: 'ZA', name: 'South Africa', currency: 'ZAR', currencySymbol: 'R', timezone: 'Africa/Johannesburg' },
   { code: 'BW', name: 'Botswana', currency: 'BWP', currencySymbol: 'P', timezone: 'Africa/Gaborone' },
   { code: 'SZ', name: 'Eswatini', currency: 'SZL', currencySymbol: 'E', timezone: 'Africa/Mbabane' },
@@ -122,8 +123,8 @@ export default function LoginPage() {
       lastName: '',
       organizationName: '',
       industry: 'technology',
-      country: 'ZA',
-      currency: 'ZAR',
+      country: 'US',
+      currency: 'USD',
       plan: 'starter',
     },
   });
@@ -133,9 +134,8 @@ export default function LoginPage() {
     try {
       const result = await useAuthStore.getState().login(data.email, data.password);
       if (result.success) {
-        const user = useAuthStore.getState().user;
         toast.success('Welcome back!');
-        router.push(getDashboardRoute(user?.modules || ['hr']));
+        router.push(getDashboardRoute(useAuthStore.getState().user?.modules || ['hr']));
       } else {
         toast.error(result.error || 'Invalid credentials');
       }
@@ -144,6 +144,46 @@ export default function LoginPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const onVerifyLoginOtp = async () => {
+    if (otp.length !== 6) {
+      toast.error('Please enter a valid 6-digit OTP');
+      return;
+    }
+    
+    const storedOtp = localStorage.getItem('login-otp');
+    const otpExpiry = localStorage.getItem('login-otp-expiry');
+    
+    if (!storedOtp || !otpExpiry || Date.now() > parseInt(otpExpiry)) {
+      toast.error('OTP has expired. Please try logging in again.');
+      setLoginStep('credentials');
+      setOtp('');
+      return;
+    }
+    
+    if (otp !== storedOtp) {
+      toast.error('Invalid OTP. Please try again.');
+      return;
+    }
+    
+    localStorage.removeItem('login-otp');
+    localStorage.removeItem('login-otp-expiry');
+    
+    const user = useAuthStore.getState().user;
+    toast.success('Welcome back!');
+    router.push(getDashboardRoute(user?.modules || ['hr']));
+  };
+
+  const onResendLoginOtp = async () => {
+    setOtp('');
+    const generatedOtp = generateOTP();
+    localStorage.setItem('login-otp', generatedOtp);
+    localStorage.setItem('login-otp-expiry', (Date.now() + 5 * 60 * 1000).toString());
+    setOtpTimer(300);
+    
+    console.log(`New Login OTP: ${generatedOtp}`);
+    toast.success(`New OTP sent to ${pendingEmail}`);
   };
 
   const onRegisterOrg = async (data: RegisterForm) => {
@@ -163,7 +203,7 @@ export default function LoginPage() {
       
       if (result.success) {
         toast.success(`Welcome to ${data.organizationName}!`);
-        router.push('/dashboard/hr');
+        router.push(`/payment?plan=${data.plan}&users=1&org=${encodeURIComponent(data.organizationName)}`);
       } else {
         toast.error(result.error || 'Registration failed');
       }

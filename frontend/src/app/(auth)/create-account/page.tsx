@@ -9,10 +9,11 @@ import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { useAuthStore, PLAN_CONFIG } from '@/stores/auth.store';
 import { 
-  Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, Building2, Users, DollarSign, Package, BarChart3, Globe, MapPin, UserPlus
+  Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, Building2, Users, DollarSign, Package, BarChart3, Globe, MapPin, UserPlus, ShieldCheck
 } from 'lucide-react';
 
 const SADC_COUNTRIES = [
+  { code: 'US', name: 'United States', currency: 'USD', currencySymbol: '$', timezone: 'America/New_York' },
   { code: 'ZA', name: 'South Africa', currency: 'ZAR', currencySymbol: 'R', timezone: 'Africa/Johannesburg' },
   { code: 'BW', name: 'Botswana', currency: 'BWP', currencySymbol: 'P', timezone: 'Africa/Gaborone' },
   { code: 'SZ', name: 'Eswatini', currency: 'SZL', currencySymbol: 'E', timezone: 'Africa/Mbabane' },
@@ -49,6 +50,7 @@ const INDUSTRIES = [
 const registerSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
+  confirmPassword: z.string().min(6, 'Password must be at least 6 characters'),
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   organizationName: z.string().min(1, 'Organization name is required'),
@@ -56,6 +58,9 @@ const registerSchema = z.object({
   country: z.string().min(1, 'Country is required'),
   currency: z.string().min(1, 'Currency is required'),
   plan: z.enum(['starter', 'professional', 'enterprise']),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 const planDetails = {
@@ -85,6 +90,7 @@ function CreateAccountContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [numUsers, setNumUsers] = useState(1);
   const { register: registerUser } = useAuthStore();
@@ -96,12 +102,13 @@ function CreateAccountContent() {
     defaultValues: {
       email: '',
       password: '',
+      confirmPassword: '',
       firstName: '',
       lastName: '',
       organizationName: '',
       industry: 'technology',
-      country: 'ZA',
-      currency: 'ZAR',
+      country: 'US',
+      currency: 'USD',
       plan: defaultPlan,
     },
   });
@@ -128,7 +135,6 @@ function CreateAccountContent() {
   const onRegister = async (data: RegisterForm) => {
     setIsLoading(true);
     try {
-      const country = SADC_COUNTRIES.find(c => c.code === data.country) || SADC_COUNTRIES[0];
       const result = await registerUser({
         email: data.email,
         password: data.password,
@@ -137,13 +143,13 @@ function CreateAccountContent() {
         organizationName: data.organizationName,
         industry: data.industry as any,
         country: data.country,
-        currency: country.currency,
+        currency: data.currency,
         plan: data.plan,
       });
       
       if (result.success) {
         toast.success(`Welcome to ${data.organizationName}!`);
-        router.push(`/payment?plan=${data.plan}&users=${numUsers}`);
+        router.push(`/payment?plan=${data.plan}&users=${numUsers}&org=${encodeURIComponent(data.organizationName)}`);
       } else {
         toast.error(result.error || 'Registration failed');
       }

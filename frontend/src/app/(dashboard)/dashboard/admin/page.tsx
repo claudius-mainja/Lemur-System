@@ -97,6 +97,8 @@ export default function AdminDashboard() {
       return;
     }
 
+    const tempPassword = `Temp${Date.now().toString(36)}${Math.random().toString(36).substring(2, 6)}`;
+
     addTenantProfile({
       userId: `user-${Date.now()}`,
       userName: newTenant.userName,
@@ -111,7 +113,13 @@ export default function AdminDashboard() {
       phone: newTenant.phone,
     });
 
-    toast.success('Tenant profile created successfully');
+    localStorage.setItem(`user_credentials_${Date.now()}`, JSON.stringify({
+      username: newTenant.userEmail,
+      password: tempPassword,
+      createdAt: new Date().toISOString(),
+    }));
+
+    toast.success(`Tenant profile created successfully! Temporary password: ${tempPassword}`);
     setShowAddTenant(false);
     setNewTenant({
       userName: '',

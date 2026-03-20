@@ -6,7 +6,8 @@ import { usersApi } from '@/services/api';
 import { 
   Users, UserPlus, Search, MoreHorizontal, Edit, Trash2, 
   CheckCircle, XCircle, Shield, UserCheck, Mail, Phone,
-  Building2, X, Loader2, RefreshCw, Eye, EyeOff, AlertCircle
+  Building2, X, Loader2, RefreshCw, Eye, EyeOff, AlertCircle,
+  Key, Database, Activity, FileText, Zap, Layers, Settings
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -22,6 +23,7 @@ interface User {
   organization_id: string;
   organization_name: string;
   created_at?: string;
+  modules?: string[];
 }
 
 const roleOptions: { value: UserRole; label: string; description: string }[] = [
@@ -32,6 +34,16 @@ const roleOptions: { value: UserRole; label: string; description: string }[] = [
   { value: 'manager', label: 'Manager', description: 'Multiple modules access' },
   { value: 'employee', label: 'Employee', description: 'Basic access' },
   { value: 'ordinary', label: 'Ordinary', description: 'Profile only' },
+];
+
+const moduleOptions = [
+  { id: 'hr', name: 'Human Resources', icon: Users, color: 'bg-blue-500' },
+  { id: 'finance', name: 'Finance', icon: Database, color: 'bg-green-500' },
+  { id: 'crm', name: 'CRM', icon: Activity, color: 'bg-violet-500' },
+  { id: 'payroll', name: 'Payroll', icon: FileText, color: 'bg-orange-500' },
+  { id: 'productivity', name: 'Productivity', icon: Zap, color: 'bg-cyan-500' },
+  { id: 'supply-chain', name: 'Supply Chain', icon: Layers, color: 'bg-indigo-500' },
+  { id: 'settings', name: 'Settings', icon: Settings, color: 'bg-slate-500' },
 ];
 
 const getRoleBadge = (role: string) => {
@@ -76,6 +88,7 @@ export default function UsersPage() {
     role: 'employee' as UserRole,
     department: '',
     phone: '',
+    modules: [] as string[],
   });
 
   const loadUsers = useCallback(async () => {
@@ -110,23 +123,33 @@ export default function UsersPage() {
   }, [loadUsers]);
 
   const handleAddUser = async () => {
-    if (!newUser.email || !newUser.password || !newUser.first_name || !newUser.last_name) {
+    if (!newUser.email || !newUser.first_name || !newUser.last_name) {
       toast.error('Please fill in all required fields');
       return;
     }
+
+    const generatedPassword = newUser.password || `Temp${Date.now().toString(36)}${Math.random().toString(36).substring(2, 6)}`;
 
     setIsLoading(true);
     try {
       await usersApi.create({
         email: newUser.email,
-        password: newUser.password,
+        password: generatedPassword,
         first_name: newUser.first_name,
         last_name: newUser.last_name,
         role: newUser.role,
         department: newUser.department || undefined,
         phone: newUser.phone || undefined,
+        modules: newUser.modules,
       });
-      toast.success('User created successfully');
+      
+      localStorage.setItem(`user_credentials_${Date.now()}`, JSON.stringify({
+        username: newUser.email,
+        password: generatedPassword,
+        createdAt: new Date().toISOString(),
+      }));
+      
+      toast.success(`User created successfully! ${!newUser.password ? `Temporary password: ${generatedPassword}` : 'Credentials have been set.'}`);
       setShowAddModal(false);
       setNewUser({
         email: '',
@@ -136,6 +159,7 @@ export default function UsersPage() {
         role: 'employee',
         department: '',
         phone: '',
+        modules: [],
       });
       loadUsers();
     } catch (error: any) {
@@ -515,15 +539,54 @@ export default function UsersPage() {
                 </div>
               </div>
 
+              <div>
+                <label className="block text-sm font-bold text-white/60 mb-2 uppercase tracking-wider">Module Access</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {moduleOptions.map((mod) => {
+                    const Icon = mod.icon;
+                    return (
+                      <button
+                        key={mod.id}
+                        onClick={() => {
+                          const modules = newUser.modules.includes(mod.id)
+                            ? newUser.modules.filter(m => m !== mod.id)
+                            : [...newUser.modules, mod.id];
+                          setNewUser({ ...newUser, modules });
+                        }}
+                        className={`p-3 rounded-xl border text-left transition-all flex items-center gap-2 ${
+                          newUser.modules.includes(mod.id)
+                            ? 'border-accent bg-accent/10'
+                            : 'border-white/10 hover:border-white/20'
+                        }`}
+                      >
+                        <div className={`w-6 h-6 ${mod.color} rounded flex items-center justify-center`}>
+                          <Icon className="w-3 h-3 text-white" />
+                        </div>
+                        <span className="text-xs font-medium text-white/60">{mod.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                <p className="text-sm font-bold text-white/60 mb-2 uppercase tracking-wider">Access Level Preview</p>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-bold text-white/60 uppercase tracking-wider">Access Level Preview</p>
+                  <Key className="w-4 h-4 text-white/30" />
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {(ROLE_PERMISSIONS[newUser.role] || []).map((mod) => (
                     <span key={mod} className="px-3 py-1.5 bg-accent/20 text-accent text-xs rounded-lg font-bold uppercase tracking-wider">
                       {mod}
                     </span>
                   ))}
+                  {newUser.modules.map((mod) => (
+                    <span key={mod} className="px-3 py-1.5 bg-green-500/20 text-green-400 text-xs rounded-lg font-bold uppercase tracking-wider">
+                      {mod}
+                    </span>
+                  ))}
                 </div>
+                <p className="text-xs text-white/40 mt-2">Auto-generated password will be provided on creation</p>
               </div>
             </div>
 

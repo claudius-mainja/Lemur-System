@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
 
     # Database
-    DATABASE_TYPE: str = os.getenv("DATABASE_TYPE", "postgres")
+    DATABASE_TYPE: str = os.getenv("DATABASE_TYPE", "sqlite")
     DATABASE_HOST: str = os.getenv("DATABASE_HOST", "localhost")
     DATABASE_PORT: int = int(os.getenv("DATABASE_PORT", "5432"))
     DATABASE_USERNAME: str = os.getenv("DATABASE_USERNAME", "postgres")
@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     
     @property
     def DATABASE_URL(self) -> str:
+        if self.DATABASE_TYPE == "sqlite":
+            return "sqlite:///./lemursystem.db"
         return f"postgresql://{self.DATABASE_USERNAME}:{self.DATABASE_PASSWORD}@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_DATABASE}"
 
     # Redis
@@ -32,7 +34,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = os.getenv("SECRET_KEY", "lemursystem-secret-key-2024")
     
     # CORS
-    CORS_ORIGINS: list = ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"]
+    CORS_ORIGINS: list = ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002", "http://127.0.0.1:3000", "http://127.0.0.1:3001", "http://127.0.0.1:3002"]
 
     class Config:
         env_file = ".env"

@@ -27,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className="dark">
-      <body className={`${montserrat.variable} font-sans antialiased bg-dark-bg text-dark-text`}>
+      <body suppressHydrationWarning className={`${montserrat.variable} font-sans antialiased bg-dark-bg text-dark-text`}>
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -90,6 +90,7 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>('hr');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -224,7 +225,10 @@ export default function DashboardLayout({
               </button>
 
               <div className="relative">
-                <button className="p-2 rounded-lg relative text-white/60 hover:text-white hover:bg-white/10 transition-colors">
+                <button 
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="p-2 rounded-lg relative text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                >
                   <Bell className="w-4 h-4" />
                   {totalNotifications > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-accent rounded-full text-white text-[10px] flex items-center justify-center font-bold">
@@ -232,6 +236,61 @@ export default function DashboardLayout({
                     </span>
                   )}
                 </button>
+                {showNotifications && (
+                  <div className="absolute right-0 mt-3 w-80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 bg-[#0b2535]/95 z-50 animate-fade-in-down overflow-hidden">
+                    <div className="p-4 border-b border-white/10 flex justify-between items-center">
+                      <h3 className="font-bold text-white uppercase tracking-wider">Notifications</h3>
+                      {totalNotifications > 0 && (
+                        <button 
+                          onClick={() => {
+                            // Clear notifications logic here
+                            toast.success('All notifications cleared');
+                          }}
+                          className="text-xs text-accent hover:text-white uppercase tracking-wider"
+                        >
+                          Clear All
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-96 overflow-y-auto">
+                      {notifications.filter(n => n.count > 0).length === 0 ? (
+                        <div className="p-8 text-center text-white/50">
+                          <Bell className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                          <p className="text-sm">No new notifications</p>
+                        </div>
+                      ) : (
+                        notifications.filter(n => n.count > 0).map((notification, i) => (
+                          <Link
+                            key={i}
+                            href={`/dashboard/${notification.type === 'leave' ? 'hr' : notification.type === 'invoice' ? 'finance' : notification.type === 'inventory' ? 'supply-chain' : 'crm'}`}
+                            onClick={() => setShowNotifications(false)}
+                            className="flex items-center gap-4 p-4 hover:bg-white/5 transition-colors border-b border-white/5"
+                          >
+                            <div className={`w-12 h-12 ${notification.color} rounded-xl flex items-center justify-center`}>
+                              <notification.icon className="w-6 h-6 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-bold text-white">{notification.count} {notification.label}</p>
+                              <p className="text-xs text-white/50 mt-1">Click to view details</p>
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-white/30" />
+                          </Link>
+                        ))
+                      )}
+                    </div>
+                    {notifications.filter(n => n.count > 0).length > 0 && (
+                      <div className="p-3 border-t border-white/10 bg-white/5">
+                        <Link
+                          href="/dashboard/hr"
+                          onClick={() => setShowNotifications(false)}
+                          className="block text-center text-sm text-accent hover:text-white uppercase tracking-wider font-bold"
+                        >
+                          View All Notifications
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               
               <div className="relative">

@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { useAuthStore } from '../stores/auth.store';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000/api/v1';
 
 export const api = axios.create({
   baseURL: API_URL,
@@ -74,7 +74,7 @@ export const authApi = {
   }) => api.post('/auth/register', data),
 
   login: (email: string, password: string) =>
-    api.post('/auth/login', { email, password }),
+    api.post('/auth/login/', { email, password }),
 
   logout: () => api.post('/auth/logout'),
 
@@ -864,4 +864,31 @@ export const financeApiExtra = {
     date?: string;
     reference?: string;
   }) => api.post('/finance/transactions', data),
+};
+
+// Documents API
+export const documentsApi = {
+  getAll: () => api.get('/documents'),
+  
+  getById: (id: string) => api.get(`/documents/${id}`),
+  
+  create: (data: {
+    title: string;
+    description?: string;
+    doc_type?: string;
+    file_name?: string;
+    file_path?: string;
+    file_size?: number;
+    mime_type?: string;
+    version?: string;
+    is_public?: boolean;
+    folder?: string;
+    tags?: string[];
+  }) => api.post('/documents', data),
+
+  update: (id: string, data: any) => api.put(`/documents/${id}`, data),
+  
+  delete: (id: string) => api.delete(`/documents/${id}`),
+  
+  getFolders: () => api.get('/documents/folders'),
 };

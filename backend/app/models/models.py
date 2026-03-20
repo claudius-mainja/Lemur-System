@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Boolean, DateTime, ForeignKey, Text, Float, Enum as SQLEnum
+from sqlalchemy import Column, String, Integer, Boolean, DateTime, ForeignKey, Text, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.db.database import Base
@@ -44,15 +44,15 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
-    role = Column(SQLEnum(UserRole), default=UserRole.EMPLOYEE)
+    role = Column(String, default=UserRole.EMPLOYEE.value)
     department = Column(String, nullable=True)
     phone = Column(String, nullable=True)
     organization_id = Column(String, nullable=False, index=True)
     organization_name = Column(String, nullable=False)
-    industry = Column(SQLEnum(Industry), default=Industry.OTHER)
-    subscription = Column(SQLEnum(SubscriptionPlan), default=SubscriptionPlan.STARTER)
-    currency = Column(String, default="ZAR")
-    country = Column(String, default="ZA")
+    industry = Column(String, default=Industry.OTHER.value)
+    subscription = Column(String, default=SubscriptionPlan.STARTER.value)
+    currency = Column(String, default="USD")
+    country = Column(String, default="US")
     is_active = Column(Boolean, default=True)
     is_on_trial = Column(Boolean, default=False)
     trial_ends_at = Column(DateTime(timezone=True), nullable=True)

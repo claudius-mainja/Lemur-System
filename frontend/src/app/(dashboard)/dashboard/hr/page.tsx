@@ -3,11 +3,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { hrApi } from '@/services/api';
 import { useDataStore } from '@/stores/data.store';
+import { useAuthStore } from '@/stores/auth.store';
 import { 
   Users, UserPlus, Calendar, Building2, Plus, Search, MoreHorizontal,
   Download, Upload, Edit, Trash2, CheckCircle, XCircle, Clock,
   Filter, Mail, Phone, MapPin, FileText, Eye, Printer, X,
-  Briefcase, UserCheck, UserX, RefreshCw, TrendingUp, FileSignature
+  Briefcase, UserCheck, UserX, RefreshCw, TrendingUp, FileSignature,
+  File, FileUp, MessageSquare
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -85,6 +87,19 @@ interface Contract {
   }>;
   terms?: string;
   createdAt: string;
+  documentUrl?: string;
+  documentName?: string;
+  documentType?: string;
+}
+
+interface ReportDocument {
+  id: string;
+  reportId: string;
+  fileName: string;
+  fileUrl: string;
+  fileType: string;
+  uploadedBy: string;
+  uploadedAt: string;
 }
 
 interface DashboardStats {
@@ -107,6 +122,15 @@ interface EmployeeReport {
   approvedBy?: string;
   approvedDate?: string;
   comments?: string;
+  documentUrl?: string;
+  documentName?: string;
+  documentType?: string;
+  supervisorComments?: Array<{
+    id: string;
+    author: string;
+    text: string;
+    timestamp: string;
+  }>;
 }
 
 interface TimeEntry {
@@ -146,6 +170,11 @@ export default function HRDashboard() {
   const [departments, setDepartments] = useState(storeDepartments as unknown as Department[]);
   const [leaveRequests, setLeaveRequests] = useState(storeLeaveRequests as unknown as LeaveRequest[]);
   const [contracts, setContracts] = useState<Contract[]>([]);
+  const [contractDocuments, setContractDocuments] = useState<Record<string, { url: string; name: string; type: string }>>({});
+  const [reportDocuments, setReportDocuments] = useState<ReportDocument[]>([]);
+  const [showContractUpload, setShowContractUpload] = useState<string | null>(null);
+  const [showReportComments, setShowReportComments] = useState<string | null>(null);
+  const [reportComment, setReportComment] = useState('');
 
   // Modal states
   const [showAddEmployee, setShowAddEmployee] = useState(false);
@@ -315,7 +344,8 @@ export default function HRDashboard() {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(amount);
+    const userCurrency = useAuthStore.getState().user?.currency || 'USD';
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: userCurrency }).format(amount);
   };
 
   const filteredEmployees = employees.filter(e => {
@@ -333,50 +363,50 @@ export default function HRDashboard() {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white/5 border border-white/10 rounded-xl p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Total Employees</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{stats.totalEmployees}</p>
+              <p className="text-sm text-white/40 uppercase tracking-wider">Total Employees</p>
+              <p className="text-2xl font-bold text-white mt-1">{stats.totalEmployees}</p>
             </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users className="w-6 h-6 text-blue-600" />
+            <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+              <Users className="w-6 h-6 text-blue-500" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white/5 border border-white/10 rounded-xl p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Active Employees</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{stats.activeEmployees}</p>
+              <p className="text-sm text-white/40 uppercase tracking-wider">Active Employees</p>
+              <p className="text-2xl font-bold text-green-400 mt-1">{stats.activeEmployees}</p>
             </div>
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <UserCheck className="w-6 h-6 text-green-600" />
+            <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+              <UserCheck className="w-6 h-6 text-green-500" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white/5 border border-white/10 rounded-xl p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">On Leave</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{stats.onLeave}</p>
+              <p className="text-sm text-white/40 uppercase tracking-wider">On Leave</p>
+              <p className="text-2xl font-bold text-yellow-400 mt-1">{stats.onLeave}</p>
             </div>
-            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-yellow-600" />
+            <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+              <Calendar className="w-6 h-6 text-yellow-500" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white/5 border border-white/10 rounded-xl p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">New Hires</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{stats.newHires}</p>
+              <p className="text-sm text-white/40 uppercase tracking-wider">New Hires</p>
+              <p className="text-2xl font-bold text-purple-400 mt-1">{stats.newHires}</p>
             </div>
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-purple-600" />
+            <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-purple-500" />
             </div>
           </div>
         </div>
@@ -386,28 +416,28 @@ export default function HRDashboard() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <button
           onClick={() => { setActiveView('employees'); setShowAddEmployee(true); }}
-          className="bg-primary text-white p-4 rounded-xl flex items-center gap-3 hover:bg-primary/90 transition"
+          className="bg-gradient-to-r from-primary to-secondary text-white p-4 rounded-xl flex items-center gap-3 hover:opacity-90 transition"
         >
           <UserPlus className="w-5 h-5" />
           <span>Add Employee</span>
         </button>
         <button
           onClick={() => { setActiveView('departments'); setShowAddDepartment(true); }}
-          className="bg-white text-gray-700 p-4 rounded-xl flex items-center gap-3 border border-gray-200 hover:bg-gray-50 transition"
+          className="bg-white/5 border border-white/10 text-white p-4 rounded-xl flex items-center gap-3 hover:bg-white/10 transition"
         >
           <Building2 className="w-5 h-5" />
           <span>Add Department</span>
         </button>
         <button
           onClick={() => { setActiveView('leave'); setShowAddLeave(true); }}
-          className="bg-white text-gray-700 p-4 rounded-xl flex items-center gap-3 border border-gray-200 hover:bg-gray-50 transition"
+          className="bg-white/5 border border-white/10 text-white p-4 rounded-xl flex items-center gap-3 hover:bg-white/10 transition"
         >
           <Calendar className="w-5 h-5" />
           <span>Request Leave</span>
         </button>
         <button
           onClick={() => setActiveView('employees')}
-          className="bg-white text-gray-700 p-4 rounded-xl flex items-center gap-3 border border-gray-200 hover:bg-gray-50 transition"
+          className="bg-white/5 border border-white/10 text-white p-4 rounded-xl flex items-center gap-3 hover:bg-white/10 transition"
         >
           <FileText className="w-5 h-5" />
           <span>View Reports</span>
@@ -415,24 +445,24 @@ export default function HRDashboard() {
       </div>
 
       {/* Recent Employees */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-          <h3 className="text-lg font-semibold text-gray-900">Recent Employees</h3>
-          <button onClick={() => setActiveView('employees')} className="text-primary text-sm hover:underline">
+      <div className="bg-white/5 border border-white/10 rounded-xl">
+        <div className="p-6 border-b border-white/10 flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-white">Recent Employees</h3>
+          <button onClick={() => setActiveView('employees')} className="text-accent text-sm hover:underline">
             View All
           </button>
         </div>
         <div className="p-6">
           {employees.length === 0 ? (
             <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-gray-400" />
+              <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="w-8 h-8 text-white/30" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No Employees Yet</h3>
-              <p className="text-gray-500 mb-6 max-w-md mx-auto">Get started by adding your first employee to the system. You can manage their information, track leaves, and more.</p>
+              <h3 className="text-lg font-medium text-white mb-2">No Employees Yet</h3>
+              <p className="text-white/50 mb-6 max-w-md mx-auto">Get started by adding your first employee to the system. You can manage their information, track leaves, and more.</p>
               <button
                 onClick={() => setShowAddEmployee(true)}
-                className="bg-primary text-white px-6 py-3 rounded-lg inline-flex items-center gap-2 hover:bg-primary/90"
+                className="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-lg inline-flex items-center gap-2 hover:opacity-90"
               >
                 <UserPlus className="w-5 h-5" /> Add Your First Employee
               </button>
@@ -441,7 +471,7 @@ export default function HRDashboard() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="text-left text-sm text-gray-500 border-b border-gray-100">
+                  <tr className="text-left text-sm text-white/50 border-b border-white/10">
                     <th className="pb-3 font-medium">Name</th>
                     <th className="pb-3 font-medium">Email</th>
                     <th className="pb-3 font-medium">Department</th>
@@ -451,11 +481,11 @@ export default function HRDashboard() {
                 </thead>
                 <tbody>
                   {employees.slice(0, 5).map((employee) => (
-                    <tr key={employee.id} className="border-b border-gray-50 hover:bg-gray50">
-                      <td className="py-3 text-sm font-medium">{employee.firstName} {employee.lastName}</td>
-                      <td className="py-3 text-sm text-gray-500">{employee.email}</td>
-                      <td className="py-3 text-sm">{employee.department || '-'}</td>
-                      <td className="py-3 text-sm">{employee.position || '-'}</td>
+                    <tr key={employee.id} className="border-b border-white/5 hover:bg-white/5">
+                      <td className="py-3 text-sm font-medium text-white">{employee.firstName} {employee.lastName}</td>
+                      <td className="py-3 text-sm text-white/50">{employee.email}</td>
+                      <td className="py-3 text-sm text-white/70">{employee.department || '-'}</td>
+                      <td className="py-3 text-sm text-white/70">{employee.position || '-'}</td>
                       <td className="py-3">{getStatusBadge(employee.status)}</td>
                     </tr>
                   ))}
@@ -472,31 +502,31 @@ export default function HRDashboard() {
   const renderEmployees = () => (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-900">Employees</h2>
+        <h2 className="text-xl font-semibold text-white">Employees</h2>
         <button
           onClick={() => setShowAddEmployee(true)}
-          className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90"
+          className="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-90"
         >
           <Plus className="w-4 h-4" /> Add Employee
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        <div className="p-4 border-b border-gray-100 flex gap-4">
+      <div className="bg-white/5 border border-white/10 rounded-xl backdrop-blur-xl">
+        <div className="p-4 border-b border-white/10 flex gap-4">
           <div className="flex-1 relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
             <input
               type="text"
               placeholder="Search employees..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm"
+              className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-white/40"
             />
           </div>
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-lg text-sm"
+            className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -506,7 +536,7 @@ export default function HRDashboard() {
           <select
             value={filterDepartment}
             onChange={(e) => setFilterDepartment(e.target.value)}
-            className="px-4 py-2 border border-gray-200 rounded-lg text-sm"
+            className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white"
           >
             <option value="all">All Departments</option>
             {departments.map((dept) => (
@@ -518,7 +548,7 @@ export default function HRDashboard() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left text-sm text-gray-500 border-b border-gray-100 bg-gray50">
+              <tr className="text-left text-sm text-white/50 border-b border-white/10">
                 <th className="p-4 font-medium">Employee</th>
                 <th className="p-4 font-medium">Email</th>
                 <th className="p-4 font-medium">Phone</th>
@@ -530,28 +560,28 @@ export default function HRDashboard() {
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={7} className="p-8 text-center text-gray-500">Loading...</td></tr>
+                <tr><td colSpan={7} className="p-8 text-center text-white/50">Loading...</td></tr>
               ) : filteredEmployees.length === 0 ? (
-                <tr><td colSpan={7} className="p-8 text-center text-gray-500">No employees found</td></tr>
+                <tr><td colSpan={7} className="p-8 text-center text-white/50">No employees found</td></tr>
               ) : (
                 filteredEmployees.map((employee) => (
-                  <tr key={employee.id} className="border-b border-gray-50 hover:bg-gray50">
-                    <td className="p-4 text-sm font-medium">{employee.firstName} {employee.lastName}</td>
-                    <td className="p-4 text-sm text-gray-500">{employee.email}</td>
-                    <td className="p-4 text-sm text-gray-500">{employee.phone}</td>
-                    <td className="p-4 text-sm">{employee.department || '-'}</td>
-                    <td className="p-4 text-sm">{employee.position || '-'}</td>
+                  <tr key={employee.id} className="border-b border-white/5 hover:bg-white/5">
+                    <td className="p-4 text-sm font-medium text-white">{employee.firstName} {employee.lastName}</td>
+                    <td className="p-4 text-sm text-white/50">{employee.email}</td>
+                    <td className="p-4 text-sm text-white/50">{employee.phone}</td>
+                    <td className="p-4 text-sm text-white/70">{employee.department || '-'}</td>
+                    <td className="p-4 text-sm text-white/70">{employee.position || '-'}</td>
                     <td className="p-4">{getStatusBadge(employee.status)}</td>
                     <td className="p-4">
                       <div className="flex gap-2">
-                        <button onClick={() => setShowViewEmployee(employee)} className="p-1 hover:bg-gray-100 rounded">
-                          <Eye className="w-4 h-4 text-gray-500" />
+                        <button onClick={() => setShowViewEmployee(employee)} className="p-1 hover:bg-white/10 rounded">
+                          <Eye className="w-4 h-4 text-white/50" />
                         </button>
-                        <button className="p-1 hover:bg-gray-100 rounded">
-                          <Edit className="w-4 h-4 text-gray-500" />
+                        <button className="p-1 hover:bg-white/10 rounded">
+                          <Edit className="w-4 h-4 text-white/50" />
                         </button>
-                        <button className="p-1 hover:bg-gray-100 rounded">
-                          <Trash2 className="w-4 h-4 text-red-500" />
+                        <button className="p-1 hover:bg-white/10 rounded">
+                          <Trash2 className="w-4 h-4 text-red-400" />
                         </button>
                       </div>
                     </td>
@@ -569,10 +599,10 @@ export default function HRDashboard() {
   const renderDepartments = () => (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-900">Departments</h2>
+        <h2 className="text-xl font-semibold text-white">Departments</h2>
         <button
           onClick={() => setShowAddDepartment(true)}
-          className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90"
+          className="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-90"
         >
           <Plus className="w-4 h-4" /> Add Department
         </button>
@@ -580,29 +610,29 @@ export default function HRDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {isLoading ? (
-          <div className="col-span-full text-center py-8 text-gray-500">Loading...</div>
+          <div className="col-span-full text-center py-8 text-white/50">Loading...</div>
         ) : departments.length === 0 ? (
-          <div className="col-span-full text-center py-8 text-gray-500">No departments found</div>
+          <div className="col-span-full text-center py-8 text-white/50">No departments found</div>
         ) : (
           departments.map((department) => (
-            <div key={department.id} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div key={department.id} className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-semibold text-gray-900">{department.name}</h3>
-                  <p className="text-sm text-gray-500 mt-1">{department.description || 'No description'}</p>
+                  <h3 className="font-semibold text-white">{department.name}</h3>
+                  <p className="text-sm text-white/50 mt-1">{department.description || 'No description'}</p>
                 </div>
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Building2 className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <Building2 className="w-5 h-5 text-blue-400" />
                 </div>
               </div>
-              <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
-                <span className="text-sm text-gray-500">{department.employeeCount} employees</span>
+              <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center">
+                <span className="text-sm text-white/50">{department.employeeCount} employees</span>
                 <div className="flex gap-2">
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <Edit className="w-4 h-4 text-gray-500" />
+                  <button className="p-1 hover:bg-white/10 rounded">
+                    <Edit className="w-4 h-4 text-white/50" />
                   </button>
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <Trash2 className="w-4 h-4 text-red-500" />
+                  <button className="p-1 hover:bg-white/10 rounded">
+                    <Trash2 className="w-4 h-4 text-red-400" />
                   </button>
                 </div>
               </div>
@@ -617,20 +647,20 @@ export default function HRDashboard() {
   const renderLeave = () => (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-900">Leave Requests</h2>
+        <h2 className="text-xl font-semibold text-white">Leave Requests</h2>
         <button
           onClick={() => setShowAddLeave(true)}
-          className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90"
+          className="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-90"
         >
           <Plus className="w-4 h-4" /> Request Leave
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+      <div className="bg-white/5 border border-white/10 rounded-xl backdrop-blur-xl">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left text-sm text-gray-500 border-b border-gray-100 bg-gray50">
+              <tr className="text-left text-sm text-white/50 border-b border-white/10">
                 <th className="p-4 font-medium">Employee</th>
                 <th className="p-4 font-medium">Type</th>
                 <th className="p-4 font-medium">Start Date</th>
@@ -642,32 +672,32 @@ export default function HRDashboard() {
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={7} className="p-8 text-center text-gray-500">Loading...</td></tr>
+                <tr><td colSpan={7} className="p-8 text-center text-white/50">Loading...</td></tr>
               ) : leaveRequests.length === 0 ? (
-                <tr><td colSpan={7} className="p-8 text-center text-gray-500">No leave requests found</td></tr>
+                <tr><td colSpan={7} className="p-8 text-center text-white/50">No leave requests found</td></tr>
               ) : (
                 leaveRequests.map((request) => (
-                  <tr key={request.id} className="border-b border-gray-50 hover:bg-gray50">
-                    <td className="p-4 text-sm font-medium">{request.employeeName}</td>
-                    <td className="p-4 text-sm">{request.type}</td>
-                    <td className="p-4 text-sm text-gray-500">{formatDate(request.startDate)}</td>
-                    <td className="p-4 text-sm text-gray-500">{formatDate(request.endDate)}</td>
-                    <td className="p-4 text-sm">{request.days}</td>
+                  <tr key={request.id} className="border-b border-white/5 hover:bg-white/5">
+                    <td className="p-4 text-sm font-medium text-white">{request.employeeName}</td>
+                    <td className="p-4 text-sm text-white/70">{request.type}</td>
+                    <td className="p-4 text-sm text-white/50">{formatDate(request.startDate)}</td>
+                    <td className="p-4 text-sm text-white/50">{formatDate(request.endDate)}</td>
+                    <td className="p-4 text-sm text-white/70">{request.days}</td>
                     <td className="p-4">{getStatusBadge(request.status)}</td>
                     <td className="p-4">
                       <div className="flex gap-2">
                         {request.status === 'pending' && (
                           <>
-                            <button className="p-1 hover:bg-green-100 rounded">
-                              <CheckCircle className="w-4 h-4 text-green-500" />
+                            <button className="p-1 hover:bg-green-500/20 rounded">
+                              <CheckCircle className="w-4 h-4 text-green-400" />
                             </button>
-                            <button className="p-1 hover:bg-red-100 rounded">
-                              <XCircle className="w-4 h-4 text-red-500" />
+                            <button className="p-1 hover:bg-red-500/20 rounded">
+                              <XCircle className="w-4 h-4 text-red-400" />
                             </button>
                           </>
                         )}
-                        <button className="p-1 hover:bg-gray-100 rounded">
-                          <Eye className="w-4 h-4 text-gray-500" />
+                        <button className="p-1 hover:bg-white/10 rounded">
+                          <Eye className="w-4 h-4 text-white/50" />
                         </button>
                       </div>
                     </td>
@@ -685,55 +715,79 @@ export default function HRDashboard() {
   const renderContracts = () => (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-900">Employee Contracts</h2>
+        <h2 className="text-xl font-semibold text-white">Employee Contracts</h2>
         <button
-          onClick={() => {}}
-          className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90"
+          onClick={() => toast.success('Contract creation coming soon')}
+          className="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-90"
         >
           <Plus className="w-4 h-4" /> New Contract
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+      <div className="bg-white/5 border border-white/10 rounded-xl backdrop-blur-xl">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left text-sm text-gray-500 border-b border-gray-100 bg-gray50">
+              <tr className="text-left text-sm text-white/50 border-b border-white/10">
                 <th className="p-4 font-medium">Contract</th>
                 <th className="p-4 font-medium">Employee</th>
                 <th className="p-4 font-medium">Type</th>
                 <th className="p-4 font-medium">Start Date</th>
                 <th className="p-4 font-medium">End Date</th>
                 <th className="p-4 font-medium">Salary</th>
+                <th className="p-4 font-medium">Document</th>
                 <th className="p-4 font-medium">Status</th>
                 <th className="p-4 font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={8} className="p-8 text-center text-gray-500">Loading...</td></tr>
+                <tr><td colSpan={9} className="p-8 text-center text-white/50">Loading...</td></tr>
               ) : contracts.length === 0 ? (
-                <tr><td colSpan={8} className="p-8 text-center text-gray-500">No contracts found. Create your first contract!</td></tr>
+                <tr><td colSpan={9} className="p-8 text-center text-white/50">No contracts found. Create your first contract!</td></tr>
               ) : (
                 contracts.map((contract) => (
-                  <tr key={contract.id} className="border-b border-gray-50 hover:bg-gray50">
-                    <td className="p-4 text-sm font-medium">{contract.title}</td>
-                    <td className="p-4 text-sm">{contract.employeeName}</td>
-                    <td className="p-4 text-sm capitalize">{contract.contractType}</td>
-                    <td className="p-4 text-sm text-gray-500">{formatDate(contract.startDate)}</td>
-                    <td className="p-4 text-sm text-gray-500">{contract.endDate ? formatDate(contract.endDate) : 'Permanent'}</td>
-                    <td className="p-4 text-sm font-medium">{contract.salary ? formatCurrency(contract.salary) : '-'}</td>
+                  <tr key={contract.id} className="border-b border-white/5 hover:bg-white/5">
+                    <td className="p-4 text-sm font-medium text-white">{contract.title}</td>
+                    <td className="p-4 text-sm text-white/70">{contract.employeeName}</td>
+                    <td className="p-4 text-sm text-white/70 capitalize">{contract.contractType}</td>
+                    <td className="p-4 text-sm text-white/50">{formatDate(contract.startDate)}</td>
+                    <td className="p-4 text-sm text-white/50">{contract.endDate ? formatDate(contract.endDate) : 'Permanent'}</td>
+                    <td className="p-4 text-sm font-medium text-white">{contract.salary ? formatCurrency(contract.salary) : '-'}</td>
+                    <td className="p-4">
+                      {contract.documentUrl ? (
+                        <a href={contract.documentUrl} target="_blank" className="flex items-center gap-2 text-blue-400 hover:text-blue-300">
+                          <File className="w-4 h-4" />
+                          <span className="text-xs">{contract.documentName || 'View Document'}</span>
+                        </a>
+                      ) : (
+                        <button 
+                          onClick={() => setShowContractUpload(contract.id)}
+                          className="flex items-center gap-2 text-white/40 hover:text-white"
+                        >
+                          <Upload className="w-4 h-4" />
+                          <span className="text-xs">Upload</span>
+                        </button>
+                      )}
+                    </td>
                     <td className="p-4">{getStatusBadge(contract.status)}</td>
                     <td className="p-4">
                       <div className="flex gap-2">
-                        <button className="p-1 hover:bg-gray-100 rounded">
-                          <Eye className="w-4 h-4 text-gray-500" />
+                        <button 
+                          onClick={() => contract.documentUrl && window.open(contract.documentUrl, '_blank')}
+                          disabled={!contract.documentUrl}
+                          className={`p-1 hover:bg-white/10 rounded ${!contract.documentUrl ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                          <Eye className="w-4 h-4 text-white/50" />
                         </button>
-                        <button className="p-1 hover:bg-gray-100 rounded">
-                          <FileText className="w-4 h-4 text-gray-500" />
+                        <button 
+                          onClick={() => setShowContractUpload(contract.id)}
+                          className="p-1 hover:bg-white/10 rounded"
+                        >
+                          <Upload className="w-4 h-4 text-white/50" />
                         </button>
-                        <button className="p-1 hover:bg-gray-100 rounded">
-                          <Trash2 className="w-4 h-4 text-red-500" />
+                        <button className="p-1 hover:bg-white/10 rounded">
+                          <Download className="w-4 h-4 text-white/50" />
                         </button>
                       </div>
                     </td>
@@ -750,43 +804,43 @@ export default function HRDashboard() {
   const renderReports = () => (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-900">Employee Work Reports</h2>
+        <h2 className="text-xl font-semibold text-white">Employee Work Reports</h2>
         <button
           onClick={() => setShowReportModal(true)}
-          className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90"
+          className="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-90"
         >
           <Plus className="w-4 h-4" /> Submit Report
         </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Pending Reports</p>
-              <p className="text-2xl font-bold text-yellow-600 mt-1">
+              <p className="text-sm text-white/50">Pending Reports</p>
+              <p className="text-2xl font-bold text-yellow-400 mt-1">
                 {reports.filter(r => r.status === 'pending').length}
               </p>
             </div>
             <Clock className="w-8 h-8 text-yellow-500" />
           </div>
         </div>
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Approved Reports</p>
-              <p className="text-2xl font-bold text-green-600 mt-1">
+              <p className="text-sm text-white/50">Approved Reports</p>
+              <p className="text-2xl font-bold text-green-400 mt-1">
                 {reports.filter(r => r.status === 'approved').length}
               </p>
             </div>
             <CheckCircle className="w-8 h-8 text-green-500" />
           </div>
         </div>
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Total Hours</p>
-              <p className="text-2xl font-bold text-blue-600 mt-1">
+              <p className="text-sm text-white/50">Total Hours</p>
+              <p className="text-2xl font-bold text-blue-400 mt-1">
                 {reports.reduce((acc, r) => acc + r.hoursWorked + r.overtimeHours, 0)}h
               </p>
             </div>
@@ -795,31 +849,62 @@ export default function HRDashboard() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+      <div className="bg-white/5 border border-white/10 rounded-xl backdrop-blur-xl">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left text-sm text-gray-500 border-b border-gray-100 bg-gray50">
+              <tr className="text-left text-sm text-white/50 border-b border-white/10">
                 <th className="p-4 font-medium">Employee</th>
                 <th className="p-4 font-medium">Date</th>
                 <th className="p-4 font-medium">Hours</th>
                 <th className="p-4 font-medium">Overtime</th>
                 <th className="p-4 font-medium">Tasks</th>
+                <th className="p-4 font-medium">Document</th>
                 <th className="p-4 font-medium">Status</th>
                 <th className="p-4 font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
               {reports.length === 0 ? (
-                <tr><td colSpan={7} className="p-8 text-center text-gray-500">No reports submitted yet</td></tr>
+                <tr><td colSpan={8} className="p-8 text-center text-white/50">No reports submitted yet</td></tr>
               ) : (
                 reports.map((report) => (
-                  <tr key={report.id} className="border-b border-gray-50 hover:bg-gray50">
-                    <td className="p-4 text-sm font-medium">{report.employeeName}</td>
-                    <td className="p-4 text-sm text-gray-500">{formatDate(report.date)}</td>
-                    <td className="p-4 text-sm">{report.hoursWorked}h</td>
-                    <td className="p-4 text-sm">{report.overtimeHours}h</td>
-                    <td className="p-4 text-sm">{report.tasksCompleted}</td>
+                  <tr key={report.id} className="border-b border-white/5 hover:bg-white/5">
+                    <td className="p-4 text-sm font-medium text-white">{report.employeeName}</td>
+                    <td className="p-4 text-sm text-white/50">{formatDate(report.date)}</td>
+                    <td className="p-4 text-sm text-white/70">{report.hoursWorked}h</td>
+                    <td className="p-4 text-sm text-white/70">{report.overtimeHours}h</td>
+                    <td className="p-4 text-sm text-white/70">{report.tasksCompleted}</td>
+                    <td className="p-4">
+                      {report.documentUrl ? (
+                        <a href={report.documentUrl} target="_blank" className="flex items-center gap-2 text-blue-400 hover:text-blue-300">
+                          <File className="w-4 h-4" />
+                          <span className="text-xs">{report.documentName || 'View'}</span>
+                        </a>
+                      ) : (
+                        <label className="flex items-center gap-2 text-white/40 hover:text-white cursor-pointer">
+                          <Upload className="w-4 h-4" />
+                          <span className="text-xs">Upload</span>
+                          <input 
+                            type="file" 
+                            accept=".pdf,.doc,.docx,.ppt,.pptx" 
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                const url = URL.createObjectURL(file);
+                                const updated = reports.map(r => 
+                                  r.id === report.id ? { ...r, documentUrl: url, documentName: file.name, documentType: file.type } : r
+                                );
+                                setReports(updated);
+                                localStorage.setItem('hr-reports', JSON.stringify(updated));
+                                toast.success('Document uploaded');
+                              }
+                            }}
+                          />
+                        </label>
+                      )}
+                    </td>
                     <td className="p-4">{getStatusBadge(report.status)}</td>
                     <td className="p-4">
                       <div className="flex gap-2">
@@ -834,9 +919,9 @@ export default function HRDashboard() {
                                 localStorage.setItem('hr-reports', JSON.stringify(updated));
                                 toast.success('Report approved');
                               }}
-                              className="p-1 hover:bg-green-100 rounded"
+                              className="p-1 hover:bg-green-500/20 rounded"
                             >
-                              <CheckCircle className="w-4 h-4 text-green-500" />
+                              <CheckCircle className="w-4 h-4 text-green-400" />
                             </button>
                             <button 
                               onClick={() => {
@@ -847,14 +932,25 @@ export default function HRDashboard() {
                                 localStorage.setItem('hr-reports', JSON.stringify(updated));
                                 toast.success('Report rejected');
                               }}
-                              className="p-1 hover:bg-red-100 rounded"
+                              className="p-1 hover:bg-red-500/20 rounded"
                             >
-                              <XCircle className="w-4 h-4 text-red-500" />
+                              <XCircle className="w-4 h-4 text-red-400" />
                             </button>
                           </>
                         )}
-                        <button className="p-1 hover:bg-gray-100 rounded">
-                          <Eye className="w-4 h-4 text-gray-500" />
+                        <button 
+                          onClick={() => setShowReportComments(report.id)}
+                          className="p-1 hover:bg-white/10 rounded relative"
+                        >
+                          <MessageSquare className="w-4 h-4 text-white/50" />
+                          {(report.supervisorComments?.length || 0) > 0 && (
+                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full text-white text-xs flex items-center justify-center">
+                              {report.supervisorComments?.length}
+                            </span>
+                          )}
+                        </button>
+                        <button className="p-1 hover:bg-white/10 rounded">
+                          <Eye className="w-4 h-4 text-white/50" />
                         </button>
                       </div>
                     </td>
@@ -878,39 +974,39 @@ export default function HRDashboard() {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-gray-900">Time Tracking</h2>
+          <h2 className="text-xl font-semibold text-white">Time Tracking</h2>
           <button
             onClick={() => setShowTimeEntryModal(true)}
-            className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90"
+            className="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-90"
           >
             <Clock className="w-4 h-4" /> Clock In
           </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Currently Working</p>
-                <p className="text-2xl font-bold text-green-600 mt-1">{activeEntries.length}</p>
+                <p className="text-sm text-white/50">Currently Working</p>
+                <p className="text-2xl font-bold text-green-400 mt-1">{activeEntries.length}</p>
               </div>
               <Clock className="w-8 h-8 text-green-500" />
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Clocked In Today</p>
-                <p className="text-2xl font-bold text-blue-600 mt-1">{completedToday.length + activeEntries.length}</p>
+                <p className="text-sm text-white/50">Clocked In Today</p>
+                <p className="text-2xl font-bold text-blue-400 mt-1">{completedToday.length + activeEntries.length}</p>
               </div>
               <Users className="w-8 h-8 text-blue-500" />
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-xl">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Hours Today</p>
-                <p className="text-2xl font-bold text-purple-600 mt-1">
+                <p className="text-sm text-white/50">Total Hours Today</p>
+                <p className="text-2xl font-bold text-purple-400 mt-1">
                   {timeEntries.filter(e => {
                     const today = new Date().toISOString().split('T')[0];
                     return e.date === today;
@@ -922,11 +1018,11 @@ export default function HRDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white/5 border border-white/10 rounded-xl backdrop-blur-xl">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-sm text-gray-500 border-b border-gray-100 bg-gray50">
+                <tr className="text-left text-sm text-white/50 border-b border-white/10">
                   <th className="p-4 font-medium">Employee</th>
                   <th className="p-4 font-medium">Date</th>
                   <th className="p-4 font-medium">Clock In</th>
@@ -939,16 +1035,16 @@ export default function HRDashboard() {
               </thead>
               <tbody>
                 {timeEntries.length === 0 ? (
-                  <tr><td colSpan={8} className="p-8 text-center text-gray-500">No time entries recorded</td></tr>
+                  <tr><td colSpan={8} className="p-8 text-center text-white/50">No time entries recorded</td></tr>
                 ) : (
                   timeEntries.slice(0, 20).map((entry) => (
-                    <tr key={entry.id} className="border-b border-gray-50 hover:bg-gray50">
-                      <td className="p-4 text-sm font-medium">{entry.employeeName}</td>
-                      <td className="p-4 text-sm text-gray-500">{formatDate(entry.date)}</td>
-                      <td className="p-4 text-sm">{entry.clockIn}</td>
-                      <td className="p-4 text-sm">{entry.clockOut || '-'}</td>
-                      <td className="p-4 text-sm">{entry.breakDuration}m</td>
-                      <td className="p-4 text-sm font-medium">{entry.totalHours}h</td>
+                    <tr key={entry.id} className="border-b border-white/5 hover:bg-white/5">
+                      <td className="p-4 text-sm font-medium text-white">{entry.employeeName}</td>
+                      <td className="p-4 text-sm text-white/50">{formatDate(entry.date)}</td>
+                      <td className="p-4 text-sm text-white/70">{entry.clockIn}</td>
+                      <td className="p-4 text-sm text-white/70">{entry.clockOut || '-'}</td>
+                      <td className="p-4 text-sm text-white/70">{entry.breakDuration}m</td>
+                      <td className="p-4 text-sm font-medium text-white">{entry.totalHours}h</td>
                       <td className="p-4">{getStatusBadge(entry.status)}</td>
                       <td className="p-4">
                         <div className="flex gap-2">
@@ -968,7 +1064,7 @@ export default function HRDashboard() {
                                 localStorage.setItem('hr-time-entries', JSON.stringify(updated));
                                 toast.success('Clocked out successfully');
                               }}
-                              className="px-3 py-1 bg-red-100 text-red-600 rounded-lg text-sm hover:bg-red-200"
+                              className="px-3 py-1 bg-red-500/20 text-red-400 rounded-lg text-sm hover:bg-red-500/30"
                             >
                               Clock Out
                             </button>
@@ -1108,39 +1204,50 @@ export default function HRDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <header className="bg-[#0b2535]/50 backdrop-blur-xl border-b border-white/10 sticky top-0 z-10">
         <div className="px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg shadow-primary/25">
               <Users className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Human Resources</h1>
-              <p className="text-sm text-gray-500">Manage employees, leave & departments</p>
+              <h1 className="text-xl font-bold text-white uppercase tracking-wider">Human Resources</h1>
+              <p className="text-sm text-white/50">Manage employees, leave & departments</p>
             </div>
           </div>
-          <button onClick={() => loadDashboardStats()} className="p-2 hover:bg-gray-100 rounded-lg">
-            <RefreshCw className="w-5 h-5 text-gray-500" />
+          <button onClick={() => loadDashboardStats()} className="p-2 hover:bg-white/10 rounded-lg transition">
+            <RefreshCw className="w-5 h-5 text-white/50" />
           </button>
         </div>
       </header>
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 min-h-screen">
+        <aside className="w-64 bg-[#0b2535]/80 backdrop-blur-xl border-r border-white/10 min-h-screen">
           <nav className="p-4 space-y-1">
-            {navItems.map((item) => {
+            <button
+              onClick={() => setActiveView('employees')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-wider transition ${
+                activeView === 'employees'
+                  ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg shadow-primary/25'
+                  : 'text-white/50 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Users className="w-5 h-5" />
+              Employees
+            </button>
+            {navItems.filter(n => n.id !== 'employees').map((item) => {
               const Icon = item.icon;
               return (
                 <button
                   key={item.id}
                   onClick={() => setActiveView(item.id as ViewTab)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition ${
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-wider transition ${
                     activeView === item.id
-                      ? 'bg-primary text-white'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg shadow-primary/25'
+                      : 'text-white/50 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -1153,7 +1260,6 @@ export default function HRDashboard() {
 
         {/* Main Content */}
         <main className="flex-1 p-6">
-          {renderDashboard()}
           {activeView === 'employees' && renderEmployees()}
           {activeView === 'departments' && renderDepartments()}
           {activeView === 'contracts' && renderContracts()}
@@ -1165,63 +1271,63 @@ export default function HRDashboard() {
 
       {/* Add Employee Modal */}
       {showAddEmployee && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-[#0b2535] rounded-xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto border border-white/10">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Add New Employee</h3>
-              <button onClick={() => setShowAddEmployee(false)} className="text-gray-400 hover:text-gray-600">
+              <h3 className="text-lg font-semibold text-white">Add New Employee</h3>
+              <button onClick={() => setShowAddEmployee(false)} className="text-white/50 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                  <label className="block text-sm font-medium text-white/70 mb-1">First Name</label>
                   <input
                     type="text"
                     value={newEmployee.firstName}
                     onChange={(e) => setNewEmployee({ ...newEmployee, firstName: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                  <label className="block text-sm font-medium text-white/70 mb-1">Last Name</label>
                   <input
                     type="text"
                     value={newEmployee.lastName}
                     onChange={(e) => setNewEmployee({ ...newEmployee, lastName: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                     required
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Email</label>
                 <input
                   type="email"
                   value={newEmployee.email}
                   onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Phone</label>
                 <input
                   type="tel"
                   value={newEmployee.phone}
                   onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                  <label className="block text-sm font-medium text-white/70 mb-1">Department</label>
                   <select
                     value={newEmployee.departmentId}
                     onChange={(e) => setNewEmployee({ ...newEmployee, departmentId: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   >
                     <option value="">Select Department</option>
                     {departments.map((dept) => (
@@ -1230,32 +1336,32 @@ export default function HRDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Position</label>
+                  <label className="block text-sm font-medium text-white/70 mb-1">Position</label>
                   <input
                     type="text"
                     value={newEmployee.position}
                     onChange={(e) => setNewEmployee({ ...newEmployee, position: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Hire Date</label>
+                  <label className="block text-sm font-medium text-white/70 mb-1">Hire Date</label>
                   <input
                     type="date"
                     value={newEmployee.hireDate}
                     onChange={(e) => setNewEmployee({ ...newEmployee, hireDate: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Employment Type</label>
+                  <label className="block text-sm font-medium text-white/70 mb-1">Employment Type</label>
                   <select
                     value={newEmployee.employmentType}
                     onChange={(e) => setNewEmployee({ ...newEmployee, employmentType: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   >
                     <option value="full-time">Full Time</option>
                     <option value="part-time">Part Time</option>
@@ -1265,24 +1371,24 @@ export default function HRDashboard() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Salary (ZAR)</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Salary (USD)</label>
                 <input
                   type="number"
                   value={newEmployee.salary}
                   onChange={(e) => setNewEmployee({ ...newEmployee, salary: parseFloat(e.target.value) || 0 })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                 />
               </div>
               <div className="flex justify-end gap-3 pt-4">
                 <button
                   onClick={() => setShowAddEmployee(false)}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                  className="px-4 py-2 text-white/70 hover:bg-white/10 rounded-lg"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCreateEmployee}
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                  className="px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-lg hover:opacity-90"
                 >
                   Create Employee
                 </button>
@@ -1294,44 +1400,44 @@ export default function HRDashboard() {
 
       {/* Add Department Modal */}
       {showAddDepartment && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-[#0b2535] rounded-xl p-6 w-full max-w-md border border-white/10">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Add New Department</h3>
-              <button onClick={() => setShowAddDepartment(false)} className="text-gray-400 hover:text-gray-600">
+              <h3 className="text-lg font-semibold text-white">Add New Department</h3>
+              <button onClick={() => setShowAddDepartment(false)} className="text-white/50 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Department Name</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Department Name</label>
                 <input
                   type="text"
                   value={newDepartment.name}
                   onChange={(e) => setNewDepartment({ ...newDepartment, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Description</label>
                 <textarea
                   value={newDepartment.description}
                   onChange={(e) => setNewDepartment({ ...newDepartment, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   rows={3}
                 />
               </div>
               <div className="flex justify-end gap-3 pt-4">
                 <button
                   onClick={() => setShowAddDepartment(false)}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                  className="px-4 py-2 text-white/70 hover:bg-white/10 rounded-lg"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCreateDepartment}
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                  className="px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-lg hover:opacity-90"
                 >
                   Create Department
                 </button>
@@ -1343,21 +1449,21 @@ export default function HRDashboard() {
 
       {/* Add Leave Request Modal */}
       {showAddLeave && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-[#0b2535] rounded-xl p-6 w-full max-w-lg border border-white/10">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Request Leave</h3>
-              <button onClick={() => setShowAddLeave(false)} className="text-gray-400 hover:text-gray-600">
+              <h3 className="text-lg font-semibold text-white">Request Leave</h3>
+              <button onClick={() => setShowAddLeave(false)} className="text-white/50 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Employee</label>
                 <select
                   value={newLeave.employeeId}
                   onChange={(e) => setNewLeave({ ...newLeave, employeeId: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   required
                 >
                   <option value="">Select Employee</option>
@@ -1367,11 +1473,11 @@ export default function HRDashboard() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Leave Type</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Leave Type</label>
                 <select
                   value={newLeave.leaveType}
                   onChange={(e) => setNewLeave({ ...newLeave, leaveType: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                 >
                   <option value="annual">Annual Leave</option>
                   <option value="sick">Sick Leave</option>
@@ -1383,32 +1489,32 @@ export default function HRDashboard() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                  <label className="block text-sm font-medium text-white/70 mb-1">Start Date</label>
                   <input
                     type="date"
                     value={newLeave.startDate}
                     onChange={(e) => setNewLeave({ ...newLeave, startDate: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                  <label className="block text-sm font-medium text-white/70 mb-1">End Date</label>
                   <input
                     type="date"
                     value={newLeave.endDate}
                     onChange={(e) => setNewLeave({ ...newLeave, endDate: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                     required
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Reason</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Reason</label>
                 <textarea
                   value={newLeave.reason}
                   onChange={(e) => setNewLeave({ ...newLeave, reason: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   rows={3}
                   required
                 />
@@ -1416,13 +1522,13 @@ export default function HRDashboard() {
               <div className="flex justify-end gap-3 pt-4">
                 <button
                   onClick={() => setShowAddLeave(false)}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                  className="px-4 py-2 text-white/70 hover:bg-white/10 rounded-lg"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCreateLeave}
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                  className="px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-lg hover:opacity-90"
                 >
                   Submit Request
                 </button>
@@ -1434,21 +1540,21 @@ export default function HRDashboard() {
 
       {/* Submit Report Modal */}
       {showReportModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-[#0b2535] rounded-xl p-6 w-full max-w-lg border border-white/10">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Submit Work Report</h3>
-              <button onClick={() => setShowReportModal(false)} className="text-gray-400 hover:text-gray-600">
+              <h3 className="text-lg font-semibold text-white">Submit Work Report</h3>
+              <button onClick={() => setShowReportModal(false)} className="text-white/50 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Employee</label>
                 <select
                   value={newReport.employeeId}
                   onChange={(e) => setNewReport({ ...newReport, employeeId: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   required
                 >
                   <option value="">Select Employee</option>
@@ -1458,55 +1564,55 @@ export default function HRDashboard() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Date</label>
                 <input
                   type="date"
                   value={newReport.date}
                   onChange={(e) => setNewReport({ ...newReport, date: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   required
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Hours Worked</label>
+                  <label className="block text-sm font-medium text-white/70 mb-1">Hours Worked</label>
                   <input
                     type="number"
                     value={newReport.hoursWorked}
                     onChange={(e) => setNewReport({ ...newReport, hoursWorked: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                     min="0"
                     max="24"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Overtime Hours</label>
+                  <label className="block text-sm font-medium text-white/70 mb-1">Overtime Hours</label>
                   <input
                     type="number"
                     value={newReport.overtimeHours}
                     onChange={(e) => setNewReport({ ...newReport, overtimeHours: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                     min="0"
                     max="24"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tasks Completed</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Tasks Completed</label>
                 <input
                   type="number"
                   value={newReport.tasksCompleted}
                   onChange={(e) => setNewReport({ ...newReport, tasksCompleted: parseInt(e.target.value) || 0 })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   min="0"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description of Work</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Description of Work</label>
                 <textarea
                   value={newReport.description}
                   onChange={(e) => setNewReport({ ...newReport, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   rows={3}
                   placeholder="Describe what you worked on today..."
                 />
@@ -1514,7 +1620,7 @@ export default function HRDashboard() {
               <div className="flex justify-end gap-3 pt-4">
                 <button
                   onClick={() => setShowReportModal(false)}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                  className="px-4 py-2 text-white/70 hover:bg-white/10 rounded-lg"
                 >
                   Cancel
                 </button>
@@ -1546,7 +1652,7 @@ export default function HRDashboard() {
                       description: '',
                     });
                   }}
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                  className="px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-lg hover:opacity-90"
                 >
                   Submit Report
                 </button>
@@ -1558,21 +1664,21 @@ export default function HRDashboard() {
 
       {/* Time Entry Modal */}
       {showTimeEntryModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-[#0b2535] rounded-xl p-6 w-full max-w-md border border-white/10">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Clock In</h3>
-              <button onClick={() => setShowTimeEntryModal(false)} className="text-gray-400 hover:text-gray-600">
+              <h3 className="text-lg font-semibold text-white">Clock In</h3>
+              <button onClick={() => setShowTimeEntryModal(false)} className="text-white/50 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Employee</label>
                 <select
                   value={newTimeEntry.employeeId}
                   onChange={(e) => setNewTimeEntry({ ...newTimeEntry, employeeId: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   required
                 >
                   <option value="">Select Employee</option>
@@ -1582,29 +1688,29 @@ export default function HRDashboard() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Clock In Time</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Clock In Time</label>
                 <input
                   type="time"
                   value={newTimeEntry.clockIn}
                   onChange={(e) => setNewTimeEntry({ ...newTimeEntry, clockIn: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Break Duration (minutes)</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Break Duration (minutes)</label>
                 <input
                   type="number"
                   value={newTimeEntry.breakDuration}
                   onChange={(e) => setNewTimeEntry({ ...newTimeEntry, breakDuration: parseInt(e.target.value) || 0 })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
                   min="0"
                 />
               </div>
               <div className="flex justify-end gap-3 pt-4">
                 <button
                   onClick={() => setShowTimeEntryModal(false)}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                  className="px-4 py-2 text-white/70 hover:bg-white/10 rounded-lg"
                 >
                   Cancel
                 </button>
@@ -1632,7 +1738,7 @@ export default function HRDashboard() {
                       breakDuration: 0,
                     });
                   }}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
                 >
                   Clock In
                 </button>
@@ -1644,26 +1750,26 @@ export default function HRDashboard() {
 
       {/* Contract Signature Modal */}
       {showSignatureModal && selectedContract && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-2xl">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-[#0b2535] rounded-xl p-6 w-full max-w-2xl border border-white/10">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Sign Contract: {selectedContract.title}</h3>
-              <button onClick={() => { setShowSignatureModal(false); setCurrentSignature(''); }} className="text-gray-400 hover:text-gray-600">
+              <h3 className="text-lg font-semibold text-white">Sign Contract: {selectedContract.title}</h3>
+              <button onClick={() => { setShowSignatureModal(false); setCurrentSignature(''); }} className="text-white/50 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="space-y-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-medium text-gray-700 mb-2">Contract Details</h4>
-                <p className="text-sm text-gray-600">Employee: {selectedContract.employeeName}</p>
-                <p className="text-sm text-gray-600">Type: {selectedContract.contractType}</p>
-                <p className="text-sm text-gray-600">Start Date: {formatDate(selectedContract.startDate)}</p>
-                {selectedContract.salary && <p className="text-sm text-gray-600">Salary: {formatCurrency(selectedContract.salary)}</p>}
+              <div className="bg-white/5 p-4 rounded-lg border border-white/10">
+                <h4 className="font-medium text-white mb-2">Contract Details</h4>
+                <p className="text-sm text-white/70">Employee: {selectedContract.employeeName}</p>
+                <p className="text-sm text-white/70">Type: {selectedContract.contractType}</p>
+                <p className="text-sm text-white/70">Start Date: {formatDate(selectedContract.startDate)}</p>
+                {selectedContract.salary && <p className="text-sm text-white/70">Salary: {formatCurrency(selectedContract.salary)}</p>}
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Draw Your Signature</label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg bg-white relative">
+                <label className="block text-sm font-medium text-white/70 mb-2">Draw Your Signature</label>
+                <div className="border-2 border-dashed border-white/20 rounded-lg bg-white/5 relative">
                   <canvas
                     id="signature-canvas"
                     width={500}
@@ -1682,7 +1788,7 @@ export default function HRDashboard() {
                       const canvas = document.getElementById('signature-canvas') as HTMLCanvasElement;
                       const ctx = canvas.getContext('2d');
                       const rect = canvas.getBoundingClientRect();
-                      ctx!.strokeStyle = '#000';
+                      ctx!.strokeStyle = '#ffffff';
                       ctx!.lineWidth = 2;
                       ctx?.lineTo(e.clientX - rect.left, e.clientY - rect.top);
                       ctx?.stroke();
@@ -1703,7 +1809,7 @@ export default function HRDashboard() {
                       ctx?.clearRect(0, 0, canvas.width, canvas.height);
                       setCurrentSignature('');
                     }}
-                    className="text-sm text-gray-500 hover:text-gray-700"
+                    className="text-sm text-white/50 hover:text-white"
                   >
                     Clear
                   </button>
@@ -1713,7 +1819,7 @@ export default function HRDashboard() {
               <div className="flex justify-end gap-3 pt-4">
                 <button
                   onClick={() => { setShowSignatureModal(false); setCurrentSignature(''); }}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                  className="px-4 py-2 text-white/70 hover:bg-white/10 rounded-lg"
                 >
                   Cancel
                 </button>
@@ -1746,11 +1852,134 @@ export default function HRDashboard() {
                     setShowSignatureModal(false);
                     setCurrentSignature('');
                   }}
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                  className="px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-lg hover:opacity-90"
                 >
                   Sign Contract
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Contract Document Upload Modal */}
+      {showContractUpload && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-[#0b2535] rounded-xl p-6 w-full max-w-md border border-white/10">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-white">Upload Contract Document</h3>
+              <button onClick={() => setShowContractUpload(null)} className="text-white/50 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div className="border-2 border-dashed border-white/20 rounded-lg p-8 text-center hover:border-white/40 transition-colors">
+                <FileUp className="w-12 h-12 mx-auto mb-4 text-white/30" />
+                <p className="text-white/70 mb-2">Drag and drop PDF or Word documents</p>
+                <p className="text-white/40 text-sm mb-4">or click to browse</p>
+                <label className="px-4 py-2 bg-primary text-white rounded-lg cursor-pointer hover:bg-primary/90 inline-block">
+                  Select File
+                  <input 
+                    type="file" 
+                    accept=".pdf,.doc,.docx" 
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const url = URL.createObjectURL(file);
+                        const updatedContracts = contracts.map(c => 
+                          c.id === showContractUpload ? { ...c, documentUrl: url, documentName: file.name, documentType: file.name.split('.').pop() || 'pdf' } : c
+                        );
+                        setContracts(updatedContracts);
+                        localStorage.setItem('hr-contracts', JSON.stringify(updatedContracts));
+                        toast.success('Document uploaded successfully');
+                        setShowContractUpload(null);
+                      }
+                    }}
+                  />
+                </label>
+              </div>
+              <p className="text-xs text-white/40 text-center">Supported formats: PDF, DOC, DOCX</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report Comments Modal */}
+      {showReportComments && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-[#0b2535] rounded-xl p-6 w-full max-w-lg border border-white/10">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-white">Report Comments</h3>
+              <button onClick={() => { setShowReportComments(null); setReportComment(''); }} className="text-white/50 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              {(() => {
+                const report = reports.find(r => r.id === showReportComments);
+                if (!report) return null;
+                return (
+                  <>
+                    <div className="bg-white/5 p-4 rounded-lg border border-white/10">
+                      <p className="text-sm text-white/70 mb-2">Report by: {report.employeeName}</p>
+                      <p className="text-sm text-white/70">Date: {formatDate(report.date)}</p>
+                      <p className="text-sm text-white/70">Hours: {report.hoursWorked}h</p>
+                      <p className="text-sm text-white/70 mt-2">Description: {report.description}</p>
+                    </div>
+                    <div className="max-h-48 overflow-y-auto space-y-2">
+                      {(report.supervisorComments || []).map((comment) => (
+                        <div key={comment.id} className="bg-white/5 p-3 rounded-lg">
+                          <p className="text-sm font-medium text-white">{comment.author}</p>
+                          <p className="text-sm text-white/70">{comment.text}</p>
+                          <p className="text-xs text-white/40 mt-1">{formatDate(comment.timestamp)}</p>
+                        </div>
+                      ))}
+                      {(report.supervisorComments || []).length === 0 && (
+                        <p className="text-sm text-white/40 text-center py-4">No comments yet</p>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Add a comment..."
+                        value={reportComment}
+                        onChange={(e) => setReportComment(e.target.value)}
+                        className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm"
+                      />
+                      <button
+                        onClick={() => {
+                          if (!reportComment.trim()) return;
+                          const updated = reports.map(r => {
+                            if (r.id === showReportComments) {
+                              return {
+                                ...r,
+                                supervisorComments: [
+                                  ...(r.supervisorComments || []),
+                                  {
+                                    id: Math.random().toString(36).substring(2, 15),
+                                    author: 'Supervisor',
+                                    text: reportComment,
+                                    timestamp: new Date().toISOString(),
+                                  },
+                                ],
+                              };
+                            }
+                            return r;
+                          });
+                          setReports(updated);
+                          localStorage.setItem('hr-reports', JSON.stringify(updated));
+                          setReportComment('');
+                          toast.success('Comment added');
+                        }}
+                        className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                      >
+                        Send
+                      </button>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           </div>
         </div>

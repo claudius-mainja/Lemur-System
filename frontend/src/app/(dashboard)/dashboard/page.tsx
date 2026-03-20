@@ -453,7 +453,7 @@ export default function DashboardPage() {
       )}
 
       {/* Modules Grid - Styled like Quick Actions */}
-      <div>
+      <div className="bg-white/5 border border-white/10 rounded-xl p-4">
         <h3 className="font-bold text-white uppercase tracking-wider text-sm mb-4 flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-accent" />
           Your Modules
@@ -463,37 +463,28 @@ export default function DashboardPage() {
             <Link
               key={module.id}
               href={`/dashboard/${module.id}`}
-              className={`group relative bg-gradient-to-br ${module.gradient} p-4 rounded-xl text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-${module.id === 'hr' ? 'blue' : module.id === 'finance' ? 'emerald' : module.id === 'crm' ? 'violet' : module.id === 'payroll' ? 'orange' : module.id === 'productivity' ? 'cyan' : 'indigo'}-500/30`}
+              className={`group relative flex flex-col items-center gap-1 p-3 bg-gradient-to-br ${module.gradient} rounded-xl text-white transition-all hover:scale-105 hover:shadow-lg`}
             >
-              <div className="flex flex-col items-center text-center gap-2">
-                <module.icon className="w-8 h-8" />
-                <span className="text-sm font-bold uppercase tracking-wider">{module.name}</span>
-              </div>
-              <ArrowRight className="w-4 h-4 absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <module.icon className="w-5 h-5" />
+              <span className="text-[10px] font-bold uppercase tracking-wider">{module.name}</span>
             </Link>
           ))}
           {userModules.includes('automations') && (
             <Link
               href="/dashboard/automations"
-              className="group relative bg-gradient-to-br from-pink-500 to-rose-500 p-4 rounded-xl text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-pink-500/30"
+              className="group relative flex flex-col items-center gap-1 p-3 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl text-white transition-all hover:scale-105 hover:shadow-lg"
             >
-              <div className="flex flex-col items-center text-center gap-2">
-                <Zap className="w-8 h-8" />
-                <span className="text-sm font-bold uppercase tracking-wider">Automations</span>
-              </div>
-              <ArrowRight className="w-4 h-4 absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Zap className="w-5 h-5" />
+              <span className="text-[10px] font-bold uppercase tracking-wider">Auto</span>
             </Link>
           )}
           {userModules.includes('settings') && (
             <Link
               href="/dashboard/settings/users"
-              className="group relative bg-gradient-to-br from-slate-500 to-gray-600 p-4 rounded-xl text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-slate-500/30"
+              className="group relative flex flex-col items-center gap-1 p-3 bg-gradient-to-br from-slate-500 to-gray-600 rounded-xl text-white transition-all hover:scale-105 hover:shadow-lg"
             >
-              <div className="flex flex-col items-center text-center gap-2">
-                <Shield className="w-8 h-8" />
-                <span className="text-sm font-bold uppercase tracking-wider">Settings</span>
-              </div>
-              <ArrowRight className="w-4 h-4 absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Shield className="w-5 h-5" />
+              <span className="text-[10px] font-bold uppercase tracking-wider">Settings</span>
             </Link>
           )}
         </div>

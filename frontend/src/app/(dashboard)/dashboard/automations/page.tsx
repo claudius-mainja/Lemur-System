@@ -51,41 +51,6 @@ export default function AutomationsPage() {
     const stored = localStorage.getItem('automations');
     if (stored) {
       setAutomations(JSON.parse(stored));
-    } else {
-      const defaultAutomations: Automation[] = [
-        {
-          id: '1',
-          name: 'New Employee Welcome',
-          description: 'Send welcome email and create onboarding tasks when a new employee is added',
-          trigger: 'New Employee Added',
-          actions: ['Send Email', 'Create Task'],
-          status: 'active',
-          lastRun: new Date().toISOString(),
-          runCount: 15,
-        },
-        {
-          id: '2',
-          name: 'Invoice Paid Notification',
-          description: 'Notify team when an invoice is paid',
-          trigger: 'Invoice Paid',
-          actions: ['Send Slack Message', 'Send Notification'],
-          status: 'active',
-          lastRun: new Date().toISOString(),
-          runCount: 42,
-        },
-        {
-          id: '3',
-          name: 'Lead Assignment',
-          description: 'Automatically assign new leads to sales team',
-          trigger: 'New Lead Created',
-          actions: ['Add to List', 'Send Notification'],
-          status: 'paused',
-          lastRun: new Date(Date.now() - 86400000).toISOString(),
-          runCount: 28,
-        },
-      ];
-      setAutomations(defaultAutomations);
-      localStorage.setItem('automations', JSON.stringify(defaultAutomations));
     }
   }, []);
 
@@ -154,16 +119,16 @@ export default function AutomationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]">
+      <header className="bg-[#0b2535]/50 backdrop-blur-xl border-b border-white/10 sticky top-0 z-10">
         <div className="px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-r from-accentDark to-accent rounded-xl flex items-center justify-center">
               <Zap className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Automations</h1>
-              <p className="text-sm text-gray-500">Workflow automation & triggers</p>
+              <h1 className="text-xl font-bold text-white uppercase tracking-wider">Automations</h1>
+              <p className="text-sm text-white/50">Workflow automation & triggers</p>
             </div>
           </div>
           <button
@@ -178,74 +143,74 @@ export default function AutomationsPage() {
 
       <main className="p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Automations</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{automations.length}</p>
+                <p className="text-sm text-white/50">Total Automations</p>
+                <p className="text-2xl font-bold text-white mt-1">{automations.length}</p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Zap className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                <Zap className="w-6 h-6 text-blue-500" />
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Active</p>
-                <p className="text-2xl font-bold text-green-600 mt-1">{activeCount}</p>
+                <p className="text-sm text-white/50">Active</p>
+                <p className="text-2xl font-bold text-green-500 mt-1">{activeCount}</p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <Play className="w-6 h-6 text-green-600" />
+              <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <Play className="w-6 h-6 text-green-500" />
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Paused</p>
-                <p className="text-2xl font-bold text-yellow-600 mt-1">{pausedCount}</p>
+                <p className="text-sm text-white/50">Paused</p>
+                <p className="text-2xl font-bold text-yellow-500 mt-1">{pausedCount}</p>
               </div>
-              <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <Pause className="w-6 h-6 text-yellow-600" />
+              <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                <Pause className="w-6 h-6 text-yellow-500" />
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Runs</p>
-                <p className="text-2xl font-bold text-purple-600 mt-1">
+                <p className="text-sm text-white/50">Total Runs</p>
+                <p className="text-2xl font-bold text-purple-500 mt-1">
                   {automations.reduce((acc, a) => acc + a.runCount, 0)}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <RefreshCw className="w-6 h-6 text-purple-600" />
+              <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                <RefreshCw className="w-6 h-6 text-purple-500" />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="p-4 border-b border-gray-100">
+        <div className="bg-white/5 border border-white/10 rounded-xl">
+          <div className="p-4 border-b border-white/10">
             <div className="relative max-w-md">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
               <input
                 type="text"
                 placeholder="Search automations..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm"
+                className="w-full pl-10 pr-4 py-2 border border-white/10 rounded-lg text-sm bg-white/5 text-white"
               />
             </div>
           </div>
 
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y divide-white/5">
             {filteredAutomations.length === 0 ? (
               <div className="p-12 text-center">
-                <Zap className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No Automations Yet</h3>
-                <p className="text-gray-500 mb-6">Create your first automation to streamline workflows</p>
+                <Zap className="w-16 h-16 mx-auto text-white/20 mb-4" />
+                <h3 className="text-lg font-semibold text-white mb-2">No Automations Yet</h3>
+                <p className="text-white/50 mb-6">Create your first automation to streamline workflows</p>
                 <button
                   onClick={() => setShowCreateModal(true)}
                   className="bg-gradient-to-r from-accentDark to-accent text-white px-6 py-3 rounded-lg inline-flex items-center gap-2 hover:shadow-lg"
@@ -256,56 +221,56 @@ export default function AutomationsPage() {
               </div>
             ) : (
               filteredAutomations.map((automation) => (
-                <div key={automation.id} className="p-6 hover:bg-gray-50 transition">
+                <div key={automation.id} className="p-6 hover:bg-white/5 transition">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4">
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                         automation.status === 'active' 
-                          ? 'bg-green-100' 
+                          ? 'bg-green-500/20' 
                           : automation.status === 'paused'
-                          ? 'bg-yellow-100'
-                          : 'bg-gray-100'
+                          ? 'bg-yellow-500/20'
+                          : 'bg-white/10'
                       }`}>
                         <Zap className={`w-6 h-6 ${
                           automation.status === 'active' 
-                            ? 'text-green-600' 
+                            ? 'text-green-500' 
                             : automation.status === 'paused'
-                            ? 'text-yellow-600'
-                            : 'text-gray-600'
+                            ? 'text-yellow-500'
+                            : 'text-white/50'
                         }`} />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-gray-900">{automation.name}</h3>
+                          <h3 className="font-semibold text-white">{automation.name}</h3>
                           <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                             automation.status === 'active' 
-                              ? 'bg-green-100 text-green-700' 
+                              ? 'bg-green-500/20 text-green-400' 
                               : automation.status === 'paused'
-                              ? 'bg-yellow-100 text-yellow-700'
-                              : 'bg-gray-100 text-gray-700'
+                              ? 'bg-yellow-500/20 text-yellow-400'
+                              : 'bg-white/10 text-white/50'
                           }`}>
                             {automation.status}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-500 mt-1">{automation.description}</p>
+                        <p className="text-sm text-white/50 mt-1">{automation.description}</p>
                         <div className="flex items-center gap-4 mt-3">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-500">Trigger:</span>
-                            <span className="text-xs font-medium bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                            <span className="text-xs text-white/40">Trigger:</span>
+                            <span className="text-xs font-medium bg-blue-500/20 text-blue-400 px-2 py-1 rounded">
                               {automation.trigger}
                             </span>
                           </div>
-                          <ArrowRight className="w-4 h-4 text-gray-400" />
+                          <ArrowRight className="w-4 h-4 text-white/30" />
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-500">Actions:</span>
+                            <span className="text-xs text-white/40">Actions:</span>
                             {automation.actions.map((action, i) => (
-                              <span key={i} className="text-xs font-medium bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                              <span key={i} className="text-xs font-medium bg-purple-500/20 text-purple-400 px-2 py-1 rounded">
                                 {action}
                               </span>
                             ))}
                           </div>
                         </div>
-                        <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
+                        <div className="flex items-center gap-4 mt-3 text-xs text-white/50">
                           <span className="flex items-center gap-1">
                             <RefreshCw className="w-3 h-3" />
                             {automation.runCount} runs
@@ -324,8 +289,8 @@ export default function AutomationsPage() {
                         onClick={() => handleToggleStatus(automation.id)}
                         className={`p-2 rounded-lg ${
                           automation.status === 'active'
-                            ? 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
-                            : 'bg-green-100 text-green-600 hover:bg-green-200'
+                            ? 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30'
+                            : 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
                         }`}
                       >
                         {automation.status === 'active' ? (
@@ -336,13 +301,13 @@ export default function AutomationsPage() {
                       </button>
                       <button
                         onClick={() => handleDuplicate(automation)}
-                        className="p-2 rounded-lg hover:bg-gray-100"
+                        className="p-2 rounded-lg hover:bg-white/10"
                       >
-                        <Copy className="w-4 h-4 text-gray-500" />
+                        <Copy className="w-4 h-4 text-white/50" />
                       </button>
                       <button
                         onClick={() => handleDelete(automation.id)}
-                        className="p-2 rounded-lg hover:bg-red-50 text-red-500"
+                        className="p-2 rounded-lg hover:bg-red-500/10 text-red-400"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -357,39 +322,39 @@ export default function AutomationsPage() {
 
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#0b2535] rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-white/10">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-semibold">Create Automation</h3>
-              <button onClick={() => setShowCreateModal(false)} className="text-gray-400 hover:text-gray-600">
+              <h3 className="text-lg font-semibold text-white uppercase tracking-wider">Create Automation</h3>
+              <button onClick={() => setShowCreateModal(false)} className="text-white/50 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Automation Name *</label>
+                <label className="block text-sm font-medium text-white/60 mb-1 uppercase tracking-wider">Automation Name *</label>
                 <input
                   type="text"
                   value={newAutomation.name}
                   onChange={(e) => setNewAutomation({ ...newAutomation, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
                   placeholder="e.g., New Employee Welcome"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-white/60 mb-1 uppercase tracking-wider">Description</label>
                 <textarea
                   value={newAutomation.description}
                   onChange={(e) => setNewAutomation({ ...newAutomation, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg"
+                  className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white resize-none"
                   rows={2}
                   placeholder="What does this automation do?"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">When this happens (Trigger) *</label>
+                <label className="block text-sm font-medium text-white/60 mb-2 uppercase tracking-wider">When this happens (Trigger) *</label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {triggerTemplates.map((trigger) => {
                     const Icon = trigger.icon;
@@ -399,12 +364,12 @@ export default function AutomationsPage() {
                         onClick={() => setNewAutomation({ ...newAutomation, trigger: trigger.name })}
                         className={`p-3 rounded-lg border text-left transition ${
                           newAutomation.trigger === trigger.name
-                            ? 'border-teal-500 bg-teal-50'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? 'border-teal-500 bg-teal-500/20'
+                            : 'border-white/10 hover:bg-white/5'
                         }`}
                       >
-                        <Icon className="w-5 h-5 mb-1 text-gray-600" />
-                        <span className="text-sm font-medium">{trigger.name}</span>
+                        <Icon className="w-5 h-5 mb-1 text-white/70" />
+                        <span className="text-sm font-medium text-white">{trigger.name}</span>
                       </button>
                     );
                   })}
@@ -412,7 +377,7 @@ export default function AutomationsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Do this (Actions)</label>
+                <label className="block text-sm font-medium text-white/60 mb-2 uppercase tracking-wider">Do this (Actions)</label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {actionTemplates.map((action) => {
                     const Icon = action.icon;
@@ -427,12 +392,12 @@ export default function AutomationsPage() {
                         }}
                         className={`p-3 rounded-lg border text-left transition ${
                           newAutomation.actions.includes(action.name)
-                            ? 'border-purple-500 bg-purple-50'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? 'border-purple-500 bg-purple-500/20'
+                            : 'border-white/10 hover:bg-white/5'
                         }`}
                       >
-                        <Icon className="w-5 h-5 mb-1 text-gray-600" />
-                        <span className="text-sm font-medium">{action.name}</span>
+                        <Icon className="w-5 h-5 mb-1 text-white/70" />
+                        <span className="text-sm font-medium text-white">{action.name}</span>
                       </button>
                     );
                   })}
@@ -442,7 +407,7 @@ export default function AutomationsPage() {
               <div className="flex justify-end gap-3 pt-4">
                 <button
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                  className="px-4 py-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg"
                 >
                   Cancel
                 </button>

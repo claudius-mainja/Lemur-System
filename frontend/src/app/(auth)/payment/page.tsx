@@ -6,10 +6,10 @@ import { useAuthStore, PLAN_CONFIG, SubscriptionPlan } from '@/stores/auth.store
 import toast from 'react-hot-toast';
 import { 
   CreditCard, Smartphone, Wallet, Lock, Check, ArrowLeft, 
-  Loader2, Shield, Building2, ArrowRight, UserPlus
+  Loader2, Shield, Building2, ArrowRight, UserPlus, SmartphoneNfc, ShieldCheck
 } from 'lucide-react';
 
-type PaymentMethod = 'card' | 'ecocash' | 'paypal' | 'payflex' | 'bank';
+type PaymentMethod = 'card' | 'ecocash' | 'paypal' | 'payflex' | 'bank' | 'mpesa';
 
 interface PlanDetails {
   name: string;
@@ -48,6 +48,7 @@ function PaymentContent() {
 
   const planParam = (searchParams?.get('plan') as SubscriptionPlan) || user?.subscription || 'starter';
   const usersParam = parseInt(searchParams?.get('users') || '1');
+  const orgName = searchParams?.get('org') || 'Your Organization';
   
   useEffect(() => {
     setNumUsers(usersParam);
@@ -61,7 +62,7 @@ function PaymentContent() {
     if (!pricePerUser) return 0;
     const base = pricePerUser * numUsers;
     if (billingCycle === 'annual') {
-      return base * 12 * 0.8; // 20% discount
+      return base * 12 * 0.8;
     }
     return base;
   };
@@ -76,28 +77,48 @@ function PaymentContent() {
     maxUsers: maxUsers,
   };
 
-  const handlePayment = async (e: React.FormEvent) => {
+  const handleCompletePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
-    localStorage.setItem('erp-payment-status', JSON.stringify({
-      plan: planParam,
+    const paymentStatus = {
+      subscription: planParam,
       users: numUsers,
       billingCycle,
       status: 'active',
       paymentMethod: selectedMethod,
       paidAt: new Date().toISOString(),
-    }));
+      paymentVerified: true,
+    };
+
+    localStorage.setItem('erp-payment-status', JSON.stringify(paymentStatus));
+
+    const { setUser } = useAuthStore.getState();
+    setUser({
+      id: user?.id || 'admin-' + Date.now(),
+      email: user?.email || 'admin@example.com',
+      first_name: user?.first_name || 'Super',
+      last_name: user?.last_name || 'Admin',
+      role: 'super_admin',
+      organization_id: user?.organization_id || 'org-' + Date.now(),
+      organization_name: orgName,
+      subscription: planParam,
+      modules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'settings', 'users', 'dashboard'],
+      currency: 'USD',
+      is_active: true,
+      isActive: true,
+    });
 
     setIsProcessing(false);
-    toast.success('Payment successful! Welcome to LemurSystem.');
-    router.push('/dashboard/hr');
+    toast.success('Welcome to LemurSystem! Your account is now active.');
+    router.push('/dashboard');
   };
 
   const paymentMethods = [
     { id: 'card', name: 'Credit/Debit Card', icon: CreditCard, desc: 'Visa, Mastercard, AMEX' },
+    { id: 'mpesa', name: 'M-Pesa', icon: SmartphoneNfc, desc: 'Mobile money Kenya' },
     { id: 'ecocash', name: 'EcoCash', icon: Smartphone, desc: 'Mobile money Zimbabwe' },
     { id: 'paypal', name: 'PayPal', icon: Wallet, desc: 'Pay with your PayPal account' },
     { id: 'payflex', name: 'PayFlex', icon: Building2, desc: 'Buy now, pay later' },
@@ -124,7 +145,7 @@ function PaymentContent() {
               </div>
               <div>
                 <h2 className="text-xl font-bold text-white">Complete Your Subscription</h2>
-                <p className="text-white/40 text-sm">Review your order</p>
+                <p className="text-white/40 text-sm">Review your order for {orgName}</p>
               </div>
             </div>
             
@@ -232,7 +253,7 @@ function PaymentContent() {
 
           {/* Payment Form */}
           <div className="bg-white rounded-2xl p-6 shadow-xl">
-            <form onSubmit={handlePayment}>
+            <form onSubmit={handleCompletePayment}>
               <h3 className="text-lg font-semibold text-slate-900 mb-4">Payment Method</h3>
 
               <div className="grid grid-cols-2 gap-2 mb-4">
@@ -319,6 +340,21 @@ function PaymentContent() {
                 </div>
               )}
 
+              {selectedMethod === 'mpesa' && (
+                <div className="space-y-3 mb-4 p-4 bg-slate-50 rounded-xl">
+                  <div>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">M-Pesa Number</label>
+                    <input
+                      type="tel"
+                      placeholder="+254 7XX XXX XXX"
+                      className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent text-sm"
+                      required
+                    />
+                  </div>
+                  <p className="text-xs text-slate-500">You will receive an STK push prompt to confirm payment</p>
+                </div>
+              )}
+
               {selectedMethod === 'paypal' && (
                 <div className="mb-4 p-4 bg-slate-50 rounded-xl text-center">
                   <p className="text-sm text-slate-600">You will be redirected to PayPal to complete your payment</p>
@@ -337,10 +373,20 @@ function PaymentContent() {
                 </div>
               )}
 
+              <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-4">
+                <div className="flex items-start gap-3">
+                  <ShieldCheck className="w-5 h-5 text-green-500 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-slate-900">Secure Payment</p>
+                    <p className="text-xs text-slate-600 mt-1">Your payment is processed securely.</p>
+                  </div>
+                </div>
+              </div>
+
               <button
                 type="submit"
                 disabled={isProcessing}
-                className="w-full bg-gradient-to-r from-accent to-accentDark text-white py-3 rounded-xl font-semibold hover:shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isProcessing ? (
                   <>
@@ -349,8 +395,8 @@ function PaymentContent() {
                   </>
                 ) : (
                   <>
-                    <Lock className="w-4 h-4" />
-                    Pay ${calculateTotal().toFixed(2)} {billingCycle === 'annual' ? 'Annually' : 'Monthly'}
+                    <Check className="w-4 h-4" />
+                    Complete Payment ${calculateTotal().toFixed(2)} {billingCycle === 'annual' ? 'Annually' : 'Monthly'}
                   </>
                 )}
               </button>

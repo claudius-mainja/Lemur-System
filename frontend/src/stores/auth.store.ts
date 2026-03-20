@@ -4,10 +4,11 @@ import { authApi, employeesApi } from '@/services/api';
 
 export type Industry = 'technology' | 'retail' | 'manufacturing' | 'healthcare' | 'education' | 'finance' | 'construction' | 'hospitality' | 'transportation' | 'agriculture' | 'mining' | 'telecommunications' | 'realestate' | 'legal' | 'consulting' | 'other';
 export type SubscriptionPlan = 'starter' | 'professional' | 'enterprise';
-export type UserRole = 'admin' | 'hr' | 'finance' | 'manager' | 'employee' | 'accountant' | 'ordinary';
+export type UserRole = 'admin' | 'super_admin' | 'hr' | 'finance' | 'manager' | 'employee' | 'accountant' | 'ordinary';
 
 export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
   admin: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'settings', 'users'],
+  super_admin: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'settings', 'users', 'dashboard'],
   hr: ['hr', 'productivity'],
   finance: ['finance', 'payroll'],
   accountant: ['finance', 'reports'],

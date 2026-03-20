@@ -521,24 +521,23 @@ export default function ProductivityDashboard() {
                         <p className={`text-sm mt-1 ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>{task.description || 'No description'}</p>
                         
                         <div className="mt-3">
-                          <div className="flex justify-between mb-1">
-                            <span className={`text-xs font-medium ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>Progress</span>
-                            <span className={`text-xs font-bold ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{task.progress || 0}%</span>
+                          <span className={`text-xs font-medium ${isDark ? 'text-dark-text-muted' : 'text-light-text-muted'}`}>Task Progress</span>
+                          <div className="flex items-center gap-2 mt-1">
+                            {[25, 50, 75, 100].map((value) => (
+                              <button
+                                key={value}
+                                onClick={() => handleUpdateProgress(task.id, value)}
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${
+                                  (task.progress || 0) >= value
+                                    ? 'bg-gradient-to-r from-primary to-accent text-white'
+                                    : isDark ? 'bg-dark-bg-tertiary text-dark-text-muted' : 'bg-light-bg-tertiary text-light-text-muted'
+                                }`}
+                              >
+                                {value >= (task.progress || 0) ? value : <CheckCircle className="w-4 h-4" />}
+                              </button>
+                            ))}
+                            <span className={`text-xs font-bold ml-2 ${isDark ? 'text-dark-text' : 'text-light-text'}`}>{task.progress || 0}%</span>
                           </div>
-                          <div className={`h-1.5 rounded-full overflow-hidden w-32 ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'}`}>
-                            <div 
-                              className="h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all" 
-                              style={{ width: `${task.progress || 0}%` }} 
-                            />
-                          </div>
-                          <input 
-                            type="range" 
-                            min="0" 
-                            max="100" 
-                            value={task.progress || 0}
-                            onChange={(e) => handleUpdateProgress(task.id, parseInt(e.target.value))}
-                            className="w-32 mt-1 h-1 bg-transparent appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-orange-500"
-                          />
                         </div>
                         
                         <div className="flex items-center gap-3 mt-3 flex-wrap">
