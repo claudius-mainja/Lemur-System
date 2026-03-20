@@ -281,7 +281,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Welcome Header */}
       <div className="bg-gradient-to-r from-primary via-secondary to-accent rounded-2xl p-6 text-white shadow-lg shadow-primary/20">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -440,47 +440,6 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-
-      {/* Modules Grid - Icon Only */}
-      <div className="flex flex-wrap gap-2 items-center">
-        {MODULE_CONFIG.filter(mod => userModules.includes(mod.id)).map((module) => (
-          <Link
-            key={module.id}
-            href={`/dashboard/${module.id}`}
-            title={module.name}
-            className={`group flex items-center justify-center w-10 h-10 bg-gradient-to-br ${module.gradient} rounded-lg text-white transition-all hover:scale-110 hover:shadow-lg hover:shadow-primary/20`}
-          >
-            <module.icon className="w-5 h-5" />
-          </Link>
-        ))}
-        {userModules.includes('automations') && (
-          <Link
-            href="/dashboard/automations"
-            title="Automations"
-            className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg text-white transition-all hover:scale-110 hover:shadow-lg hover:shadow-pink-500/20"
-          >
-            <Zap className="w-5 h-5" />
-          </Link>
-        )}
-        {userModules.includes('settings') && (
-          <Link
-            href="/dashboard/settings/users"
-            title="Settings"
-            className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-slate-500 to-gray-600 rounded-lg text-white transition-all hover:scale-110 hover:shadow-lg hover:shadow-slate-500/20"
-          >
-            <Shield className="w-5 h-5" />
-          </Link>
-        )}
-        {userModules.includes('email') && (
-          <Link
-            href="/dashboard/email"
-            title="Email"
-            className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg text-white transition-all hover:scale-110 hover:shadow-lg hover:shadow-amber-500/20"
-          >
-            <Mail className="w-5 h-5" />
-          </Link>
-        )}
-      </div>
 
       {/* Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
