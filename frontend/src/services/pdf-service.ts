@@ -449,6 +449,12 @@ export const pdfService = {
     doc.save(filename);
   },
 
+  openPDFInNewTab(doc: jsPDF, filename: string): void {
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+  },
+
   printPDF(doc: jsPDF): void {
     const blob = doc.output('blob');
     const url = URL.createObjectURL(blob);
