@@ -147,43 +147,7 @@ export default function LoginPage() {
   };
 
   const onVerifyLoginOtp = async () => {
-    if (otp.length !== 6) {
-      toast.error('Please enter a valid 6-digit OTP');
-      return;
-    }
-    
-    const storedOtp = localStorage.getItem('login-otp');
-    const otpExpiry = localStorage.getItem('login-otp-expiry');
-    
-    if (!storedOtp || !otpExpiry || Date.now() > parseInt(otpExpiry)) {
-      toast.error('OTP has expired. Please try logging in again.');
-      setLoginStep('credentials');
-      setOtp('');
-      return;
-    }
-    
-    if (otp !== storedOtp) {
-      toast.error('Invalid OTP. Please try again.');
-      return;
-    }
-    
-    localStorage.removeItem('login-otp');
-    localStorage.removeItem('login-otp-expiry');
-    
-    const user = useAuthStore.getState().user;
-    toast.success('Welcome back!');
-    router.push(getDashboardRoute(user?.modules || ['hr']));
-  };
-
-  const onResendLoginOtp = async () => {
-    setOtp('');
-    const generatedOtp = generateOTP();
-    localStorage.setItem('login-otp', generatedOtp);
-    localStorage.setItem('login-otp-expiry', (Date.now() + 5 * 60 * 1000).toString());
-    setOtpTimer(300);
-    
-    console.log(`New Login OTP: ${generatedOtp}`);
-    toast.success(`New OTP sent to ${pendingEmail}`);
+    toast.error('OTP verification not configured');
   };
 
   const onRegisterOrg = async (data: RegisterForm) => {

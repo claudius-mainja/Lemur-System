@@ -140,7 +140,6 @@ export default function UsersPage() {
         role: newUser.role,
         department: newUser.department || undefined,
         phone: newUser.phone || undefined,
-        modules: newUser.modules,
       });
       
       localStorage.setItem(`user_credentials_${Date.now()}`, JSON.stringify({

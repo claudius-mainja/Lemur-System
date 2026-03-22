@@ -181,7 +181,7 @@ export default function EmailPage() {
           {/* Account Selector */}
           <div className="mb-6">
             <select
-              value={activeAccount.id}
+              value={activeAccount?.id || ''}
               onChange={(e) => {
                 const account = accounts.find(a => a.id === e.target.value);
                 if (account) setActiveAccount(account);

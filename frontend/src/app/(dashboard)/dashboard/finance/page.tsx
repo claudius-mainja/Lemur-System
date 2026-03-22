@@ -58,6 +58,7 @@ interface Invoice {
   invoiceNumber: string;
   type: string;
   status: string;
+  customerId?: string;
   customerName: string;
   customerEmail?: string;
   items: any[];
@@ -895,7 +896,7 @@ export default function FinanceDashboard() {
                           const pdfDoc = pdfService.generateInvoicePDF({
                             id: invoice.id,
                             invoiceNumber: invoice.invoiceNumber,
-                            customerId: invoice.customerId,
+                            customerId: invoice.customerId || '',
                             customerName: invoice.customerName,
                             customerEmail: invoice.customerEmail || '',
                             items: invoice.items.map((item: any) => ({
@@ -905,9 +906,9 @@ export default function FinanceDashboard() {
                               total: item.total,
                             })),
                             subtotal: invoice.subtotal,
-                            tax: invoice.taxAmount || invoice.tax || 0,
+                            tax: invoice.taxAmount || 0,
                             total: invoice.total,
-                            status: invoice.status,
+                            status: invoice.status as 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled',
                             issueDate: invoice.issueDate,
                             dueDate: invoice.dueDate,
                             paidDate: invoice.paidDate,

@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 type ViewTab = 'inventory' | 'vendors' | 'orders';
 
 interface OrderItem {
+  id: string;
   itemName: string;
   quantity: number;
   unitPrice: number;
@@ -120,6 +121,7 @@ export default function SupplyChainDashboard() {
       items: [
         ...newOrder.items,
         {
+          id: Math.random().toString(36).substring(2, 10),
           ...newOrderItem,
           total: newOrderItem.quantity * newOrderItem.unitPrice,
         },

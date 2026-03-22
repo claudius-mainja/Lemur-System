@@ -244,7 +244,7 @@ export const useAuthStore = create<AuthState>()(
           if (loginData.access_token) {
             let user = mapApiUser(loginData.user);
             
-            const modulesFromPlan = PLAN_CONFIG[data.plan as SubscriptionPlan]?.modules || [];
+            const modulesFromPlan = [...(PLAN_CONFIG[data.plan as SubscriptionPlan]?.modules || [])];
             user = { ...user, modules: modulesFromPlan };
             
             const serverTime = loginData.server_time || new Date().toISOString();
