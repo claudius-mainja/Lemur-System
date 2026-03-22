@@ -16,23 +16,29 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
-    password_confirm = serializers.CharField(write_only=True)
+    password_confirm = serializers.CharField(write_only=True, required=False)
+    plan = serializers.CharField(required=False, write_only=True)
 
     class Meta:
         model = User
         fields = [
             'email', 'password', 'password_confirm', 'first_name', 'last_name',
-            'organization_name', 'industry', 'country', 'currency', 'subscription'
+            'organization_name', 'industry', 'country', 'currency', 'subscription', 'plan'
         ]
 
     def validate(self, data):
-        if data['password'] != data['password_confirm']:
+        password_confirm = data.get('password_confirm')
+        if password_confirm and data['password'] != password_confirm:
             raise serializers.ValidationError({'password_confirm': 'Passwords do not match'})
+        
+        if 'plan' in data:
+            data['subscription'] = data.pop('plan')
         return data
 
     def create(self, validated_data):
-        validated_data.pop('password_confirm')
+        validated_data.pop('password_confirm', None)
         password = validated_data.pop('password')
+        validated_data.pop('plan', None)
         
         import uuid
         validated_data['id'] = str(uuid.uuid4())
