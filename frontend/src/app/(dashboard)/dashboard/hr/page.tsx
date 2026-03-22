@@ -226,7 +226,9 @@ export default function HRDashboard() {
       const response = await hrApi.getDashboardStats();
       setStats(response.data);
     } catch (error) {
-      const { employees, leaveRequests } = useDataStore.getState();
+      const state = useDataStore.getState();
+      const employees = Array.isArray(state.employees) ? state.employees : [];
+      const leaveRequests = Array.isArray(state.leaveRequests) ? state.leaveRequests : [];
       setStats({
         totalEmployees: employees.length,
         activeEmployees: employees.filter(e => e.status === 'active').length,
@@ -245,15 +247,17 @@ export default function HRDashboard() {
     setIsLoading(true);
     try {
       const response = await hrApi.getEmployees(page, limit);
-      const empData = response.data.data || response.data || [];
-      setEmployees(empData);
-      useDataStore.getState().setEmployees(empData);
+      const empData = response.data?.data || response.data || [];
+      const safeEmpData = Array.isArray(empData) ? empData : [];
+      setEmployees(safeEmpData);
+      useDataStore.getState().setEmployees(safeEmpData);
     } catch (error) {
-      setEmployees(storeEmployees as unknown as Employee[]);
+      const fallback = Array.isArray(storeEmployees) ? storeEmployees : [];
+      setEmployees(fallback as unknown as Employee[]);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [storeEmployees]);
 
   const loadDepartments = useCallback(async () => {
     setIsLoading(true);
@@ -358,7 +362,9 @@ export default function HRDashboard() {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: userCurrency }).format(amount);
   };
 
-  const filteredEmployees = employees.filter(e => {
+  const employeeList = Array.isArray(employees) ? employees : [];
+  
+  const filteredEmployees = employeeList.filter(e => {
     const matchesSearch = 
       `${e.firstName} ${e.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
       e.email.toLowerCase().includes(searchQuery.toLowerCase()) ||

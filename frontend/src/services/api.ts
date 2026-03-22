@@ -15,6 +15,9 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  if (config.url && !config.url.endsWith('/')) {
+    config.url = config.url + '/';
+  }
   return config;
 });
 
@@ -71,17 +74,17 @@ export const authApi = {
     country: string;
     currency: string;
     plan: string;
-  }) => api.post('/auth/register', data),
+  }) => api.post('/auth/register/', data),
 
   login: (email: string, password: string) =>
     api.post('/auth/login/', { email, password }),
 
-  logout: () => api.post('/auth/logout'),
+  logout: () => api.post('/auth/logout/'),
 
-  getMe: () => api.get('/auth/me'),
+  getMe: () => api.get('/auth/me/'),
 
   refreshToken: (refreshToken: string) =>
-    api.post('/auth/refresh', {}, {
+    api.post('/auth/refresh/', {}, {
       headers: { Authorization: `Bearer ${refreshToken}` }
     }),
 };
@@ -891,4 +894,376 @@ export const documentsApi = {
   delete: (id: string) => api.delete(`/documents/${id}`),
   
   getFolders: () => api.get('/documents/folders'),
+};
+
+// Marketing API
+export const marketingApi = {
+  // Email Templates
+  getEmailTemplates: () => api.get('/marketing/email-templates'),
+  
+  getEmailTemplate: (id: string) => api.get(`/marketing/email-templates/${id}`),
+  
+  createEmailTemplate: (data: {
+    name: string;
+    subject?: string;
+    content?: string;
+    html_content?: string;
+    category?: string;
+  }) => api.post('/marketing/email-templates', data),
+
+  updateEmailTemplate: (id: string, data: any) => api.put(`/marketing/email-templates/${id}`, data),
+  
+  deleteEmailTemplate: (id: string) => api.delete(`/marketing/email-templates/${id}`),
+
+  // Audience Segments
+  getAudiences: () => api.get('/marketing/audiences'),
+  
+  getAudience: (id: string) => api.get(`/marketing/audiences/${id}`),
+  
+  createAudience: (data: {
+    name: string;
+    description?: string;
+    criteria?: any;
+  }) => api.post('/marketing/audiences', data),
+
+  updateAudience: (id: string, data: any) => api.put(`/marketing/audiences/${id}`, data),
+  
+  deleteAudience: (id: string) => api.delete(`/marketing/audiences/${id}`),
+
+  // Email Campaigns
+  getCampaigns: () => api.get('/marketing/campaigns'),
+  
+  getCampaign: (id: string) => api.get(`/marketing/campaigns/${id}`),
+  
+  createCampaign: (data: {
+    name: string;
+    subject?: string;
+    template_id?: string;
+    audience_id?: string;
+    scheduled_at?: string;
+    status?: string;
+  }) => api.post('/marketing/campaigns', data),
+
+  updateCampaign: (id: string, data: any) => api.put(`/marketing/campaigns/${id}`, data),
+  
+  deleteCampaign: (id: string) => api.delete(`/marketing/campaigns/${id}`),
+  
+  sendCampaign: (id: string) => api.post(`/marketing/campaigns/${id}/send`, {}),
+  
+  scheduleCampaign: (id: string, scheduledAt: string) => 
+    api.post(`/marketing/campaigns/${id}/schedule`, { scheduled_at: scheduledAt }),
+
+  // Workflows
+  getWorkflows: () => api.get('/marketing/workflows'),
+  
+  getWorkflow: (id: string) => api.get(`/marketing/workflows/${id}`),
+  
+  createWorkflow: (data: {
+    name: string;
+    description?: string;
+    trigger_type?: string;
+    is_active?: boolean;
+  }) => api.post('/marketing/workflows', data),
+
+  updateWorkflow: (id: string, data: any) => api.put(`/marketing/workflows/${id}`, data),
+  
+  deleteWorkflow: (id: string) => api.delete(`/marketing/workflows/${id}`),
+
+  // Landing Pages
+  getLandingPages: () => api.get('/marketing/landing-pages'),
+  
+  getLandingPage: (id: string) => api.get(`/marketing/landing-pages/${id}`),
+  
+  createLandingPage: (data: {
+    name: string;
+    url?: string;
+    content?: string;
+    is_published?: boolean;
+  }) => api.post('/marketing/landing-pages', data),
+
+  updateLandingPage: (id: string, data: any) => api.put(`/marketing/landing-pages/${id}`, data),
+  
+  deleteLandingPage: (id: string) => api.delete(`/marketing/landing-pages/${id}`),
+
+  // Form Templates
+  getFormTemplates: () => api.get('/marketing/form-templates'),
+  
+  getFormTemplate: (id: string) => api.get(`/marketing/form-templates/${id}`),
+  
+  createFormTemplate: (data: {
+    name: string;
+    fields?: any;
+    webhook_url?: string;
+  }) => api.post('/marketing/form-templates', data),
+
+  updateFormTemplate: (id: string, data: any) => api.put(`/marketing/form-templates/${id}`, data),
+  
+  deleteFormTemplate: (id: string) => api.delete(`/marketing/form-templates/${id}`),
+
+  // Marketing Assets
+  getAssets: () => api.get('/marketing/assets'),
+  
+  getAsset: (id: string) => api.get(`/marketing/assets/${id}`),
+  
+  createAsset: (data: {
+    name: string;
+    asset_type?: string;
+    url?: string;
+    file_size?: number;
+    tags?: string[];
+  }) => api.post('/marketing/assets', data),
+
+  updateAsset: (id: string, data: any) => api.put(`/marketing/assets/${id}`, data),
+  
+  deleteAsset: (id: string) => api.delete(`/marketing/assets/${id}`),
+
+  // A/B Tests
+  getABTests: () => api.get('/marketing/ab-tests'),
+  
+  getABTest: (id: string) => api.get(`/marketing/ab-tests/${id}`),
+  
+  createABTest: (data: {
+    name: string;
+    campaign_id?: string;
+    variant_a?: string;
+    variant_b?: string;
+    split_percentage?: number;
+  }) => api.post('/marketing/ab-tests', data),
+
+  updateABTest: (id: string, data: any) => api.put(`/marketing/ab-tests/${id}`, data),
+  
+  deleteABTest: (id: string) => api.delete(`/marketing/ab-tests/${id}`),
+  
+  startABTest: (id: string) => api.post(`/marketing/ab-tests/${id}/start`, {}),
+};
+
+// Services API (Help Desk / Support)
+export const servicesApi = {
+  // Tickets
+  getTickets: (params?: { status?: string; priority?: string }) => 
+    api.get('/services/tickets', { params }),
+  
+  getTicket: (id: string) => api.get(`/services/tickets/${id}`),
+  
+  createTicket: (data: {
+    subject: string;
+    description?: string;
+    priority?: string;
+    category?: string;
+    customer_id?: string;
+    customer_name?: string;
+    customer_email?: string;
+  }) => api.post('/services/tickets', data),
+
+  updateTicket: (id: string, data: any) => api.put(`/services/tickets/${id}`, data),
+  
+  closeTicket: (id: string) => api.post(`/services/tickets/${id}/close`, {}),
+  
+  reopenTicket: (id: string) => api.post(`/services/tickets/${id}/reopen`, {}),
+  
+  deleteTicket: (id: string) => api.delete(`/services/tickets/${id}`),
+
+  // Ticket Replies
+  getTicketReplies: (ticketId: string) => api.get(`/services/tickets/${ticketId}/replies`),
+  
+  createTicketReply: (ticketId: string, data: {
+    content: string;
+    is_internal?: boolean;
+  }) => api.post(`/services/tickets/${ticketId}/replies`, data),
+
+  // SLA Configs
+  getSLAConfigs: () => api.get('/services/sla-configs'),
+  
+  getSLAConfig: (id: string) => api.get(`/services/sla-configs/${id}`),
+  
+  createSLAConfig: (data: {
+    name: string;
+    response_time_hours?: number;
+    resolution_time_hours?: number;
+    priority?: string;
+  }) => api.post('/services/sla-configs', data),
+
+  updateSLAConfig: (id: string, data: any) => api.put(`/services/sla-configs/${id}`, data),
+  
+  deleteSLAConfig: (id: string) => api.delete(`/services/sla-configs/${id}`),
+
+  // Knowledge Base Categories
+  getKBCategories: () => api.get('/services/kb-categories'),
+  
+  getKBCategory: (id: string) => api.get(`/services/kb-categories/${id}`),
+  
+  createKBCategory: (data: {
+    name: string;
+    description?: string;
+    parent_id?: string;
+  }) => api.post('/services/kb-categories', data),
+
+  updateKBCategory: (id: string, data: any) => api.put(`/services/kb-categories/${id}`, data),
+  
+  deleteKBCategory: (id: string) => api.delete(`/services/kb-categories/${id}`),
+
+  // Knowledge Base Articles
+  getKBArticles: (params?: { category_id?: string }) => 
+    api.get('/services/kb-articles', { params }),
+  
+  getKBArticle: (id: string) => api.get(`/services/kb-articles/${id}`),
+  
+  createKBArticle: (data: {
+    title: string;
+    content: string;
+    category_id?: string;
+    status?: string;
+    tags?: string[];
+  }) => api.post('/services/kb-articles', data),
+
+  updateKBArticle: (id: string, data: any) => api.put(`/services/kb-articles/${id}`, data),
+  
+  deleteKBArticle: (id: string) => api.delete(`/services/kb-articles/${id}`),
+
+  // Escalation Rules
+  getEscalationRules: () => api.get('/services/escalation-rules'),
+  
+  getEscalationRule: (id: string) => api.get(`/services/escalation-rules/${id}`),
+  
+  createEscalationRule: (data: {
+    name: string;
+    trigger_type?: string;
+    trigger_value?: string;
+    action_type?: string;
+    action_target?: string;
+    is_active?: boolean;
+  }) => api.post('/services/escalation-rules', data),
+
+  updateEscalationRule: (id: string, data: any) => api.put(`/services/escalation-rules/${id}`, data),
+  
+  deleteEscalationRule: (id: string) => api.delete(`/services/escalation-rules/${id}`),
+
+  // Service Reports
+  getReports: (params?: { start_date?: string; end_date?: string }) => 
+    api.get('/services/reports', { params }),
+  
+  getReport: (id: string) => api.get(`/services/reports/${id}`),
+  
+  createReport: (data: {
+    name: string;
+    report_type?: string;
+    start_date?: string;
+    end_date?: string;
+    metrics?: any;
+  }) => api.post('/services/reports', data),
+
+  updateReport: (id: string, data: any) => api.put(`/services/reports/${id}`, data),
+  
+  deleteReport: (id: string) => api.delete(`/services/reports/${id}`),
+
+  // Satisfaction Surveys
+  getSurveys: () => api.get('/services/surveys'),
+  
+  getSurvey: (id: string) => api.get(`/services/surveys/${id}`),
+  
+  createSurvey: (data: {
+    name: string;
+    questions?: any;
+    is_active?: boolean;
+  }) => api.post('/services/surveys', data),
+
+  updateSurvey: (id: string, data: any) => api.put(`/services/surveys/${id}`, data),
+  
+  deleteSurvey: (id: string) => api.delete(`/services/surveys/${id}`),
+  
+  sendSurvey: (id: string, ticketId: string) => 
+    api.post(`/services/surveys/${id}/send`, { ticket_id: ticketId }),
+};
+
+// Super Admin API
+export const superadminApi = {
+  // Dashboard Stats
+  getDashboardStats: () => api.get('/superadmin/stats/dashboard/'),
+  
+  // Available Modules
+  getModules: () => api.get('/superadmin/stats/modules/'),
+  
+  // Users Management
+  getUsers: (page = 1, limit = 20) => 
+    api.get('/superadmin/users/', { params: { page, limit } }),
+  
+  getUser: (id: string) => api.get(`/superadmin/users/${id}/`),
+  
+  createUser: (data: {
+    email: string;
+    password: string;
+    first_name: string;
+    last_name: string;
+    role: string;
+    modules?: string[];
+    department?: string;
+    phone?: string;
+  }) => api.post('/superadmin/users/', data),
+
+  updateUser: (id: string, data: any) => api.put(`/superadmin/users/${id}/`, data),
+  
+  deleteUser: (id: string) => api.delete(`/superadmin/users/${id}/`),
+
+  // Tenants Management
+  getTenants: (page = 1, limit = 20) => 
+    api.get('/superadmin/tenants/', { params: { page, limit } }),
+  
+  getTenant: (id: string) => api.get(`/superadmin/tenants/${id}/`),
+  
+  createTenant: (data: {
+    name: string;
+    email: string;
+    password: string;
+    first_name: string;
+    last_name: string;
+    industry?: string;
+    country?: string;
+    currency?: string;
+    plan_code?: string;
+  }) => api.post('/superadmin/tenants/', data),
+
+  updateTenant: (id: string, data: any) => api.put(`/superadmin/tenants/${id}/`, data),
+  
+  deleteTenant: (id: string) => api.delete(`/superadmin/tenants/${id}/`),
+
+  // Subscription Plans
+  getPlans: () => api.get('/superadmin/subscription-plans/'),
+  
+  createPlan: (data: {
+    name: string;
+    code: string;
+    description?: string;
+    modules: string[];
+    features: string[];
+    price_monthly: number;
+    price_yearly: number;
+    max_users: number;
+    max_storage_gb: number;
+  }) => api.post('/superadmin/subscription-plans/', data),
+
+  updatePlan: (id: string, data: any) => api.put(`/superadmin/subscription-plans/${id}/`, data),
+
+  // User Groups
+  getUserGroups: () => api.get('/superadmin/user-groups/'),
+  
+  createUserGroup: (data: {
+    name: string;
+    description?: string;
+    permissions?: string[];
+    modules?: string[];
+  }) => api.post('/superadmin/user-groups/', data),
+
+  updateUserGroup: (id: string, data: any) => api.put(`/superadmin/user-groups/${id}/`, data),
+  
+  deleteUserGroup: (id: string) => api.delete(`/superadmin/user-groups/${id}/`),
+
+  // Module Permissions
+  getModulePermissions: () => api.get('/superadmin/module-permissions/'),
+  
+  updateModulePermission: (id: string, data: any) => 
+    api.put(`/superadmin/module-permissions/${id}/`, data),
+
+  // Audit Logs
+  getAuditLogs: (page = 1, limit = 50) => 
+    api.get('/superadmin/audit-logs/', { params: { page, limit } }),
 };

@@ -20,9 +20,10 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-type TabId = 'hr' | 'finance' | 'supply-chain' | 'crm' | 'payroll' | 'productivity' | 'email' | 'documents' | 'integrations' | 'automations' | 'users' | 'admin';
+type TabId = 'hr' | 'finance' | 'supply-chain' | 'crm' | 'payroll' | 'productivity' | 'email' | 'documents' | 'integrations' | 'automations' | 'users' | 'admin' | 'superadmin' | 'marketing' | 'services';
 
 const tabs = [
+  { id: 'superadmin' as TabId, name: 'SUPER ADMIN', icon: Shield, color: 'from-purple-600 to-pink-600', bgColor: 'bg-purple-600', superAdminOnly: true },
   { id: 'admin' as TabId, name: 'ADMIN', icon: Crown, color: 'from-accent to-accentDark', bgColor: 'bg-accent', adminOnly: true },
   { id: 'hr' as TabId, name: 'HUMAN RESOURCES', icon: Users, color: 'from-primary to-secondary', bgColor: 'bg-primary' },
   { id: 'finance' as TabId, name: 'FINANCE', icon: Wallet, color: 'from-accent to-accentDark', bgColor: 'bg-accent' },
@@ -30,7 +31,8 @@ const tabs = [
   { id: 'payroll' as TabId, name: 'PAYROLL', icon: PiggyBank, color: 'from-secondary to-primary', bgColor: 'bg-secondary' },
   { id: 'productivity' as TabId, name: 'PRODUCTIVITY', icon: Zap, color: 'from-accentDark to-accent', bgColor: 'bg-accentDark' },
   { id: 'supply-chain' as TabId, name: 'SUPPLY CHAIN', icon: Package, color: 'from-primary to-accent', bgColor: 'bg-primary' },
-  { id: 'email' as TabId, name: 'EMAIL', icon: Mail, color: 'from-secondary to-accent', bgColor: 'bg-secondary' },
+  { id: 'marketing' as TabId, name: 'MARKETING', icon: Mail, color: 'from-pink-500 to-rose-500', bgColor: 'bg-pink-500' },
+  { id: 'services' as TabId, name: 'HELP DESK', icon: HeadphonesIcon, color: 'from-teal-500 to-cyan-500', bgColor: 'bg-teal-500' },
   { id: 'documents' as TabId, name: 'DOCUMENTS', icon: FileText, color: 'from-primary to-secondary', bgColor: 'bg-primary' },
   { id: 'integrations' as TabId, name: 'INTEGRATIONS', icon: LinkIcon, color: 'from-accent to-accentDark', bgColor: 'bg-accent' },
   { id: 'automations' as TabId, name: 'AUTOMATIONS', icon: Zap as typeof Settings, color: 'from-accentDark to-accent', bgColor: 'bg-accentDark' },
@@ -119,6 +121,17 @@ export default function DashboardLayout({
       };
       
       if (pathname === '/dashboard' || pathname === '/dashboard/') {
+        const roleModules: Record<string, string> = {
+          super_admin: '/dashboard/superadmin',
+          admin: '/dashboard/admin',
+          hr: '/dashboard/hr',
+          finance: '/dashboard/finance',
+          accountant: '/dashboard/finance',
+          manager: '/dashboard/hr',
+          employee: '/dashboard/productivity',
+          ordinary: '/dashboard/profile',
+        };
+        
         const redirectTo = roleModules[user.role] || '/dashboard/hr';
         router.push(redirectTo);
       }

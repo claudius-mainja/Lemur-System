@@ -32,6 +32,10 @@ INSTALLED_APPS = [
     'payroll',
     'inventory',
     'productivity',
+    'marketing',
+    'services',
+    'superadmin',
+    'orgadmin',
 ]
 
 MIDDLEWARE = [
@@ -65,7 +69,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'wsgi.application'
 
-# Database configuration - supports both SQLite (dev) and PostgreSQL (production)
+# Database configuration - PostgreSQL for production
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL:
     import dj_database_url
@@ -75,8 +79,12 @@ if DATABASE_URL:
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME', 'lemursystem'),
+            'USER': os.getenv('DB_USER', 'postgres'),
+            'PASSWORD': os.getenv('DB_PASSWORD', '1923'),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
+            'PORT': os.getenv('DB_PORT', '5432'),
         }
     }
 

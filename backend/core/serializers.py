@@ -1,5 +1,13 @@
 from rest_framework import serializers
 from .models import User, Organization
+import uuid
+
+
+PLAN_MODULES = {
+    'starter': ['hr', 'finance', 'supply-chain'],
+    'professional': ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain'],
+    'enterprise': ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'email', 'documents', 'marketing', 'services'],
+}
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -15,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, min_length=8)
+    password = serializers.CharField(write_only=True, min_length=6)
     password_confirm = serializers.CharField(write_only=True, required=False)
     plan = serializers.CharField(required=False, write_only=True)
 
@@ -40,11 +48,42 @@ class RegisterSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password')
         validated_data.pop('plan', None)
         
-        import uuid
-        validated_data['id'] = str(uuid.uuid4())
-        validated_data['organization_id'] = str(uuid.uuid4())
+        org_id = str(uuid.uuid4())
+        user_id = str(uuid.uuid4())
         
-        user = User(**validated_data)
+        is_first_user = User.objects.count() == 0
+        if is_first_user:
+            role = 'super_admin'
+            modules = PLAN_MODULES.get(validated_data.get('subscription', 'starter'), PLAN_MODULES['starter'])
+        else:
+            role = 'employee'
+            modules = []
+        
+        org = Organization.objects.create(
+            id=org_id,
+            name=validated_data.get('organization_name', 'My Organization'),
+            industry=validated_data.get('industry'),
+            country=validated_data.get('country', 'US'),
+            currency=validated_data.get('currency', 'USD'),
+            subscription=validated_data.get('subscription', 'starter'),
+            modules=modules,
+        )
+        
+        user = User.objects.create(
+            id=user_id,
+            email=validated_data['email'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            role=role,
+            organization_id=org_id,
+            organization_name=org.name,
+            industry=validated_data.get('industry'),
+            country=validated_data.get('country', 'US'),
+            currency=validated_data.get('currency', 'USD'),
+            subscription=validated_data.get('subscription', 'starter'),
+            modules=modules,
+            is_staff=is_first_user,
+        )
         user.set_password(password)
         user.save()
         return user

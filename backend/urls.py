@@ -37,6 +37,10 @@ urlpatterns = [
     path('api/v1/inventory/', include('inventory.urls')),
     path('api/v1/payroll/', include('payroll.urls')),
     path('api/v1/productivity/', include('productivity.urls')),
+    path('api/v1/marketing/', include('marketing.urls')),
+    path('api/v1/services/', include('services.urls')),
+    path('api/v1/superadmin/', include('superadmin.urls')),
+    path('api/v1/admin/', include('orgadmin.urls')),
 ]
 
 if settings.DEBUG:
