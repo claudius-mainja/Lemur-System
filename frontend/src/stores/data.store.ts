@@ -2,6 +2,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Employee {
   id: string;
@@ -458,7 +459,7 @@ interface DataState {
   deleteProjectBrief: (id: string) => void;
 }
 
-const generateId = () => Math.random().toString(36).substring(2, 15);
+const generateId = () => uuidv4();
 
 const emptySettings: AppSettings = {
   companyName: '',

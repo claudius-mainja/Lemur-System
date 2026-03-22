@@ -16,6 +16,7 @@ from .models import (
     PayslipDetail, TaxBracket, TaxWithholding, BankDetail, DirectDeposit,
     ComplianceSetting, PayrollSummary, PayrollCostCenter
 )
+from hr.models import Employee
 from .serializers import (
     SalaryComponentSerializer, EmployeeSalarySerializer, EmployeeSalaryComponentSerializer,
     PayrollRunSerializer, PayrollRunDetailSerializer, PayslipSerializer, PayslipCreateSerializer,

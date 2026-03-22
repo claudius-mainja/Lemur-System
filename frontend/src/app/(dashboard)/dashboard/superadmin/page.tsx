@@ -343,11 +343,11 @@ export default function SuperAdminDashboard() {
                 <div className="bg-white rounded-lg border border-gray-200 p-5">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Users</h3>
                   <div className="space-y-3">
-                    {stats.recent_users.map((user) => (
+                    {stats.recent_users?.map((user) => (
                       <div key={user.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                            <span className="text-blue-600 font-medium">{user.first_name[0]}{user.last_name[0]}</span>
+                            <span className="text-blue-600 font-medium">{user.first_name?.[0] || ''}{user.last_name?.[0] || ''}</span>
                           </div>
                           <div>
                             <p className="font-medium text-gray-900">{user.first_name} {user.last_name}</p>
@@ -365,7 +365,7 @@ export default function SuperAdminDashboard() {
                 <div className="bg-white rounded-lg border border-gray-200 p-5">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Tenants</h3>
                   <div className="space-y-3">
-                    {stats.recent_tenants.map((tenant) => (
+                    {stats.recent_tenants?.map((tenant) => (
                       <div key={tenant.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div>
                           <p className="font-medium text-gray-900">{tenant.name}</p>

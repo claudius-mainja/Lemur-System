@@ -301,17 +301,35 @@ export default function HRDashboard() {
 
   const loadReports = useCallback(async () => {
     const stored = localStorage.getItem('hr-reports');
-    if (stored) setReports(JSON.parse(stored));
+    if (stored) {
+      try {
+        setReports(JSON.parse(stored));
+      } catch (e) {
+        console.error('Failed to parse hr-reports:', e);
+      }
+    }
   }, []);
 
   const loadTimeEntries = useCallback(async () => {
     const stored = localStorage.getItem('hr-time-entries');
-    if (stored) setTimeEntries(JSON.parse(stored));
+    if (stored) {
+      try {
+        setTimeEntries(JSON.parse(stored));
+      } catch (e) {
+        console.error('Failed to parse hr-time-entries:', e);
+      }
+    }
   }, []);
 
   const loadSignatures = useCallback(async () => {
     const stored = localStorage.getItem('contract-signatures');
-    if (stored) setSignatures(JSON.parse(stored));
+    if (stored) {
+      try {
+        setSignatures(JSON.parse(stored));
+      } catch (e) {
+        console.error('Failed to parse contract-signatures:', e);
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -1068,16 +1086,22 @@ export default function HRDashboard() {
                             <button 
                               onClick={() => {
                                 const clockOutTime = new Date().toTimeString().slice(0, 5);
-                                const [hours, mins] = entry.clockIn.split(':').map(Number);
-                                const [outHours, outMins] = clockOutTime.split(':').map(Number);
-                                const workedMins = (outHours * 60 + outMins) - (hours * 60 + mins) - entry.breakDuration;
+                                const clockInParts = entry.clockIn?.split(':').map(Number) || [0, 0];
+                                const [hours, mins] = clockInParts;
+                                const outParts = clockOutTime.split(':').map(Number);
+                                const [outHours, outMins] = outParts;
+                                const workedMins = (outHours * 60 + outMins) - (hours * 60 + mins) - (entry.breakDuration || 0);
                                 const totalHours = Math.round(workedMins / 60 * 100) / 100;
                                 
                                 const updated = timeEntries.map(e => 
                                   e.id === entry.id ? { ...e, clockOut: clockOutTime, totalHours, status: 'completed' as const } : e
                                 );
                                 setTimeEntries(updated);
-                                localStorage.setItem('hr-time-entries', JSON.stringify(updated));
+                                try {
+                                  localStorage.setItem('hr-time-entries', JSON.stringify(updated));
+                                } catch (e) {
+                                  console.error('Failed to save time entries:', e);
+                                }
                                 toast.success('Clocked out successfully');
                               }}
                               className="px-3 py-1 bg-red-500/20 text-red-400 rounded-lg text-sm hover:bg-red-500/30"
@@ -1828,25 +1852,31 @@ export default function HRDashboard() {
                     onMouseDown={(e) => {
                       setIsDrawing(true);
                       const canvas = document.getElementById('signature-canvas') as HTMLCanvasElement;
+                      if (!canvas) return;
                       const ctx = canvas.getContext('2d');
+                      if (!ctx) return;
                       const rect = canvas.getBoundingClientRect();
-                      ctx?.beginPath();
-                      ctx?.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+                      ctx.beginPath();
+                      ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
                     }}
                     onMouseMove={(e) => {
                       if (!isDrawing) return;
                       const canvas = document.getElementById('signature-canvas') as HTMLCanvasElement;
+                      if (!canvas) return;
                       const ctx = canvas.getContext('2d');
+                      if (!ctx) return;
                       const rect = canvas.getBoundingClientRect();
-                      ctx!.strokeStyle = '#ffffff';
-                      ctx!.lineWidth = 2;
-                      ctx?.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-                      ctx?.stroke();
+                      ctx.strokeStyle = '#ffffff';
+                      ctx.lineWidth = 2;
+                      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                      ctx.stroke();
                     }}
                     onMouseUp={() => {
                       setIsDrawing(false);
                       const canvas = document.getElementById('signature-canvas') as HTMLCanvasElement;
-                      setCurrentSignature(canvas.toDataURL());
+                      if (canvas) {
+                        setCurrentSignature(canvas.toDataURL());
+                      }
                     }}
                     onMouseLeave={() => setIsDrawing(false)}
                   />
@@ -1855,8 +1885,12 @@ export default function HRDashboard() {
                   <button
                     onClick={() => {
                       const canvas = document.getElementById('signature-canvas') as HTMLCanvasElement;
-                      const ctx = canvas.getContext('2d');
-                      ctx?.clearRect(0, 0, canvas.width, canvas.height);
+                      if (canvas) {
+                        const ctx = canvas.getContext('2d');
+                        if (ctx) {
+                          ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        }
+                      }
                       setCurrentSignature('');
                     }}
                     className="text-sm text-white/50 hover:text-white"

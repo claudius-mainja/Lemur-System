@@ -484,8 +484,8 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     ordering_fields = ['date', 'created_at']
 
     def get_queryset(self):
-        org = getattr(self.request.user, 'organization', None)
-        if org:
+        org_id = get_org_id(self.request)
+        if org_id:
             queryset = Attendance.objects.filter(organization_id=org_id).select_related('employee', 'employee__user')
             
             date_filter = self.request.query_params.get('date')
@@ -551,7 +551,7 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def stats(self, request):
         org_id = get_org_id(request)
-        if not org:
+        if not org_id:
             return Response({'error': 'Organization not found'}, status=status.HTTP_400_BAD_REQUEST)
         
         today = timezone.now().date()
@@ -570,7 +570,7 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def monthly_report(self, request):
         org_id = get_org_id(request)
-        if not org:
+        if not org_id:
             return Response({'error': 'Organization not found'}, status=status.HTTP_400_BAD_REQUEST)
         
         month = int(request.query_params.get('month', timezone.now().month))
@@ -607,8 +607,8 @@ class OvertimeRecordViewSet(viewsets.ModelViewSet):
     ordering_fields = ['date', 'created_at']
 
     def get_queryset(self):
-        org = getattr(self.request.user, 'organization', None)
-        if org:
+        org_id = get_org_id(self.request)
+        if org_id:
             return OvertimeRecord.objects.filter(organization_id=org_id).select_related('employee', 'approved_by')
         return OvertimeRecord.objects.none()
 
@@ -638,8 +638,8 @@ class ReviewCycleViewSet(viewsets.ModelViewSet):
     ordering_fields = ['start_date', 'created_at']
 
     def get_queryset(self):
-        org = getattr(self.request.user, 'organization', None)
-        if org:
+        org_id = get_org_id(self.request)
+        if org_id:
             return ReviewCycle.objects.filter(organization_id=org_id)
         return ReviewCycle.objects.none()
 
@@ -653,8 +653,8 @@ class GoalViewSet(viewsets.ModelViewSet):
     ordering_fields = ['due_date', 'created_at']
 
     def get_queryset(self):
-        org = getattr(self.request.user, 'organization', None)
-        if org:
+        org_id = get_org_id(self.request)
+        if org_id:
             queryset = Goal.objects.filter(organization_id=org_id).select_related('employee', 'review_cycle')
             
             employee = self.request.query_params.get('employee')
@@ -696,8 +696,8 @@ class PerformanceReviewViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_at']
 
     def get_queryset(self):
-        org = getattr(self.request.user, 'organization', None)
-        if org:
+        org_id = get_org_id(self.request)
+        if org_id:
             return PerformanceReview.objects.filter(organization_id=org_id).select_related(
                 'employee', 'reviewer', 'review_cycle'
             )
@@ -712,8 +712,8 @@ class Feedback360ViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_at']
 
     def get_queryset(self):
-        org = getattr(self.request.user, 'organization', None)
-        if org:
+        org_id = get_org_id(self.request)
+        if org_id:
             return Feedback360.objects.filter(organization_id=org_id).select_related('employee', 'reviewer', 'review_cycle')
         return Feedback360.objects.none()
 
@@ -727,8 +727,8 @@ class TrainingViewSet(viewsets.ModelViewSet):
     ordering_fields = ['start_date', 'created_at']
 
     def get_queryset(self):
-        org = getattr(self.request.user, 'organization', None)
-        if org:
+        org_id = get_org_id(self.request)
+        if org_id:
             queryset = Training.objects.filter(organization_id=org_id).prefetch_related('employees')
             
             status_filter = self.request.query_params.get('status')
@@ -747,8 +747,8 @@ class TimeSheetViewSet(viewsets.ModelViewSet):
     ordering_fields = ['week_start', 'created_at']
 
     def get_queryset(self):
-        org = getattr(self.request.user, 'organization', None)
-        if org:
+        org_id = get_org_id(self.request)
+        if org_id:
             queryset = TimeSheet.objects.filter(organization_id=org_id).select_related('employee', 'approved_by')
             
             employee = self.request.query_params.get('employee')
@@ -802,8 +802,8 @@ class HolidayViewSet(viewsets.ModelViewSet):
     ordering_fields = ['date', 'created_at']
 
     def get_queryset(self):
-        org = getattr(self.request.user, 'organization', None)
-        if org:
+        org_id = get_org_id(self.request)
+        if org_id:
             queryset = Holiday.objects.filter(organization_id=org_id)
             
             year = self.request.query_params.get('year')
