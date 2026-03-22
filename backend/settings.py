@@ -155,8 +155,11 @@ CSRF_TRUSTED_ORIGINS = [
 AXES_FAILURE_LIMIT = 5
 AXES_COOLOFF_TIME = timedelta(minutes=15)
 AXES_LOCK_OUT_URLS = ['/api/v1/auth/login/']
-AXES_USE_USER_AGENT = True
 AXES_ENABLE_ADMIN = True
+AXES_AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
+]
 
 # AWS S3 Configuration
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
