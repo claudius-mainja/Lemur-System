@@ -40,10 +40,10 @@ interface Notification {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, logout } = useAuthStore();
+  const { user, logout, hasHydrated } = useAuthStore();
   const { 
     employees, invoices, inventory, customers, leaveRequests, 
-    payroll, vendors, leads, tenantProfiles 
+    payroll, vendors, leads, tenantProfiles, hasHydrated: dataHydrated 
   } = useDataStore();
 
   const [activeView, setActiveView] = useState<string>('overview');
@@ -52,17 +52,36 @@ export default function DashboardPage() {
   const [timerStart, setTimerStart] = useState<Date | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isFirstLogin, setIsFirstLogin] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    if (typeof window !== 'undefined') {
+      const firstLogin = !localStorage.getItem('lemur-logged-in-before');
+      setIsFirstLogin(firstLogin);
+      if (firstLogin) {
+        localStorage.setItem('lemur-logged-in-before', 'true');
+      }
+    }
+  }, []);
 
   const currency = user?.currency || 'USD';
   const currencySymbol = CURRENCY_SYMBOLS[currency] || '$';
   const userInitials = user ? `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase() : 'U';
-  const isFirstLogin = !localStorage.getItem('lemur-logged-in-before');
+  
+  const isHydrated = hasHydrated && dataHydrated && isMounted;
 
-  useEffect(() => {
-    if (isFirstLogin) {
-      localStorage.setItem('lemur-logged-in-before', 'true');
-    }
-  }, [isFirstLogin]);
+  if (!isHydrated) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-white/60">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     const pendingLeaves = leaveRequests.filter((l: any) => l.status === 'pending').length;

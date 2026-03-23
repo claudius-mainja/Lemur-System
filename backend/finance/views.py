@@ -367,6 +367,46 @@ class CustomerViewSet(viewsets.ModelViewSet):
             return queryset
         return Customer.objects.none()
 
+    @action(detail=True, methods=['post'])
+    def toggle_active(self, request, pk=None):
+        customer = self.get_object()
+        customer.is_active = not customer.is_active
+        customer.save()
+        return Response({
+            'id': customer.id,
+            'name': customer.name,
+            'is_active': customer.is_active
+        })
+
+    @action(detail=True, methods=['get'])
+    def transactions(self, request, pk=None):
+        customer = self.get_object()
+        
+        invoices = customer.invoices.all().values(
+            'invoice_number', 'invoice_date', 'total', 'status', 'currency'
+        )
+        
+        quotations = customer.quotations.all().values(
+            'quotation_number', 'quotation_date', 'total', 'status', 'currency'
+        )
+        
+        payments = InvoicePayment.objects.filter(
+            invoice__customer=customer
+        ).select_related('invoice').values(
+            'payment_date', 'amount', 'payment_method', 'invoice__invoice_number'
+        )
+        
+        credits = customer.credits.all().values(
+            'credit_number', 'date', 'amount', 'status'
+        )
+        
+        return Response({
+            'invoices': list(invoices),
+            'quotations': list(quotations),
+            'payments': list(payments),
+            'credits': list(credits),
+        })
+
 
 class InvoiceViewSet(viewsets.ModelViewSet):
     queryset = Invoice.objects.all()
@@ -417,6 +457,39 @@ class InvoiceViewSet(viewsets.ModelViewSet):
         invoice = self.get_object()
         invoice.status = 'sent'
         invoice.sent_at = timezone.now()
+        invoice.sent_by = request.user
+        invoice.save()
+        return Response(InvoiceSerializer(invoice).data)
+
+    @action(detail=True, methods=['post'])
+    def send_email(self, request, pk=None):
+        invoice = self.get_object()
+        email_subject = request.data.get('email_subject', f'Invoice {invoice.invoice_number}')
+        email_body = request.data.get('email_body', '')
+        
+        invoice.email_subject = email_subject
+        invoice.email_body = email_body
+        invoice.email_sent = True
+        invoice.last_email_sent_at = timezone.now()
+        invoice.status = 'sent'
+        invoice.sent_at = timezone.now()
+        invoice.sent_by = request.user
+        invoice.save()
+        return Response({
+            'message': 'Email sent successfully',
+            'email_sent': invoice.email_sent,
+            'last_email_sent_at': invoice.last_email_sent_at
+        })
+
+    @action(detail=True, methods=['post'])
+    def void(self, request, pk=None):
+        invoice = self.get_object()
+        if invoice.status == 'paid':
+            return Response({'error': 'Cannot void a paid invoice'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        invoice.status = 'void'
+        invoice.void_at = timezone.now()
+        invoice.void_reason = request.data.get('reason', '')
         invoice.save()
         return Response(InvoiceSerializer(invoice).data)
 
@@ -533,13 +606,37 @@ class QuotationViewSet(viewsets.ModelViewSet):
     def send(self, request, pk=None):
         quotation = self.get_object()
         quotation.status = 'sent'
+        quotation.sent_at = timezone.now()
+        quotation.sent_by = request.user
         quotation.save()
         return Response(QuotationSerializer(quotation).data)
 
     @action(detail=True, methods=['post'])
+    def send_email(self, request, pk=None):
+        quotation = self.get_object()
+        email_subject = request.data.get('email_subject', f'Quotation {quotation.quotation_number}')
+        email_body = request.data.get('email_body', '')
+        
+        quotation.email_subject = email_subject
+        quotation.email_body = email_body
+        quotation.email_sent = True
+        quotation.last_email_sent_at = timezone.now()
+        quotation.status = 'sent'
+        quotation.sent_at = timezone.now()
+        quotation.sent_by = request.user
+        quotation.save()
+        return Response({
+            'message': 'Email sent successfully',
+            'email_sent': quotation.email_sent,
+            'last_email_sent_at': quotation.last_email_sent_at
+        })
+
+    @action(detail=True, methods=['post'])
     def accept(self, request, pk=None):
         quotation = self.get_object()
-        quotation.status = 'accepted'
+        quotation.status = 'approved'
+        quotation.approved_at = timezone.now()
+        quotation.approved_by = request.user
         quotation.save()
         return Response(QuotationSerializer(quotation).data)
 
@@ -547,6 +644,9 @@ class QuotationViewSet(viewsets.ModelViewSet):
     def reject(self, request, pk=None):
         quotation = self.get_object()
         quotation.status = 'rejected'
+        quotation.rejected_at = timezone.now()
+        quotation.rejected_by = request.user
+        quotation.rejection_reason = request.data.get('reason', '')
         quotation.save()
         return Response(QuotationSerializer(quotation).data)
 

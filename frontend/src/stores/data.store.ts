@@ -175,17 +175,6 @@ export interface TenantProfile {
   phone?: string;
 }
 
-export interface SystemMetrics {
-  totalUsers: number;
-  activeUsers: number;
-  totalStorage: number;
-  storageUsed: number;
-  apiCalls: number;
-  uptime: number;
-  lastBackup: string;
-  activeSessions: number;
-}
-
 export interface Contract {
   id: string;
   title: string;
@@ -219,28 +208,25 @@ export interface Service {
   updatedAt: string;
 }
 
-export interface SocialPost {
+export interface Order {
   id: string;
-  platform: 'facebook' | 'twitter' | 'instagram' | 'linkedin';
-  content: string;
-  mediaUrls: string[];
-  scheduledFor?: string;
-  publishedAt?: string;
-  status: 'draft' | 'scheduled' | 'published' | 'failed';
-  aiGenerated?: boolean;
-  aiSource?: 'chatgpt' | 'perplexity' | 'manual';
-  createdAt: string;
+  orderNumber: string;
+  vendorId: string;
+  vendorName: string;
+  items: OrderItem[];
+  totalAmount: number;
+  status: 'pending' | 'approved' | 'ordered' | 'shipped' | 'received' | 'rejected';
+  orderDate: string;
+  expectedDelivery?: string;
+  notes?: string;
 }
 
-export interface SocialAccount {
+export interface OrderItem {
   id: string;
-  platform: 'facebook' | 'twitter' | 'instagram' | 'linkedin';
-  accountName: string;
-  accountId: string;
-  accessToken?: string;
-  pageUrl?: string;
-  isConnected: boolean;
-  connectedAt?: string;
+  itemName: string;
+  quantity: number;
+  unitPrice: number;
+  total: number;
 }
 
 export interface BankConfig {
@@ -270,43 +256,6 @@ export interface PayslipConfig {
   emailTemplate: string;
 }
 
-export interface Order {
-  id: string;
-  orderNumber: string;
-  vendorId: string;
-  vendorName: string;
-  items: OrderItem[];
-  totalAmount: number;
-  status: 'pending' | 'approved' | 'ordered' | 'shipped' | 'received' | 'rejected';
-  orderDate: string;
-  expectedDelivery?: string;
-  notes?: string;
-}
-
-export interface OrderItem {
-  id: string;
-  itemName: string;
-  quantity: number;
-  unitPrice: number;
-  total: number;
-}
-
-export interface ProjectBrief {
-  id: string;
-  projectId: string;
-  fileName: string;
-  fileUrl: string;
-  fileType: string;
-  uploadedBy: string;
-  uploadedAt: string;
-}
-
-export interface ProjectMember {
-  userId: string;
-  userName: string;
-  role: string;
-}
-
 export interface Quotation {
   id: string;
   quotationNumber: string;
@@ -333,17 +282,28 @@ export interface Receipt {
   issuedAt: string;
 }
 
-export interface SalesRecord {
+export interface SocialPost {
   id: string;
-  saleNumber: string;
-  productId: string;
-  productName: string;
-  quantity: number;
-  unitPrice: number;
-  total: number;
-  customerId: string;
-  customerName: string;
-  soldAt: string;
+  platform: 'facebook' | 'twitter' | 'instagram' | 'linkedin';
+  content: string;
+  mediaUrls: string[];
+  scheduledFor?: string;
+  publishedAt?: string;
+  status: 'draft' | 'scheduled' | 'published' | 'failed';
+  aiGenerated?: boolean;
+  aiSource?: 'chatgpt' | 'perplexity' | 'manual';
+  createdAt: string;
+}
+
+export interface SocialAccount {
+  id: string;
+  platform: 'facebook' | 'twitter' | 'instagram' | 'linkedin';
+  accountName: string;
+  accountId: string;
+  accessToken?: string;
+  pageUrl?: string;
+  isConnected: boolean;
+  connectedAt?: string;
 }
 
 interface DataState {
@@ -360,16 +320,15 @@ interface DataState {
   tenantProfiles: TenantProfile[];
   contracts: Contract[];
   services: Service[];
-  socialPosts: SocialPost[];
-  socialAccounts: SocialAccount[];
   quotations: Quotation[];
   receipts: Receipt[];
-  sales: SalesRecord[];
+  orders: Order[];
+  socialPosts: SocialPost[];
+  socialAccounts: SocialAccount[];
   bankConfigs: BankConfig[];
   salaryConfigs: SalaryConfig[];
   payslipConfigs: PayslipConfig[];
-  orders: Order[];
-  projectBriefs: ProjectBrief[];
+  hasHydrated: boolean;
   
   setEmployees: (employees: Employee[]) => void;
   addEmployee: (employee: Omit<Employee, 'id'>) => void;
@@ -423,12 +382,17 @@ interface DataState {
   addService: (service: Omit<Service, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateService: (id: string, data: Partial<Service>) => void;
   deleteService: (id: string) => void;
-  
+
+  setOrders: (orders: Order[]) => void;
+  addOrder: (order: Omit<Order, 'id'>) => void;
+  updateOrder: (id: string, data: Partial<Order>) => void;
+  deleteOrder: (id: string) => void;
+
   setSocialPosts: (posts: SocialPost[]) => void;
   addSocialPost: (post: Omit<SocialPost, 'id' | 'createdAt'>) => void;
   updateSocialPost: (id: string, data: Partial<SocialPost>) => void;
   deleteSocialPost: (id: string) => void;
-  
+
   setSocialAccounts: (accounts: SocialAccount[]) => void;
   addSocialAccount: (account: Omit<SocialAccount, 'id'>) => void;
   updateSocialAccount: (id: string, data: Partial<SocialAccount>) => void;
@@ -449,15 +413,11 @@ interface DataState {
   updatePayslipConfig: (id: string, data: Partial<PayslipConfig>) => void;
   deletePayslipConfig: (id: string) => void;
 
-  setOrders: (orders: Order[]) => void;
-  addOrder: (order: Omit<Order, 'id'>) => void;
-  updateOrder: (id: string, data: Partial<Order>) => void;
-  deleteOrder: (id: string) => void;
-
-  setProjectBriefs: (briefs: ProjectBrief[]) => void;
-  addProjectBrief: (brief: Omit<ProjectBrief, 'id'>) => void;
-  deleteProjectBrief: (id: string) => void;
+  setHasHydrated: (state: boolean) => void;
+  clearStore: () => void;
 }
+
+const STORAGE_VERSION = 'v2';
 
 const generateId = () => uuidv4();
 
@@ -471,60 +431,56 @@ const emptySettings: AppSettings = {
   taxRate: 15,
 };
 
-const initialEmployees: Employee[] = [];
-
-const initialDepartments: Department[] = [];
-
-const initialCustomers: Customer[] = [];
-
-const initialLeads: Lead[] = [];
-
-const initialVendors: Vendor[] = [];
-
-const initialInventory: InventoryItem[] = [];
-
-const initialInvoices: Invoice[] = [];
-
-const initialPayroll: PayrollRecord[] = [];
-
-const initialLeaveRequests: LeaveRequest[] = [];
-
-const initialTenantProfiles: TenantProfile[] = [];
-
-const initialContracts: Contract[] = [];
-
-const initialServices: Service[] = [];
-
-const initialSocialPosts: SocialPost[] = [];
-
-const initialSocialAccounts: SocialAccount[] = [];
-
 export const useDataStore = create<DataState>()(
   persist(
     (set) => ({
-      employees: initialEmployees,
-      leaveRequests: initialLeaveRequests,
-      departments: initialDepartments,
-      invoices: initialInvoices,
-      customers: initialCustomers,
-      leads: initialLeads,
-      vendors: initialVendors,
-      inventory: initialInventory,
-      payroll: initialPayroll,
+      employees: [],
+      leaveRequests: [],
+      departments: [],
+      invoices: [],
+      customers: [],
+      leads: [],
+      vendors: [],
+      inventory: [],
+      payroll: [],
       settings: emptySettings,
-      tenantProfiles: initialTenantProfiles,
-      contracts: initialContracts,
-      services: initialServices,
-      socialPosts: initialSocialPosts,
-      socialAccounts: initialSocialAccounts,
+      tenantProfiles: [],
+      contracts: [],
+      services: [],
       quotations: [],
       receipts: [],
-      sales: [],
+      orders: [],
+      socialPosts: [],
+      socialAccounts: [],
       bankConfigs: [],
       salaryConfigs: [],
       payslipConfigs: [],
-      orders: [],
-      projectBriefs: [],
+      hasHydrated: false,
+
+      setHasHydrated: (state) => set({ hasHydrated: state }),
+
+      clearStore: () => set({
+        employees: [],
+        leaveRequests: [],
+        departments: [],
+        invoices: [],
+        customers: [],
+        leads: [],
+        vendors: [],
+        inventory: [],
+        payroll: [],
+        tenantProfiles: [],
+        contracts: [],
+        services: [],
+        quotations: [],
+        receipts: [],
+        orders: [],
+        socialPosts: [],
+        socialAccounts: [],
+        bankConfigs: [],
+        salaryConfigs: [],
+        payslipConfigs: [],
+      }),
 
       setEmployees: (employees) => set({ employees }),
       
@@ -740,8 +696,23 @@ export const useDataStore = create<DataState>()(
           services: state.services.filter((s) => s.id !== id),
         })),
 
+      setOrders: (orders) => set({ orders: orders }),
+      addOrder: (order) =>
+        set((state) => ({
+          orders: [...state.orders, { ...order, id: generateId() }],
+        })),
+      updateOrder: (id, data) =>
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === id ? { ...o, ...data } : o
+          ),
+        })),
+      deleteOrder: (id) =>
+        set((state) => ({
+          orders: state.orders.filter((o) => o.id !== id),
+        })),
+
       setSocialPosts: (posts) => set({ socialPosts: posts }),
-      
       addSocialPost: (post) =>
         set((state) => ({
           socialPosts: [
@@ -753,21 +724,18 @@ export const useDataStore = create<DataState>()(
             },
           ],
         })),
-
       updateSocialPost: (id, data) =>
         set((state) => ({
           socialPosts: state.socialPosts.map((p) =>
             p.id === id ? { ...p, ...data } : p
           ),
         })),
-
       deleteSocialPost: (id) =>
         set((state) => ({
           socialPosts: state.socialPosts.filter((p) => p.id !== id),
         })),
 
       setSocialAccounts: (accounts) => set({ socialAccounts: accounts }),
-      
       addSocialAccount: (account) =>
         set((state) => ({
           socialAccounts: [
@@ -778,14 +746,12 @@ export const useDataStore = create<DataState>()(
             },
           ],
         })),
-
       updateSocialAccount: (id, data) =>
         set((state) => ({
           socialAccounts: state.socialAccounts.map((a) =>
             a.id === id ? { ...a, ...data } : a
           ),
         })),
-
       deleteSocialAccount: (id) =>
         set((state) => ({
           socialAccounts: state.socialAccounts.filter((a) => a.id !== id),
@@ -838,35 +804,37 @@ export const useDataStore = create<DataState>()(
         set((state) => ({
           payslipConfigs: state.payslipConfigs.filter((p) => p.id !== id),
         })),
-
-      setOrders: (orders) => set({ orders: orders }),
-      addOrder: (order) =>
-        set((state) => ({
-          orders: [...state.orders, { ...order, id: generateId() }],
-        })),
-      updateOrder: (id, data) =>
-        set((state) => ({
-          orders: state.orders.map((o) =>
-            o.id === id ? { ...o, ...data } : o
-          ),
-        })),
-      deleteOrder: (id) =>
-        set((state) => ({
-          orders: state.orders.filter((o) => o.id !== id),
-        })),
-
-      setProjectBriefs: (briefs) => set({ projectBriefs: briefs }),
-      addProjectBrief: (brief) =>
-        set((state) => ({
-          projectBriefs: [...state.projectBriefs, { ...brief, id: generateId() }],
-        })),
-      deleteProjectBrief: (id) =>
-        set((state) => ({
-          projectBriefs: state.projectBriefs.filter((b) => b.id !== id),
-        })),
     }),
     {
-      name: 'lemur-data-store',
+      name: `lemur-data-store-${STORAGE_VERSION}`,
+      partialize: (state) => ({
+        employees: state.employees,
+        leaveRequests: state.leaveRequests,
+        departments: state.departments,
+        invoices: state.invoices,
+        customers: state.customers,
+        leads: state.leads,
+        vendors: state.vendors,
+        inventory: state.inventory,
+        payroll: state.payroll,
+        settings: state.settings,
+        tenantProfiles: state.tenantProfiles,
+        contracts: state.contracts,
+        services: state.services,
+        quotations: state.quotations,
+        receipts: state.receipts,
+        orders: state.orders,
+        socialPosts: state.socialPosts,
+        socialAccounts: state.socialAccounts,
+        bankConfigs: state.bankConfigs,
+        salaryConfigs: state.salaryConfigs,
+        payslipConfigs: state.payslipConfigs,
+      }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.setHasHydrated(true);
+        }
+      },
     }
   )
 );

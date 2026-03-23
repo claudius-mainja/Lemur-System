@@ -41,6 +41,7 @@ urlpatterns = [
     path('api/v1/services/', include('services.urls')),
     path('api/v1/superadmin/', include('superadmin.urls')),
     path('api/v1/admin/', include('orgadmin.urls')),
+    path('api/v1/automation/', include('automation.urls')),
 ]
 
 if settings.DEBUG:

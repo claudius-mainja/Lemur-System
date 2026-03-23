@@ -13,7 +13,7 @@ class UserGroup(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'user_groups'
+        db_table = 'superadmin_user_groups'
         unique_together = ['organization', 'name']
 
     def __str__(self):
@@ -82,8 +82,8 @@ class TenantSubscription(models.Model):
 
 class AuditLog(models.Model):
     id = models.CharField(max_length=36, primary_key=True, default=uuid.uuid4)
-    organization = models.ForeignKey('core.Organization', on_delete=models.SET_NULL, null=True, related_name='audit_logs')
-    user = models.ForeignKey('core.User', on_delete=models.SET_NULL, null=True)
+    organization = models.ForeignKey('core.Organization', on_delete=models.SET_NULL, null=True, related_name='superadmin_audit_logs')
+    user = models.ForeignKey('core.User', on_delete=models.SET_NULL, null=True, related_name='superadmin_audit_logs')
     action = models.CharField(max_length=100)
     resource_type = models.CharField(max_length=50)
     resource_id = models.CharField(max_length=36, blank=True)
@@ -93,7 +93,7 @@ class AuditLog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'audit_logs'
+        db_table = 'superadmin_audit_logs'
         ordering = ['-created_at']
 
     def __str__(self):

@@ -273,6 +273,7 @@ class Invoice(models.Model):
         ('paid', 'Paid'),
         ('partially_paid', 'Partially Paid'),
         ('overdue', 'Overdue'),
+        ('void', 'Void'),
         ('cancelled', 'Cancelled'),
     ]
 
@@ -290,6 +291,7 @@ class Invoice(models.Model):
         ('GBP', 'GBP'),
         ('CAD', 'CAD'),
         ('AUD', 'AUD'),
+        ('ZAR', 'ZAR'),
     ]
 
     invoice_number = models.CharField(max_length=50, unique=True)
@@ -310,7 +312,14 @@ class Invoice(models.Model):
     notes = models.TextField(blank=True)
     terms_conditions = models.TextField(blank=True)
     sent_at = models.DateTimeField(null=True, blank=True)
+    sent_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='sent_invoices')
     viewed_at = models.DateTimeField(null=True, blank=True)
+    void_at = models.DateTimeField(null=True, blank=True)
+    void_reason = models.TextField(blank=True)
+    email_subject = models.CharField(max_length=500, blank=True)
+    email_body = models.TextField(blank=True)
+    email_sent = models.BooleanField(default=False)
+    last_email_sent_at = models.DateTimeField(null=True, blank=True)
     organization = models.ForeignKey('core.Organization', on_delete=models.CASCADE, related_name='invoices')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -413,10 +422,21 @@ class Quotation(models.Model):
     STATUS_CHOICES = [
         ('draft', 'Draft'),
         ('sent', 'Sent'),
-        ('accepted', 'Accepted'),
+        ('viewed', 'Viewed'),
+        ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('expired', 'Expired'),
         ('converted', 'Converted to Invoice'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    CURRENCY_CHOICES = [
+        ('USD', 'USD'),
+        ('EUR', 'EUR'),
+        ('GBP', 'GBP'),
+        ('CAD', 'CAD'),
+        ('AUD', 'AUD'),
+        ('ZAR', 'ZAR'),
     ]
 
     quotation_number = models.CharField(max_length=50, unique=True)
@@ -429,9 +449,22 @@ class Quotation(models.Model):
     tax_percent = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     tax_amount = models.DecimalField(max_digits=14, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=14, decimal_places=2, default=0)
+    currency = models.CharField(max_length=10, choices=CURRENCY_CHOICES, default='USD')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     notes = models.TextField(blank=True)
     terms_conditions = models.TextField(blank=True)
+    approved_at = models.DateTimeField(null=True, blank=True)
+    approved_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_quotations')
+    rejected_at = models.DateTimeField(null=True, blank=True)
+    rejected_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='rejected_quotations')
+    rejection_reason = models.TextField(blank=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+    sent_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='sent_quotations')
+    viewed_at = models.DateTimeField(null=True, blank=True)
+    email_subject = models.CharField(max_length=500, blank=True)
+    email_body = models.TextField(blank=True)
+    email_sent = models.BooleanField(default=False)
+    last_email_sent_at = models.DateTimeField(null=True, blank=True)
     converted_to_invoice = models.ForeignKey(Invoice, on_delete=models.SET_NULL, null=True, blank=True, related_name='from_quotation')
     organization = models.ForeignKey('core.Organization', on_delete=models.CASCADE, related_name='quotations')
     created_at = models.DateTimeField(auto_now_add=True)

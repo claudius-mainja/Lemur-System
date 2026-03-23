@@ -388,6 +388,10 @@ export const customersApi = {
   update: (id: string, data: any) => api.put(`/crm/companies/${id}`, data),
   
   delete: (id: string) => api.delete(`/crm/companies/${id}`),
+
+  toggleActive: (id: string) => api.post(`/crm/companies/${id}/toggle_active/`),
+
+  getTransactions: (id: string) => api.get(`/crm/companies/${id}/transactions/`),
 };
 
 // Products API (Finance Module)
@@ -441,6 +445,42 @@ export const invoicesApi = {
   delete: (id: string) => api.delete(`/finance/invoices/${id}`),
   
   getStats: () => api.get('/finance/dashboard/stats'),
+
+  sendEmail: (id: string, emailSubject: string, emailBody: string) =>
+    api.post(`/finance/invoices/${id}/send_email/`, {
+      email_subject: emailSubject,
+      email_body: emailBody,
+    }),
+
+  voidInvoice: (id: string, reason?: string) =>
+    api.post(`/finance/invoices/${id}/void/`, { reason }),
+};
+
+// Quotations API (Finance Module)
+export const quotationsApi = {
+  getAll: () => api.get('/finance/quotations'),
+  
+  getById: (id: string) => api.get(`/finance/quotations/${id}`),
+  
+  create: (data: any) => api.post('/finance/quotations', data),
+
+  update: (id: string, data: any) => api.put(`/finance/quotations/${id}`, data),
+  
+  delete: (id: string) => api.delete(`/finance/quotations/${id}`),
+
+  sendEmail: (id: string, emailSubject: string, emailBody: string) =>
+    api.post(`/finance/quotations/${id}/send_email/`, {
+      email_subject: emailSubject,
+      email_body: emailBody,
+    }),
+
+  accept: (id: string) => api.post(`/finance/quotations/${id}/accept/`),
+
+  reject: (id: string, reason: string) =>
+    api.post(`/finance/quotations/${id}/reject/`, { reason }),
+
+  convertToInvoice: (id: string, dueDate?: string) =>
+    api.post(`/finance/quotations/${id}/convert_to_invoice/`, { due_date: dueDate }),
 };
 
 // Leads API (CRM Module)
@@ -1310,4 +1350,197 @@ export const superadminApi = {
   // Audit Logs
   getAuditLogs: (page = 1, limit = 50) => 
     api.get('/superadmin/audit-logs/', { params: { page, limit } }),
+};
+
+// Automation API
+export const automationApi = {
+  // Automation Settings
+  getSettings: () => api.get('/automation/settings/'),
+  
+  getSetting: (id: string) => api.get(`/automation/settings/${id}/`),
+  
+  createSetting: (data: {
+    module: string;
+    setting_name: string;
+    setting_key: string;
+    value?: any;
+    is_automated?: boolean;
+    is_enabled?: boolean;
+    schedule?: any;
+    notification?: any;
+  }) => api.post('/automation/settings/', data),
+
+  updateSetting: (id: string, data: any) => api.put(`/automation/settings/${id}/`, data),
+  
+  deleteSetting: (id: string) => api.delete(`/automation/settings/${id}/`),
+  
+  toggleAutomated: (id: string) => api.post(`/automation/settings/${id}/toggle_automated/`),
+  
+  toggleEnabled: (id: string) => api.post(`/automation/settings/${id}/toggle_enabled/`),
+
+  // Workflows
+  getWorkflows: () => api.get('/automation/workflows/'),
+  
+  getWorkflow: (id: string) => api.get(`/automation/workflows/${id}/`),
+  
+  createWorkflow: (data: {
+    name: string;
+    description?: string;
+    module: string;
+    trigger_type?: string;
+    trigger_config?: any;
+    actions?: any[];
+    conditions?: any[];
+    is_automated?: boolean;
+  }) => api.post('/automation/workflows/', data),
+
+  updateWorkflow: (id: string, data: any) => api.put(`/automation/workflows/${id}/`, data),
+  
+  deleteWorkflow: (id: string) => api.delete(`/automation/workflows/${id}/`),
+  
+  activateWorkflow: (id: string) => api.post(`/automation/workflows/${id}/activate/`),
+  
+  pauseWorkflow: (id: string) => api.post(`/automation/workflows/${id}/pause/`),
+  
+  runWorkflow: (id: string) => api.post(`/automation/workflows/${id}/run/`),
+  
+  toggleWorkflowAutomated: (id: string) => api.post(`/automation/workflows/${id}/toggle_automated/`),
+
+  // Workflow Logs
+  getWorkflowLogs: () => api.get('/automation/workflow-logs/'),
+  
+  getWorkflowLog: (id: string) => api.get(`/automation/workflow-logs/${id}/`),
+
+  // Scheduled Tasks
+  getScheduledTasks: () => api.get('/automation/scheduled-tasks/'),
+  
+  getScheduledTask: (id: string) => api.get(`/automation/scheduled-tasks/${id}/`),
+  
+  createScheduledTask: (data: {
+    name: string;
+    task_type: string;
+    module?: string;
+    config?: any;
+    cron_expression?: string;
+    interval_minutes?: number;
+    is_automated?: boolean;
+  }) => api.post('/automation/scheduled-tasks/', data),
+
+  updateScheduledTask: (id: string, data: any) => api.put(`/automation/scheduled-tasks/${id}/`, data),
+  
+  deleteScheduledTask: (id: string) => api.delete(`/automation/scheduled-tasks/${id}/`),
+  
+  toggleTaskActive: (id: string) => api.post(`/automation/scheduled-tasks/${id}/toggle_active/`),
+  
+  toggleTaskAutomated: (id: string) => api.post(`/automation/scheduled-tasks/${id}/toggle_automated/`),
+  
+  runScheduledTask: (id: string) => api.post(`/automation/scheduled-tasks/${id}/run/`),
+
+  // Notification Templates
+  getNotificationTemplates: () => api.get('/automation/notification-templates/'),
+  
+  getNotificationTemplate: (id: string) => api.get(`/automation/notification-templates/${id}/`),
+  
+  createNotificationTemplate: (data: {
+    name: string;
+    template_type: string;
+    subject: string;
+    body: string;
+    variables?: string[];
+  }) => api.post('/automation/notification-templates/', data),
+
+  updateNotificationTemplate: (id: string, data: any) => api.put(`/automation/notification-templates/${id}/`, data),
+  
+  deleteNotificationTemplate: (id: string) => api.delete(`/automation/notification-templates/${id}/`),
+
+  // Dashboard
+  getDashboardStats: () => api.get('/automation/dashboard/stats/'),
+  
+  getModules: () => api.get('/automation/dashboard/modules/'),
+};
+
+// Organization API
+export const organizationApi = {
+  getOrganization: () => api.get('/auth/organization/'),
+  
+  updateOrganization: (data: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    currency?: string;
+  }) => api.put('/auth/organization/', data),
+
+  getOrganizationStats: () => api.get('/auth/stats/'),
+};
+
+// Admin API
+export const adminApi = {
+  // Users
+  getUsers: () => api.get('/auth/users/'),
+  
+  getUser: (id: string) => api.get(`/auth/users/${id}/`),
+  
+  createUser: (data: {
+    email: string;
+    password: string;
+    first_name: string;
+    last_name: string;
+    role: string;
+    department?: string;
+    phone?: string;
+    modules?: string[];
+    user_groups?: string[];
+  }) => api.post('/auth/users/', data),
+
+  updateUser: (id: string, data: any) => api.put(`/auth/users/${id}/`, data),
+  
+  deleteUser: (id: string) => api.delete(`/auth/users/${id}/`),
+
+  // User Groups
+  getUserGroups: () => api.get('/auth/user-groups/'),
+  
+  getUserGroup: (id: string) => api.get(`/auth/user-groups/${id}/`),
+  
+  createUserGroup: (data: {
+    name: string;
+    description?: string;
+    module?: string;
+    permissions?: any;
+    modules_access?: string[];
+  }) => api.post('/auth/user-groups/', data),
+
+  updateUserGroup: (id: string, data: any) => api.put(`/auth/user-groups/${id}/`, data),
+  
+  deleteUserGroup: (id: string) => api.delete(`/auth/user-groups/${id}/`),
+  
+  addUserToGroup: (groupId: string, userId: string) => 
+    api.post(`/auth/user-groups/${groupId}/add-user/`, { user_id: userId }),
+  
+  removeUserFromGroup: (groupId: string, userId: string) => 
+    api.post(`/auth/user-groups/${groupId}/remove-user/`, { user_id: userId }),
+
+  // Audit Logs
+  getAuditLogs: () => api.get('/auth/audit-logs/'),
+
+  // Subscription
+  getSubscriptionPlans: () => api.get('/auth/subscription-plans/'),
+  
+  purchaseExtraUsers: (extraUsers: number) => 
+    api.post('/auth/purchase-extra-users/', { extra_users: extraUsers }),
+};
+
+// Profile API
+export const profileApi = {
+  getProfile: () => api.get('/auth/me/'),
+  
+  updateProfile: (data: {
+    first_name?: string;
+    last_name?: string;
+    phone?: string;
+    department?: string;
+  }) => api.put('/auth/me/update/', data),
 };

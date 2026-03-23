@@ -23,7 +23,24 @@ from .serializers import (
 
 
 def get_org_id(request):
-    return getattr(request.user, 'organization_id', None)
+    user = request.user
+    if hasattr(user, 'organization') and user.organization:
+        return user.organization.id
+    return getattr(user, 'organization_id', None)
+
+
+def get_org(request):
+    from core.models import Organization
+    user = request.user
+    if hasattr(user, 'organization') and user.organization:
+        return user.organization
+    org_id = getattr(user, 'organization_id', None)
+    if org_id:
+        try:
+            return Organization.objects.get(id=org_id)
+        except Organization.DoesNotExist:
+            return None
+    return None
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
@@ -40,6 +57,15 @@ class DepartmentViewSet(viewsets.ModelViewSet):
             return Department.objects.filter(organization_id=org_id).select_related('parent')
         return Department.objects.none()
 
+    def perform_create(self, serializer):
+        org_id = get_org_id(self.request)
+        if org_id:
+            from core.models import Organization
+            org = Organization.objects.get(id=org_id)
+            serializer.save(organization=org)
+        else:
+            serializer.save()
+
 
 class JobPositionViewSet(viewsets.ModelViewSet):
     queryset = JobPosition.objects.all()
@@ -55,6 +81,13 @@ class JobPositionViewSet(viewsets.ModelViewSet):
             return JobPosition.objects.filter(organization_id=org_id).select_related('department')
         return JobPosition.objects.none()
 
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
+
 
 class JobPostingViewSet(viewsets.ModelViewSet):
     queryset = JobPosting.objects.all()
@@ -69,6 +102,13 @@ class JobPostingViewSet(viewsets.ModelViewSet):
         if org_id:
             return JobPosting.objects.filter(organization_id=org_id).select_related('position', 'position__department')
         return JobPosting.objects.none()
+
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
 
     @action(detail=True, methods=['post'])
     def publish(self, request, pk=None):
@@ -100,6 +140,13 @@ class ApplicantViewSet(viewsets.ModelViewSet):
             return Applicant.objects.filter(organization_id=org_id).select_related('job_posting')
         return Applicant.objects.none()
 
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
+
     @action(detail=True, methods=['post'])
     def update_status(self, request, pk=None):
         applicant = self.get_object()
@@ -124,6 +171,13 @@ class InterviewViewSet(viewsets.ModelViewSet):
         if org_id:
             return Interview.objects.filter(organization_id=org_id).select_related('applicant', 'interviewer')
         return Interview.objects.none()
+
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
 
     @action(detail=True, methods=['post'])
     def complete(self, request, pk=None):
@@ -174,6 +228,13 @@ class OfferLetterViewSet(viewsets.ModelViewSet):
         offer.save()
         return Response(OfferLetterSerializer(offer).data)
 
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
+
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
@@ -205,6 +266,13 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             
             return queryset
         return Employee.objects.none()
+
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
 
     @action(detail=False, methods=['get'])
     def stats(self, request):
@@ -298,6 +366,13 @@ class EmployeeDocumentViewSet(viewsets.ModelViewSet):
             return queryset
         return EmployeeDocument.objects.none()
 
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
+
     @action(detail=True, methods=['post'])
     def verify(self, request, pk=None):
         document = self.get_object()
@@ -329,6 +404,13 @@ class LeaveBalanceViewSet(viewsets.ModelViewSet):
             
             return queryset
         return LeaveBalance.objects.none()
+
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
 
 
 class LeaveViewSet(viewsets.ModelViewSet):
@@ -459,7 +541,7 @@ class LeaveViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def stats(self, request):
         org_id = get_org_id(request)
-        if not org:
+        if not org_id:
             return Response({'error': 'Organization not found'}, status=status.HTTP_400_BAD_REQUEST)
         
         leaves = Leave.objects.filter(organization_id=org_id)
@@ -502,6 +584,13 @@ class AttendanceViewSet(viewsets.ModelViewSet):
             
             return queryset
         return Attendance.objects.none()
+
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
 
     @action(detail=False, methods=['post'])
     def clock_in(self, request):
@@ -628,6 +717,13 @@ class OvertimeRecordViewSet(viewsets.ModelViewSet):
         record.save()
         return Response(OvertimeRecordSerializer(record).data)
 
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
+
 
 class ReviewCycleViewSet(viewsets.ModelViewSet):
     queryset = ReviewCycle.objects.all()
@@ -641,7 +737,14 @@ class ReviewCycleViewSet(viewsets.ModelViewSet):
         org_id = get_org_id(self.request)
         if org_id:
             return ReviewCycle.objects.filter(organization_id=org_id)
-        return ReviewCycle.objects.none()
+            return ReviewCycle.objects.none()
+
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
 
 
 class GoalViewSet(viewsets.ModelViewSet):
@@ -667,6 +770,13 @@ class GoalViewSet(viewsets.ModelViewSet):
             
             return queryset
         return Goal.objects.none()
+
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
 
     @action(detail=True, methods=['post'])
     def update_progress(self, request, pk=None):
@@ -701,7 +811,14 @@ class PerformanceReviewViewSet(viewsets.ModelViewSet):
             return PerformanceReview.objects.filter(organization_id=org_id).select_related(
                 'employee', 'reviewer', 'review_cycle'
             )
-        return PerformanceReview.objects.none()
+            return PerformanceReview.objects.none()
+
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
 
 
 class Feedback360ViewSet(viewsets.ModelViewSet):
@@ -715,7 +832,14 @@ class Feedback360ViewSet(viewsets.ModelViewSet):
         org_id = get_org_id(self.request)
         if org_id:
             return Feedback360.objects.filter(organization_id=org_id).select_related('employee', 'reviewer', 'review_cycle')
-        return Feedback360.objects.none()
+            return Feedback360.objects.none()
+
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
 
 
 class TrainingViewSet(viewsets.ModelViewSet):
@@ -737,6 +861,13 @@ class TrainingViewSet(viewsets.ModelViewSet):
             
             return queryset
         return Training.objects.none()
+
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()
 
 
 class TimeSheetViewSet(viewsets.ModelViewSet):
@@ -816,3 +947,10 @@ class HolidayViewSet(viewsets.ModelViewSet):
             
             return queryset
         return Holiday.objects.none()
+
+    def perform_create(self, serializer):
+        org = get_org(self.request)
+        if org:
+            serializer.save(organization=org)
+        else:
+            serializer.save()

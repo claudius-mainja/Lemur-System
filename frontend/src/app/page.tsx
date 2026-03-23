@@ -53,15 +53,20 @@ const features = [
 
 export default function WelcomePage() {
   const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, hasHydrated } = useAuthStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (hasHydrated && isAuthenticated && isMounted) {
       router.push('/dashboard/hr');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, hasHydrated, isMounted]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,6 +75,14 @@ export default function WelcomePage() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  if (!hasHydrated || !isMounted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0a1a20] via-[#0b2f40] to-[#061c26] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (isAuthenticated) {
     return null;

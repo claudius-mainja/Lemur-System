@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'services',
     'superadmin',
     'orgadmin',
+    'automation',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +53,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'urls'
+
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 TEMPLATES = [
     {

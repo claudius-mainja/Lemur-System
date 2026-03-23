@@ -129,6 +129,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
     customer_name = serializers.CharField(source='customer.name', read_only=True)
     balance_due = serializers.DecimalField(max_digits=14, decimal_places=2, read_only=True)
     is_overdue = serializers.BooleanField(read_only=True)
+    sent_by_name = serializers.CharField(source='sent_by.get_full_name', read_only=True, allow_null=True)
 
     class Meta:
         model = Invoice
@@ -136,7 +137,10 @@ class InvoiceSerializer(serializers.ModelSerializer):
                   'invoice_date', 'due_date', 'subtotal', 'discount_percent', 'discount_amount',
                   'tax_percent', 'tax_amount', 'total', 'amount_paid', 'balance_due',
                   'currency', 'status', 'payment_terms', 'notes', 'terms_conditions',
-                  'sent_at', 'viewed_at', 'is_overdue', 'items', 'created_at', 'updated_at']
+                  'sent_at', 'sent_by', 'sent_by_name', 'viewed_at',
+                  'void_at', 'void_reason',
+                  'email_subject', 'email_body', 'email_sent', 'last_email_sent_at',
+                  'is_overdue', 'items', 'created_at', 'updated_at']
 
 
 class InvoiceListSerializer(serializers.ModelSerializer):
@@ -180,12 +184,20 @@ class QuotationItemSerializer(serializers.ModelSerializer):
 class QuotationSerializer(serializers.ModelSerializer):
     items = QuotationItemSerializer(many=True, read_only=True)
     customer_name = serializers.CharField(source='customer.name', read_only=True)
+    approved_by_name = serializers.CharField(source='approved_by.get_full_name', read_only=True, allow_null=True)
+    rejected_by_name = serializers.CharField(source='rejected_by.get_full_name', read_only=True, allow_null=True)
+    sent_by_name = serializers.CharField(source='sent_by.get_full_name', read_only=True, allow_null=True)
 
     class Meta:
         model = Quotation
         fields = ['id', 'quotation_number', 'customer', 'customer_name', 'quotation_date',
                   'valid_until', 'subtotal', 'discount_percent', 'discount_amount',
-                  'tax_percent', 'tax_amount', 'total', 'status', 'notes', 'terms_conditions',
+                  'tax_percent', 'tax_amount', 'total', 'currency', 'status',
+                  'notes', 'terms_conditions',
+                  'approved_at', 'approved_by', 'approved_by_name',
+                  'rejected_at', 'rejected_by', 'rejected_by_name', 'rejection_reason',
+                  'sent_at', 'sent_by', 'sent_by_name', 'viewed_at',
+                  'email_subject', 'email_body', 'email_sent', 'last_email_sent_at',
                   'converted_to_invoice', 'items', 'created_at', 'updated_at']
 
 
