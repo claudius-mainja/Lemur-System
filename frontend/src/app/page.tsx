@@ -151,7 +151,7 @@ export default function WelcomePage() {
                 Sign In
               </Link>
               <Link 
-                href="/login?register=true" 
+                href="/register" 
                 className="px-5 py-2 bg-gradient-to-r from-accent to-accentDark text-white text-sm font-medium rounded-lg hover:shadow-lg hover:shadow-accent/30 transition-all"
               >
                 Get Started
@@ -187,7 +187,7 @@ export default function WelcomePage() {
             ))}
             <div className="pt-3 border-t border-white/10 space-y-2">
               <Link href="/login" className="block py-2 text-white/70 text-sm">Sign In</Link>
-              <Link href="/login?register=true" className="block text-center px-4 py-2 bg-gradient-to-r from-accent to-accentDark text-white text-sm rounded-lg">
+              <Link href="/register" className="block text-center px-4 py-2 bg-gradient-to-r from-accent to-accentDark text-white text-sm rounded-lg">
                 Get Started
               </Link>
             </div>
@@ -219,7 +219,7 @@ export default function WelcomePage() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8">
               <Link 
-                href="/free-trial" 
+                href="/register" 
                 className="px-8 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-medium rounded-lg hover:shadow-xl hover:shadow-accent/30 transition-all flex items-center gap-2"
               >
                 Start Free Trial
@@ -513,7 +513,7 @@ export default function WelcomePage() {
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link 
-                  href="/free-trial" 
+                  href="/register" 
                   className="px-8 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-medium rounded-lg hover:shadow-xl hover:shadow-accent/30 transition-all flex items-center gap-2"
                 >
                   Start Free Trial

@@ -247,8 +247,8 @@ export default function PricingPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8">
-              <Link href="/free-trial" className="px-8 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-medium rounded-lg hover:shadow-xl hover:shadow-accent/30 transition-all flex items-center gap-2">
-                Start Free Trial <ArrowRight className="w-4 h-4" />
+<Link href="/register" className="px-8 py-3 bg-gradient-to-r from-accent to-accentDark text-white font-medium rounded-lg hover:shadow-xl hover:shadow-accent/30 transition-all flex items-center gap-2">
+                  Start Free Trial <ArrowRight className="w-4 h-4" />
               </Link>
               <Link href="/contact" className="px-8 py-3 border border-white/20 text-white/60 rounded-lg hover:border-white/40 hover:text-white transition-all">
                 Talk to Sales
@@ -576,7 +576,7 @@ export default function PricingPage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href="/free-trial"
+                href="/register"
                 className="px-8 py-3 bg-white text-accent font-bold uppercase tracking-wider rounded-lg hover:bg-white/90 transition"
               >
                 Start Free Trial

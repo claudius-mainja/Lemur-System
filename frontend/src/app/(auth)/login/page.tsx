@@ -523,13 +523,21 @@ export default function LoginPage() {
 
           <p className="text-center mt-10 text-white/40">
             {isLogin ? "Don't have an account? " : 'Already have an account? '}
-            <button
-              type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-accent font-bold uppercase tracking-wider hover:underline"
-            >
-              {isLogin ? 'CREATE ACCOUNT' : 'SIGN IN'}
-            </button>
+            {isLogin ? (
+              <Link
+                href="/register"
+                className="text-accent font-bold uppercase tracking-wider hover:underline"
+              >
+                CREATE ACCOUNT
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="text-accent font-bold uppercase tracking-wider hover:underline"
+              >
+                SIGN IN
+              </Link>
+            )}
           </p>
         </div>
       </div>
