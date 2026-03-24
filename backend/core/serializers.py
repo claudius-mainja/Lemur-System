@@ -42,6 +42,26 @@ class UserSerializer(serializers.ModelSerializer):
         return f"{obj.first_name} {obj.last_name}"
 
 
+class UserListSerializer(serializers.ModelSerializer):
+    organization_name = serializers.SerializerMethodField()
+    full_name = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = User
+        fields = [
+            'id', 'email', 'first_name', 'last_name', 'full_name', 'role',
+            'department', 'phone', 'organization', 'organization_name',
+            'industry', 'subscription', 'modules', 'is_active',
+            'date_joined', 'last_login'
+        ]
+    
+    def get_organization_name(self, obj):
+        return obj.organization.name if obj.organization else None
+    
+    def get_full_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}"
+
+
 class OrganizationSerializer(serializers.ModelSerializer):
     user_count = serializers.SerializerMethodField()
     max_users_total = serializers.SerializerMethodField()
@@ -243,3 +263,53 @@ class TenantSerializer(serializers.ModelSerializer):
     
     def get_max_users_total(self, obj):
         return obj.get_max_users_total()
+
+
+class OrganizationStatsSerializer(serializers.Serializer):
+    total_organizations = serializers.IntegerField()
+    active_organizations = serializers.IntegerField()
+    trial_organizations = serializers.IntegerField()
+    active_users = serializers.IntegerField()
+    total_users = serializers.IntegerField()
+    subscription_breakdown = serializers.DictField()
+
+
+class DashboardStatsSerializer(serializers.Serializer):
+    total_employees = serializers.IntegerField()
+    total_revenue = serializers.DecimalField(max_digits=12, decimal_places=2)
+    total_invoices = serializers.IntegerField()
+    pending_invoices = serializers.IntegerField()
+    paid_invoices = serializers.IntegerField()
+    overdue_invoices = serializers.IntegerField()
+    active_customers = serializers.IntegerField()
+    new_leads = serializers.IntegerField()
+
+
+class TeamMemberSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    email = serializers.EmailField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    full_name = serializers.CharField()
+    role = serializers.CharField()
+    department = serializers.CharField(allow_blank=True)
+    modules = serializers.ListField(child=serializers.CharField())
+    is_active = serializers.BooleanField()
+
+
+class ModuleAccessSerializer(serializers.Serializer):
+    module_name = serializers.CharField()
+    has_access = serializers.BooleanField()
+    permissions = serializers.ListField(child=serializers.CharField())
+
+
+class PermissionSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    description = serializers.CharField()
+    module = serializers.CharField()
+
+
+class RolePermissionSerializer(serializers.Serializer):
+    role = serializers.CharField()
+    module = serializers.CharField()
+    permissions = serializers.ListField(child=serializers.CharField())

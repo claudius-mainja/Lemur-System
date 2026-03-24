@@ -49,7 +49,8 @@ const INDUSTRIES = [
 
 const registerSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string().min(8, 'Password must be at least 8 characters'),
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   organizationName: z.string().min(1, 'Organization name is required'),
@@ -57,6 +58,9 @@ const registerSchema = z.object({
   country: z.string().min(1, 'Country is required'),
   currency: z.string().min(1, 'Currency is required'),
   plan: z.enum(['starter', 'professional', 'enterprise']),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ['confirmPassword'],
 });
 
 const planDetails = {
@@ -102,6 +106,7 @@ function CreateAccountContent() {
     defaultValues: {
       email: '',
       password: '',
+      confirmPassword: '',
       firstName: '',
       lastName: '',
       organizationName: '',
@@ -361,7 +366,7 @@ function CreateAccountContent() {
                   {...form.register('password')}
                   type={showPassword ? 'text' : 'password'}
                   className="w-full pl-12 pr-14 py-4 border border-white/10 bg-white/5 text-white rounded-2xl focus:ring-2 focus:ring-accent focus:border-accent placeholder-white/30"
-                  placeholder="Create a password"
+                  placeholder="Create a password (min 8 characters)"
                 />
                 <button
                   type="button"
@@ -373,6 +378,22 @@ function CreateAccountContent() {
               </div>
               {form.formState.errors.password && (
                 <p className="text-red-400 text-sm mt-2">{form.formState.errors.password.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-white/60 mb-3 uppercase tracking-wider">Confirm Password</label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
+                <input
+                  {...form.register('confirmPassword')}
+                  type={showPassword ? 'text' : 'password'}
+                  className="w-full pl-12 pr-4 py-4 border border-white/10 bg-white/5 text-white rounded-2xl focus:ring-2 focus:ring-accent focus:border-accent placeholder-white/30"
+                  placeholder="Confirm your password"
+                />
+              </div>
+              {form.formState.errors.confirmPassword && (
+                <p className="text-red-400 text-sm mt-2">{form.formState.errors.confirmPassword.message}</p>
               )}
             </div>
 
