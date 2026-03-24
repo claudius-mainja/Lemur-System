@@ -40,13 +40,17 @@ const INDUSTRIES = [
 
 const registerSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string().min(8, 'Password must be at least 8 characters'),
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   organizationName: z.string().min(1, 'Organization name is required'),
   industry: z.string().min(1, 'Industry is required'),
   country: z.string().min(1, 'Country is required'),
   currency: z.string().min(1, 'Currency is required'),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ['confirmPassword'],
 });
 
 type RegisterForm = z.infer<typeof registerSchema>;
@@ -62,6 +66,7 @@ export default function FreeTrialPage() {
     defaultValues: {
       email: '',
       password: '',
+      confirmPassword: '',
       firstName: '',
       lastName: '',
       organizationName: '',
@@ -304,28 +309,44 @@ export default function FreeTrialPage() {
               )}
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-white/60 mb-2 uppercase tracking-wider">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-                <input
-                  {...form.register('password')}
-                  type={showPassword ? 'text' : 'password'}
-                  className="w-full pl-10 pr-12 py-3 border border-white/10 bg-white/5 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent placeholder-white/30 text-sm"
-                  placeholder="Create a password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4 text-white/30" /> : <Eye className="w-4 h-4 text-white/30" />}
-                </button>
+              <div>
+                <label className="block text-xs font-bold text-white/60 mb-2 uppercase tracking-wider">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                  <input
+                    {...form.register('password')}
+                    type={showPassword ? 'text' : 'password'}
+                    className="w-full pl-10 pr-12 py-3 border border-white/10 bg-white/5 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent placeholder-white/30 text-sm"
+                    placeholder="Create a password (min 8 chars)"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4 text-white/30" /> : <Eye className="w-4 h-4 text-white/30" />}
+                  </button>
+                </div>
+                {form.formState.errors.password && (
+                  <p className="text-red-400 text-xs mt-1">{form.formState.errors.password.message}</p>
+                )}
               </div>
-              {form.formState.errors.password && (
-                <p className="text-red-400 text-xs mt-1">{form.formState.errors.password.message}</p>
-              )}
-            </div>
+
+              <div>
+                <label className="block text-xs font-bold text-white/60 mb-2 uppercase tracking-wider">Confirm Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                  <input
+                    {...form.register('confirmPassword')}
+                    type={showPassword ? 'text' : 'password'}
+                    className="w-full pl-10 pr-4 py-3 border border-white/10 bg-white/5 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent placeholder-white/30 text-sm"
+                    placeholder="Confirm your password"
+                  />
+                </div>
+                {form.formState.errors.confirmPassword && (
+                  <p className="text-red-400 text-xs mt-1">{form.formState.errors.confirmPassword.message}</p>
+                )}
+              </div>
 
             <button
               type="submit"

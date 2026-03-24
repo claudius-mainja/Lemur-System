@@ -233,6 +233,7 @@ export const useAuthStore = create<AuthState>()(
       register: async (data) => {
         set({ isLoading: true });
         try {
+          console.log('Registering with data:', data);
           const response = await authApi.register({
             email: data.email,
             password: data.password,
@@ -245,6 +246,7 @@ export const useAuthStore = create<AuthState>()(
             subscription: data.plan,
           });
           
+          console.log('Registration response:', response.data);
           const loginData = response.data;
           
           if (loginData.access_token) {
@@ -267,8 +269,16 @@ export const useAuthStore = create<AuthState>()(
           
           return { success: false, error: 'Registration response invalid' };
         } catch (error: any) {
+          console.error('Registration error:', error);
           set({ isLoading: false });
-          const message = error.response?.data?.detail || error.response?.data?.message || 'Registration failed. Please try again.';
+          let message = 'Registration failed. Please try again.';
+          if (error.response?.data) {
+            const data = error.response.data;
+            if (data.email) message = `Email: ${Array.isArray(data.email) ? data.email[0] : data.email}`;
+            else if (data.detail) message = data.detail;
+            else if (data.message) message = data.message;
+            else if (typeof data === 'string') message = data;
+          }
           return { success: false, error: message };
         }
       },
