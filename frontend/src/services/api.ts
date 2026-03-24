@@ -117,7 +117,7 @@ export const authApi = {
     industry: string;
     country: string;
     currency: string;
-    plan: string;
+    subscription: string;
   }) => api.post('/auth/register/', data),
 
   login: (email: string, password: string) =>

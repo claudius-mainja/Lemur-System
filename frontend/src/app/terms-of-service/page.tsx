@@ -113,7 +113,7 @@ export default function TermsOfServicePage() {
             </p>
             <ul className="list-disc list-inside text-white/60 space-y-2 ml-4">
               <li>Starter Plan: $10.60/user/month (up to 6 users)</li>
-              <li>Professional Plan: $20.50/user/month (up to 50 users)</li>
+              <li>Professional Plan: $20.50/user/month (up to 12 users)</li>
               <li>Enterprise Plan: Custom pricing (unlimited users)</li>
               <li>Enterprise Plan: Custom pricing</li>
             </ul>

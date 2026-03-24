@@ -12,20 +12,20 @@ import {
   Heart, Plane, Star, Sparkles, Rocket, Target,
   Layers, Briefcase, HeadphonesIcon, Megaphone,
   ChevronRight, Play, Award, Handshake, Clock,
-  Hexagon, Triangle, Circle, Square, Diamond,
+  Hexagon, Triangle, Square, Diamond,
   ArrowUpRight, Check, Minus, Lock, Globe2, Zap as LightningBolt,
-  CheckCircle2, Map
+  CheckCircle2, Map, Image, Monitor, Users2, DollarSign, BarChart
 } from 'lucide-react';
 
 const applications = [
-  { name: 'HUMAN RESOURCES', href: '/applications/hr', icon: Users, color: 'from-primary to-secondary', desc: 'Employee management, leave tracking, recruitment' },
-  { name: 'FINANCE', href: '/applications/finance', icon: Wallet, color: 'from-accent to-accentDark', desc: 'Invoicing, accounting, financial reports' },
-  { name: 'CRM', href: '/applications/crm', icon: BarChart3, color: 'from-accentDark to-accent', desc: 'Customer relationships, leads, sales pipeline' },
-  { name: 'PAYROLL', href: '/applications/payroll', icon: PiggyBank, color: 'from-secondary to-primary', desc: 'Salary processing, tax calculations, payslips' },
-  { name: 'SUPPLY CHAIN', href: '/applications/supply-chain', icon: Truck, color: 'from-primary to-accent', desc: 'Inventory, procurement, vendor management' },
-  { name: 'PRODUCTIVITY', href: '/applications/productivity', icon: FileText, color: 'from-secondary to-accent', desc: 'Tasks, projects, team collaboration' },
-  { name: 'MARKETING', href: '/applications/marketing', icon: Megaphone, color: 'from-accent to-accentDark', desc: 'Campaigns, email marketing, analytics' },
-  { name: 'SERVICES', href: '/applications/services', icon: HeadphonesIcon, color: 'from-primary to-secondary', desc: 'Customer support, ticketing, helpdesk' },
+  { name: 'HUMAN RESOURCES', href: '/applications/hr', icon: Users, color: 'from-blue-500 to-cyan-500', desc: 'Employee management, leave tracking, recruitment', image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400&h=300&fit=crop' },
+  { name: 'FINANCE', href: '/applications/finance', icon: Wallet, color: 'from-emerald-500 to-teal-500', desc: 'Invoicing, accounting, financial reports', image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop' },
+  { name: 'CRM', href: '/applications/crm', icon: BarChart3, color: 'from-violet-500 to-purple-500', desc: 'Customer relationships, leads, sales pipeline', image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop' },
+  { name: 'PAYROLL', href: '/applications/payroll', icon: PiggyBank, color: 'from-orange-500 to-amber-500', desc: 'Salary processing, tax calculations, payslips', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop' },
+  { name: 'SUPPLY CHAIN', href: '/applications/supply-chain', icon: Truck, color: 'from-indigo-500 to-violet-500', desc: 'Inventory, procurement, vendor management', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=300&fit=crop' },
+  { name: 'PRODUCTIVITY', href: '/applications/productivity', icon: FileText, color: 'from-cyan-500 to-blue-500', desc: 'Tasks, projects, team collaboration', image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=400&h=300&fit=crop' },
+  { name: 'MARKETING', href: '/applications/marketing', icon: Megaphone, color: 'from-fuchsia-500 to-pink-500', desc: 'Campaigns, email marketing, analytics', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop' },
+  { name: 'SERVICES', href: '/applications/services', icon: HeadphonesIcon, color: 'from-rose-500 to-pink-500', desc: 'Customer support, ticketing, helpdesk', image: 'https://images.unsplash.com/photo-1556745753-b2904692b3cd?w=400&h=300&fit=crop' },
 ];
 
 const stats = [
@@ -36,12 +36,12 @@ const stats = [
 ];
 
 const whyChoose = [
-  { icon: Globe, title: 'BUILT FOR AFRICAN BUSINESS', desc: 'Designed specifically for SADC region businesses with local currencies, tax laws, and compliance requirements' },
-  { icon: Zap, title: 'EASY TO USE', desc: 'Simple, intuitive interface that anyone can use without technical training - no IT team required' },
-  { icon: Shield, title: 'SAFE & SECURE', desc: 'Bank-level security with encrypted data, automatic backups, and reliable cloud infrastructure' },
-  { icon: TrendingUp, title: 'GROWS WITH YOU', desc: 'Start small and scale up as your business grows - add more users, modules, and features when needed' },
-  { icon: Clock, title: 'SAVE TIME & MONEY', desc: 'Replace multiple expensive systems with one affordable solution - cut costs by up to 60%' },
-  { icon: HeadphonesIcon, title: 'LOCAL SUPPORT', desc: 'Get help from our SADC-based support team who understand your business needs' },
+  { icon: Globe, title: 'BUILT FOR AFRICAN BUSINESS', desc: 'Designed specifically for SADC region businesses with local currencies, tax laws, and compliance requirements', image: 'https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=600&h=400&fit=crop' },
+  { icon: Zap, title: 'EASY TO USE', desc: 'Simple, intuitive interface that anyone can use without technical training - no IT team required', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop' },
+  { icon: Shield, title: 'SAFE & SECURE', desc: 'Bank-level security with encrypted data, automatic backups, and reliable cloud infrastructure', image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&h=400&fit=crop' },
+  { icon: TrendingUp, title: 'GROWS WITH YOU', desc: 'Start small and scale up as your business grows - add more users, modules, and features when needed', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop' },
+  { icon: Clock, title: 'SAVE TIME & MONEY', desc: 'Replace multiple expensive systems with one affordable solution - cut costs by up to 60%', image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=400&fit=crop' },
+  { icon: HeadphonesIcon, title: 'LOCAL SUPPORT', desc: 'Get help from our SADC-based support team who understand your business needs', image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600&h=400&fit=crop' },
 ];
 
 const features = [
@@ -49,6 +49,13 @@ const features = [
   { icon: Cloud, title: 'CLOUD BASED', desc: 'Access from anywhere, any device' },
   { icon: Zap, title: 'FAST SETUP', desc: 'Get started in minutes, not months' },
   { icon: Handshake, title: 'SADC COMPLIANT', desc: 'Built for African regulations' },
+];
+
+const workflowSteps = [
+  { icon: Users, title: 'Add Your Team', desc: 'Invite employees and set up roles' },
+  { icon: Settings, title: 'Configure Modules', desc: 'Customize to your business needs' },
+  { icon: BarChart, title: 'Track Everything', desc: 'Monitor performance in real-time' },
+  { icon: Rocket, title: 'Grow Faster', desc: 'Scale your business with confidence' },
 ];
 
 export default function WelcomePage() {
@@ -110,7 +117,6 @@ export default function WelcomePage() {
       <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#0b2f40]/95 backdrop-blur-lg shadow-lg' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
               <div className="w-9 h-9 bg-gradient-to-br from-accent to-accentDark rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">L</span>
@@ -118,7 +124,6 @@ export default function WelcomePage() {
               <span className="font-bold text-lg text-white">LEMUR<span className="text-accent">SYSTEM</span></span>
             </Link>
 
-            {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-6">
               {[
                 { name: 'Features', href: '/features' },
@@ -138,7 +143,6 @@ export default function WelcomePage() {
               ))}
             </div>
 
-            {/* Auth Buttons */}
             <div className="hidden md:flex items-center gap-3">
               <Link 
                 href="/login" 
@@ -154,7 +158,6 @@ export default function WelcomePage() {
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
               className="md:hidden p-2 text-white/70 hover:text-white"
@@ -164,7 +167,6 @@ export default function WelcomePage() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden bg-[#0b2f40]/98 backdrop-blur-xl border-t border-white/10 px-4 py-4 space-y-3">
             {[
@@ -193,11 +195,11 @@ export default function WelcomePage() {
         )}
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-[calc(100vh-4rem)] flex items-center">
+      {/* Hero Section with Image */}
+      <section className="relative pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-[calc(100vh-4rem)]">
         <div className="grid lg:grid-cols-12 gap-8 items-center">
           {/* Left Content */}
-          <div className="lg:col-span-7 text-center lg:text-left">
+          <div className="lg:col-span-6 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-6">
               <span className="w-2 h-2 bg-accent rounded-full animate-pulse" />
               <span className="text-white/60 text-xs uppercase">#1 ERP for SADC Businesses</span>
@@ -212,7 +214,7 @@ export default function WelcomePage() {
             
             <p className="text-base text-white/50 mb-6 max-w-lg mx-auto lg:mx-0">
               The complete business management solution for African businesses. 
-              Manage HR, Finance, Customers, Inventory, and more.
+              Manage HR, Finance, Customers, Inventory, and more from a single platform.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8">
@@ -248,59 +250,34 @@ export default function WelcomePage() {
             </div>
           </div>
 
-          {/* Right - Dashboard Preview */}
-          <div className="lg:col-span-5 relative hidden lg:block">
+          {/* Right - Dashboard Preview with Real Image */}
+          <div className="lg:col-span-6 relative hidden lg:block">
             <div className="absolute inset-0 bg-gradient-to-r from-accent to-accentDark rounded-2xl blur-xl opacity-30" />
             <div className="relative bg-[#0b2a38] border border-white/10 rounded-2xl overflow-hidden shadow-xl">
-              <div className="bg-[#061c26] px-4 py-3 flex items-center justify-between border-b border-white/10">
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
-                </div>
-                <div className="text-xs text-white/40 uppercase tracking-wider">LemurSystem Dashboard</div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-[10px] text-green-500 uppercase">Live</span>
-                </div>
-              </div>
-
-              <div className="p-4">
-                <div className="grid grid-cols-4 gap-2">
-                  {applications.slice(0, 8).map((app, i) => (
-                    <Link 
-                      key={i} 
-                      href={app.href}
-                      className="group flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:bg-white/5"
-                    >
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br ${app.color} shadow-md group-hover:scale-105 transition-transform`}>
-                        <app.icon className="w-4 h-4 text-white" />
-                      </div>
-                      <span className="text-[9px] text-white/50 uppercase">{app.name.split(' ')[0]}</span>
-                    </Link>
-                  ))}
-                </div>
-
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  <div className="bg-[#061c26] rounded-lg p-2 border border-white/5">
-                    <div className="text-sm font-bold text-white">98%</div>
-                    <div className="text-[8px] text-white/40 uppercase mb-1">Efficiency</div>
-                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-primary to-accent w-[98%]" />
-                    </div>
+              <img 
+                src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=500&fit=crop" 
+                alt="LemurSystem Dashboard"
+                className="w-full h-80 object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0b2a38] via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4">
+                <div className="bg-[#061c26]/90 backdrop-blur rounded-xl p-4 border border-white/10">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs text-white font-medium">Your Business Dashboard</span>
+                    <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] rounded-full">Live Preview</span>
                   </div>
-                  <div className="bg-[#061c26] rounded-lg p-2 border border-white/5">
-                    <div className="text-sm font-bold text-white">2.4k</div>
-                    <div className="text-[8px] text-white/40 uppercase mb-1">Transactions</div>
-                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-accent to-accentDark w-[75%]" />
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="bg-white/5 rounded-lg p-2">
+                      <div className="text-sm font-bold text-white">248</div>
+                      <div className="text-[10px] text-white/40">Employees</div>
                     </div>
-                  </div>
-                  <div className="bg-[#061c26] rounded-lg p-2 border border-white/5">
-                    <div className="text-sm font-bold text-white">99+</div>
-                    <div className="text-[8px] text-white/40 uppercase mb-1">Performance</div>
-                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-secondary to-primary w-[99%]" />
+                    <div className="bg-white/5 rounded-lg p-2">
+                      <div className="text-sm font-bold text-white">$124K</div>
+                      <div className="text-[10px] text-white/40">Revenue</div>
+                    </div>
+                    <div className="bg-white/5 rounded-lg p-2">
+                      <div className="text-sm font-bold text-white">1.2K</div>
+                      <div className="text-[10px] text-white/40">Invoices</div>
                     </div>
                   </div>
                 </div>
@@ -310,8 +287,43 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      {/* Applications Section */}
+      {/* How It Works Section with Images */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#061c26]/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+              <Rocket className="w-4 h-4" />
+              HOW IT WORKS
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 uppercase tracking-wide">
+              Get Started in 4 Simple Steps
+            </h2>
+            <p className="text-white/40 max-w-xl mx-auto text-sm">
+              From signup to full deployment in minutes, not months
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {workflowSteps.map((step, i) => (
+              <div key={i} className="text-center">
+                <div className="relative mb-4">
+                  <div className="w-20 h-20 mx-auto bg-gradient-to-br from-accent to-accentDark rounded-2xl flex items-center justify-center shadow-lg">
+                    <step.icon className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#0b2a38] border border-accent rounded-full flex items-center justify-center">
+                    <span className="text-accent font-bold text-sm">{i + 1}</span>
+                  </div>
+                </div>
+                <h3 className="text-white font-bold text-sm uppercase tracking-wide mb-2">{step.title}</h3>
+                <p className="text-white/40 text-xs">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Applications Section with Images */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-full text-xs font-bold uppercase tracking-wider mb-4">
@@ -326,18 +338,21 @@ export default function WelcomePage() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {applications.map((app, i) => (
               <Link 
                 key={i} 
                 href={app.href}
-                className="group bg-[#0b2a38]/50 border border-white/5 rounded-xl p-4 hover:border-accent/30 hover:bg-[#0b2a38] transition-all"
+                className="group relative overflow-hidden rounded-xl bg-[#0b2a38]/50 border border-white/5 hover:border-accent/30 transition-all p-6"
               >
-                <div className={`w-10 h-10 bg-gradient-to-br ${app.color} rounded-lg flex items-center justify-center mb-3 group-hover:scale-105 transition-transform`}>
-                  <app.icon className="w-5 h-5 text-white" />
+                <div className={`w-12 h-12 bg-gradient-to-br ${app.color} rounded-xl flex items-center justify-center mb-4 shadow-md`}>
+                  <app.icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-white font-bold text-xs uppercase tracking-wider mb-1">{app.name}</h3>
-                <p className="text-white/40 text-xs">{app.desc}</p>
+                <h3 className="text-white font-bold text-sm uppercase tracking-wider mb-2">{app.name}</h3>
+                <p className="text-white/60 text-xs mb-4 leading-relaxed">{app.desc}</p>
+                <div className="flex items-center gap-1 text-accent text-xs font-medium">
+                  View Module <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                </div>
               </Link>
             ))}
           </div>
@@ -345,7 +360,7 @@ export default function WelcomePage() {
       </section>
 
       {/* SADC Map Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#061c26]/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-full text-xs font-bold uppercase tracking-wider mb-4">
@@ -361,10 +376,8 @@ export default function WelcomePage() {
           </div>
 
           <div className="relative">
-            {/* Simplified Africa Map SVG */}
             <div className="relative w-full max-w-4xl mx-auto">
               <svg viewBox="0 0 800 600" className="w-full h-auto" style={{ filter: 'drop-shadow(0 0 20px rgba(126, 73, 222, 0.2))' }}>
-                {/* Base Africa shape simplified */}
                 <path 
                   d="M180,120 Q200,100 250,95 L320,90 Q380,85 420,95 L480,100 Q520,110 550,130 L580,160 Q600,190 610,230 L615,280 Q610,320 590,350 L560,380 Q530,400 500,410 L450,420 Q400,430 350,425 L300,415 Q260,400 230,370 L200,340 Q170,310 160,270 L155,220 Q150,170 160,140 Z" 
                   fill="url(#africaGradient)" 
@@ -379,7 +392,6 @@ export default function WelcomePage() {
                   </linearGradient>
                 </defs>
                 
-                {/* SADC Region Highlight */}
                 <path 
                   d="M200,180 Q220,170 260,165 L320,160 Q360,165 380,180 L390,210 Q385,250 360,270 L320,285 Q280,290 250,275 L210,250 Q180,220 190,195 Z" 
                   fill="url(#sadcGradient)" 
@@ -394,93 +406,23 @@ export default function WelcomePage() {
                   </linearGradient>
                 </defs>
 
-                {/* Country Points with Labels */}
-                {/* South Africa */}
-                <g className="cursor-pointer">
+                <g>
                   <circle cx="320" cy="320" r="8" fill="#7e49de" className="animate-ping" style={{ animationDuration: '2s' }} />
                   <circle cx="320" cy="320" r="12" fill="#7e49de" opacity="0.5" />
-                  <circle cx="320" cy="320" r="20" fill="transparent" stroke="#7e49de" strokeWidth="1" opacity="0.3">
-                    <animate attributeName="r" values="20;25;20" dur="2s" repeatCount="indefinite" />
-                  </circle>
                   <text x="320" y="345" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="bold">SOUTH AFRICA</text>
                 </g>
                 
-                {/* Botswana */}
-                <g className="cursor-pointer">
-                  <circle cx="380" cy="260" r="6" fill="#9e79ef" />
-                  <circle cx="380" cy="260" r="12" fill="#9e79ef" opacity="0.3" />
-                  <text x="380" y="282" textAnchor="middle" fill="#fff" fontSize="8">Botswana</text>
-                </g>
-                
-                {/* Namibia */}
-                <g className="cursor-pointer">
-                  <circle cx="340" cy="180" r="6" fill="#9e79ef" />
-                  <circle cx="340" cy="180" r="12" fill="#9e79ef" opacity="0.3" />
-                  <text x="340" y="200" textAnchor="middle" fill="#fff" fontSize="8">Namibia</text>
-                </g>
-                
-                {/* Zimbabwe */}
-                <g className="cursor-pointer">
-                  <circle cx="430" cy="290" r="6" fill="#9e79ef" />
-                  <circle cx="430" cy="290" r="12" fill="#9e79ef" opacity="0.3" />
-                  <text x="430" y="312" textAnchor="middle" fill="#fff" fontSize="8">Zimbabwe</text>
-                </g>
-                
-                {/* Zambia */}
-                <g className="cursor-pointer">
-                  <circle cx="420" cy="220" r="6" fill="#9e79ef" />
-                  <circle cx="420" cy="220" r="12" fill="#9e79ef" opacity="0.3" />
-                  <text x="420" y="242" textAnchor="middle" fill="#fff" fontSize="8">Zambia</text>
-                </g>
-                
-                {/* Mozambique */}
-                <g className="cursor-pointer">
-                  <circle cx="480" cy="320" r="6" fill="#9e79ef" />
-                  <circle cx="480" cy="320" r="12" fill="#9e79ef" opacity="0.3" />
-                  <text x="480" y="342" textAnchor="middle" fill="#fff" fontSize="8">Mozambique</text>
-                </g>
-                
-                {/* Tanzania */}
-                <g className="cursor-pointer">
-                  <circle cx="510" cy="240" r="6" fill="#9e79ef" />
-                  <circle cx="510" cy="240" r="12" fill="#9e79ef" opacity="0.3" />
-                  <text x="510" y="262" textAnchor="middle" fill="#fff" fontSize="8">Tanzania</text>
-                </g>
-                
-                {/* Malawi */}
-                <g className="cursor-pointer">
-                  <circle cx="460" cy="280" r="5" fill="#9e79ef" />
-                  <circle cx="460" cy="280" r="10" fill="#9e79ef" opacity="0.3" />
-                  <text x="460" y="300" textAnchor="middle" fill="#fff" fontSize="8">Malawi</text>
-                </g>
-                
-                {/* Mauritius */}
-                <g className="cursor-pointer">
-                  <circle cx="580" cy="420" r="4" fill="#9e79ef" />
-                  <circle cx="580" cy="420" r="8" fill="#9e79ef" opacity="0.3" />
-                  <text x="580" y="438" textAnchor="middle" fill="#fff" fontSize="8">Mauritius</text>
-                </g>
-                
-                {/* Eswatini */}
-                <g className="cursor-pointer">
-                  <circle cx="350" cy="360" r="4" fill="#9e79ef" />
-                  <circle cx="350" cy="360" r="8" fill="#9e79ef" opacity="0.3" />
-                  <text x="350" y="378" textAnchor="middle" fill="#fff" fontSize="8">Eswatini</text>
-                </g>
-                
-                {/* Lesotho */}
-                <g className="cursor-pointer">
-                  <circle cx="335" cy="355" r="3" fill="#9e79ef" />
-                  <circle cx="335" cy="355" r="6" fill="#9e79ef" opacity="0.3" />
-                  <text x="335" y="370" textAnchor="middle" fill="#fff" fontSize="7">Lesotho</text>
-                </g>
-                
-                {/* Angola */}
-                <g className="cursor-pointer">
-                  <circle cx="280" cy="200" r="6" fill="#9e79ef" />
-                  <circle cx="280" cy="200" r="12" fill="#9e79ef" opacity="0.3" />
-                  <text x="280" y="222" textAnchor="middle" fill="#fff" fontSize="8">Angola</text>
-                </g>
+                <g><circle cx="380" cy="260" r="6" fill="#9e79ef" /><text x="380" y="282" textAnchor="middle" fill="#fff" fontSize="8">Botswana</text></g>
+                <g><circle cx="340" cy="180" r="6" fill="#9e79ef" /><text x="340" y="200" textAnchor="middle" fill="#fff" fontSize="8">Namibia</text></g>
+                <g><circle cx="430" cy="290" r="6" fill="#9e79ef" /><text x="430" y="312" textAnchor="middle" fill="#fff" fontSize="8">Zimbabwe</text></g>
+                <g><circle cx="420" cy="220" r="6" fill="#9e79ef" /><text x="420" y="242" textAnchor="middle" fill="#fff" fontSize="8">Zambia</text></g>
+                <g><circle cx="480" cy="320" r="6" fill="#9e79ef" /><text x="480" y="342" textAnchor="middle" fill="#fff" fontSize="8">Mozambique</text></g>
+                <g><circle cx="510" cy="240" r="6" fill="#9e79ef" /><text x="510" y="262" textAnchor="middle" fill="#fff" fontSize="8">Tanzania</text></g>
+                <g><circle cx="460" cy="280" r="5" fill="#9e79ef" /><text x="460" y="300" textAnchor="middle" fill="#fff" fontSize="8">Malawi</text></g>
+                <g><circle cx="580" cy="420" r="4" fill="#9e79ef" /><text x="580" y="438" textAnchor="middle" fill="#fff" fontSize="8">Mauritius</text></g>
+                <g><circle cx="350" cy="360" r="4" fill="#9e79ef" /><text x="350" y="378" textAnchor="middle" fill="#fff" fontSize="8">Eswatini</text></g>
+                <g><circle cx="335" cy="355" r="3" fill="#9e79ef" /><text x="335" y="370" textAnchor="middle" fill="#fff" fontSize="7">Lesotho</text></g>
+                <g><circle cx="280" cy="200" r="6" fill="#9e79ef" /><text x="280" y="222" textAnchor="middle" fill="#fff" fontSize="8">Angola</text></g>
               </svg>
             </div>
           </div>
@@ -506,7 +448,7 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      {/* Why Choose Section */}
+      {/* Why Choose Section with Images */}
       <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -527,13 +469,21 @@ export default function WelcomePage() {
             {whyChoose.map((item, i) => (
               <div 
                 key={i}
-                className="bg-[#0b2a38]/50 border border-white/5 rounded-3xl p-8 hover:border-white/10 transition-all duration-300"
+                className="group relative overflow-hidden rounded-3xl bg-[#0b2a38]/50 border border-white/5 hover:border-white/10 transition-all duration-300"
               >
-                <div className="w-14 h-14 bg-gradient-to-br from-accent to-accentDark rounded-2xl flex items-center justify-center mb-5">
-                  <item.icon className="w-7 h-7 text-white" />
+                <img 
+                  src={item.image} 
+                  alt={item.title}
+                  className="w-full h-40 object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0b2a38] via-[#0b2a38]/80 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <div className="w-14 h-14 bg-gradient-to-br from-accent to-accentDark rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+                    <item.icon className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-white font-bold text-base mb-2 uppercase tracking-wide">{item.title}</h3>
+                  <p className="text-white/50 font-light text-sm leading-relaxed">{item.desc}</p>
                 </div>
-                <h3 className="text-white font-bold text-lg mb-3 uppercase tracking-wide">{item.title}</h3>
-                <p className="text-white/50 font-light leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -544,6 +494,11 @@ export default function WelcomePage() {
       <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="relative bg-[#0b2a38] border border-white/10 rounded-3xl p-12 text-center overflow-hidden">
+            <img 
+              src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=400&fit=crop" 
+              alt="Team collaboration"
+              className="absolute inset-0 w-full h-full object-cover opacity-20"
+            />
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10" />
             <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
@@ -622,16 +577,16 @@ export default function WelcomePage() {
             <div>
               <h4 className="font-bold text-white mb-3 text-sm">Legal</h4>
               <ul className="space-y-2 text-white/40 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Security</a></li>
+                <li><Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link href="/security" className="hover:text-white transition-colors">Security</Link></li>
               </ul>
             </div>
           </div>
           
           <div className="pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-white/30 text-xs">
-              &copy; 2026 LemurSystem. A product of Blacklemur Innovations. All rights reserved.
+              © 2026 LemurSystem. A product of Blacklemur Innovations. All rights reserved.
             </p>
           </div>
         </div>

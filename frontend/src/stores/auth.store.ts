@@ -33,7 +33,7 @@ export const PLAN_CONFIG = {
   professional: {
     name: 'Professional',
     price: 20.50,
-    maxUsers: 50,
+    maxUsers: 12,
     modules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain'],
     features: ['email_support', 'priority_support', 'basic_reporting', 'advanced_analytics', 'mobile_app', 'api_access', 'custom_integrations', 'ss0'],
     storageGB: 100,
@@ -242,7 +242,7 @@ export const useAuthStore = create<AuthState>()(
             industry: data.industry,
             country: data.country,
             currency: data.currency,
-            plan: data.plan,
+            subscription: data.plan,
           });
           
           const loginData = response.data;

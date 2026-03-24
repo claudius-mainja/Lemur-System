@@ -61,7 +61,7 @@ const subscriptionFeatures = {
     borderColor: 'border-accent',
     icon: Zap,
     features: ['HR Suite', 'Finance & Invoicing', 'CRM', 'Payroll', 'Productivity', 'Supply Chain', '100 GB Storage', 'Priority Support', 'Advanced Analytics', 'API Access', 'Custom Integrations', 'SSO', 'Automations'],
-    limits: { employees: 50, modules: 6, storageGB: 100 },
+    limits: { employees: 12, modules: 6, storageGB: 100 },
     allowedModules: ['hr', 'finance', 'crm', 'payroll', 'productivity', 'supply-chain', 'integrations', 'automations'],
   },
   enterprise: {
