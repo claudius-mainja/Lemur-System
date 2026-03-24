@@ -135,14 +135,11 @@ export const authApi = {
 
 // HR API
 export const hrApi = {
-  // Dashboard Stats
-  getDashboardStats: () => api.get('/hr/dashboard/stats'),
-  
   // Employees
   getEmployees: (page = 1, limit = 50) => 
-    api.get('/hr/employees', { params: { page, limit } }),
+    api.get('/hr/employees/', { params: { page, limit } }),
   
-  getEmployee: (id: string) => api.get(`/hr/employees/${id}`),
+  getEmployee: (id: string) => api.get(`/hr/employees/${id}/`),
   
   createEmployee: (data: {
     first_name?: string;
@@ -157,7 +154,7 @@ export const hrApi = {
     hire_date?: string;
     hireDate?: string;
     salary?: number;
-  }) => api.post('/hr/employees', {
+  }) => api.post('/hr/employees/', {
     first_name: data.first_name || data.firstName,
     last_name: data.last_name || data.lastName,
     email: data.email,
@@ -168,24 +165,24 @@ export const hrApi = {
     salary: data.salary,
   }),
 
-  updateEmployee: (id: string, data: any) => api.put(`/hr/employees/${id}`, data),
+  updateEmployee: (id: string, data: any) => api.put(`/hr/employees/${id}/`, data),
   
-  deleteEmployee: (id: string) => api.delete(`/hr/employees/${id}`),
+  deleteEmployee: (id: string) => api.delete(`/hr/employees/${id}/`),
   
-  terminateEmployee: (id: string, data: any) => api.post(`/hr/employees/${id}/terminate`, data),
+  terminateEmployee: (id: string, data: any) => api.post(`/hr/employees/${id}/terminate/`, data),
   
   // Departments
-  getDepartments: () => api.get('/hr/departments'),
+  getDepartments: () => api.get('/hr/departments/'),
   
   createDepartment: (data: { name: string; description?: string }) => 
-    api.post('/hr/departments', data),
+    api.post('/hr/departments/', data),
 
-  updateDepartment: (id: string, data: any) => api.put(`/hr/departments/${id}`, data),
+  updateDepartment: (id: string, data: any) => api.put(`/hr/departments/${id}/`, data),
   
-  deleteDepartment: (id: string) => api.delete(`/hr/departments/${id}`),
+  deleteDepartment: (id: string) => api.delete(`/hr/departments/${id}/`),
   
-  // Leave Requests
-  getLeaveRequests: () => api.get('/hr/leave-requests'),
+  // Leave Requests (uses 'leaves' endpoint)
+  getLeaveRequests: () => api.get('/hr/leaves/'),
   
   createLeaveRequest: (data: {
     employee_id?: string;
@@ -198,7 +195,7 @@ export const hrApi = {
     endDate?: string;
     days?: number;
     reason?: string;
-  }) => api.post('/hr/leave-requests', {
+  }) => api.post('/hr/leaves/', {
     employee_id: data.employee_id || data.employeeId,
     leave_type: data.leave_type || data.leaveType,
     start_date: data.start_date || data.startDate,
@@ -207,29 +204,29 @@ export const hrApi = {
     reason: data.reason,
   }),
 
-  approveLeaveRequest: (id: string) => api.put(`/hr/leave-requests/${id}/approve`),
+  approveLeaveRequest: (id: string) => api.post(`/hr/leaves/${id}/approve/`),
+  
+  rejectLeaveRequest: (id: string) => api.post(`/hr/leaves/${id}/reject/`),
   
   // Leave Balances
-  getLeaveBalances: () => api.get('/hr/leave-balances'),
+  getLeaveBalances: () => api.get('/hr/leave-balances/'),
   
-  createLeaveBalance: (data: any) => api.post('/hr/leave-balances', data),
+  createLeaveBalance: (data: any) => api.post('/hr/leave-balances/', data),
   
   // Attendance
-  getAttendance: () => api.get('/hr/attendance'),
+  getAttendance: () => api.get('/hr/attendance/'),
   
-  recordAttendance: (data: any) => api.post('/hr/attendance', data),
+  recordAttendance: (data: any) => api.post('/hr/attendance/', data),
   
   // Stats
-  getStats: () => api.get('/hr/stats'),
+  getStats: () => api.get('/hr/employees/'),
   
   // Leave
-  getLeave: () => api.get('/hr/leave'),
+  getLeave: () => api.get('/hr/leaves/'),
   
-  createLeave: (data: any) => api.post('/hr/leave', data),
+  createLeave: (data: any) => api.post('/hr/leaves/', data),
   
-  updateLeave: (id: string, data: any) => api.put(`/hr/leave/${id}`, data),
-  
-  getLeaveStats: () => api.get('/hr/leave/stats'),
+  updateLeave: (id: string, data: any) => api.put(`/hr/leaves/${id}/`, data),
   
   // Contracts (stored locally for now)
   getContracts: () => Promise.resolve({ data: { data: [] } }),
@@ -237,9 +234,9 @@ export const hrApi = {
 
 // Employees API (HR Module)
 export const employeesApi = {
-  getAll: () => api.get('/hr/employees'),
+  getAll: () => api.get('/hr/employees/'),
   
-  getById: (id: string) => api.get(`/hr/employees/${id}`),
+  getById: (id: string) => api.get(`/hr/employees/${id}/`),
   
   create: (data: {
     first_name: string;
@@ -250,20 +247,20 @@ export const employeesApi = {
     position?: string;
     start_date?: string;
     salary?: number;
-  }) => api.post('/hr/employees', data),
+  }) => api.post('/hr/employees/', data),
 
-  update: (id: string, data: any) => api.put(`/hr/employees/${id}`, data),
+  update: (id: string, data: any) => api.put(`/hr/employees/${id}/`, data),
   
-  delete: (id: string) => api.delete(`/hr/employees/${id}`),
+  delete: (id: string) => api.delete(`/hr/employees/${id}/`),
   
-  getStats: () => api.get('/hr/stats'),
+  getStats: () => api.get('/hr/employees/'),
 };
 
 // Leave API
 export const leaveApi = {
-  getAll: () => api.get('/hr/leave-requests'),
+  getAll: () => api.get('/hr/leaves/'),
   
-  getById: (id: string) => api.get(`/hr/leave-requests/${id}`),
+  getById: (id: string) => api.get(`/hr/leaves/${id}/`),
   
   create: (data: {
     employee_id: string;
@@ -273,106 +270,98 @@ export const leaveApi = {
     end_date: string;
     days: number;
     reason?: string;
-  }) => api.post('/hr/leave-requests', data),
+  }) => api.post('/hr/leaves/', data),
 
-  update: (id: string, data: any) => api.put(`/hr/leave-requests/${id}`, data),
+  update: (id: string, data: any) => api.put(`/hr/leaves/${id}/`, data),
   
   updateStatus: (id: string, status: string) => 
-    api.put(`/hr/leave-requests/${id}/approve`, { status }),
+    api.post(`/hr/leaves/${id}/approve/`, { status }),
   
-  delete: (id: string) => api.delete(`/hr/leave-requests/${id}`),
+  delete: (id: string) => api.delete(`/hr/leaves/${id}/`),
   
-  getStats: () => api.get('/hr/leave/stats'),
+  getStats: () => api.get('/hr/leaves/'),
 };
 
 // Finance API
 export const financeApi = {
   // Accounts
-  getAccounts: () => api.get('/finance/accounts'),
+  getAccounts: () => api.get('/finance/accounts/'),
   
-  createAccount: (data: any) => api.post('/finance/accounts', data),
+  createAccount: (data: any) => api.post('/finance/accounts/', data),
   
   // Invoices
-  getInvoices: (page = 1, limit = 50, status?: string) => api.get('/finance/invoices', { params: { page, limit, status } }),
+  getInvoices: (page = 1, limit = 50, status?: string) => api.get('/finance/invoices/', { params: { page, limit, status } }),
   
-  getInvoice: (id: string) => api.get(`/finance/invoices/${id}`),
+  getInvoice: (id: string) => api.get(`/finance/invoices/${id}/`),
   
-  createInvoice: (data: any) => api.post('/finance/invoices', data),
+  createInvoice: (data: any) => api.post('/finance/invoices/', data),
   
-  updateInvoice: (id: string, data: any) => api.put(`/finance/invoices/${id}`, data),
+  updateInvoice: (id: string, data: any) => api.put(`/finance/invoices/${id}/`, data),
   
-  sendInvoice: (id: string) => api.post(`/finance/invoices/${id}/send`, {}),
+  sendInvoice: (id: string) => api.post(`/finance/invoices/${id}/send/`, {}),
   
-  cancelInvoice: (id: string) => api.post(`/finance/invoices/${id}/cancel`, {}),
+  cancelInvoice: (id: string) => api.post(`/finance/invoices/${id}/void/`, {}),
   
   // Quotations
-  getQuotations: (page = 1, limit = 50) => api.get('/finance/quotations', { params: { page, limit } }),
+  getQuotations: (page = 1, limit = 50) => api.get('/finance/quotations/', { params: { page, limit } }),
   
-  createQuotation: (data: any) => api.post('/finance/quotations', data),
+  createQuotation: (data: any) => api.post('/finance/quotations/', data),
   
-  updateQuotation: (id: string, data: any) => api.put(`/finance/quotations/${id}`, data),
+  updateQuotation: (id: string, data: any) => api.put(`/finance/quotations/${id}/`, data),
   
-  deleteQuotation: (id: string) => api.delete(`/finance/quotations/${id}`),
-  
-  // Payments
-  getPayments: () => api.get('/finance/payments'),
-  
-  createPayment: (data: any) => api.post('/finance/payments', data),
+  deleteQuotation: (id: string) => api.delete(`/finance/quotations/${id}/`),
   
   // Expenses
-  getExpenses: (page = 1, limit = 50) => api.get('/finance/expenses', { params: { page, limit } }),
+  getExpenses: (page = 1, limit = 50) => api.get('/finance/expenses/', { params: { page, limit } }),
   
-  createExpense: (data: any) => api.post('/finance/expenses', data),
+  createExpense: (data: any) => api.post('/finance/expenses/', data),
   
-  updateExpense: (id: string, data: any) => api.put(`/finance/expenses/${id}`, data),
+  updateExpense: (id: string, data: any) => api.put(`/finance/expenses/${id}/`, data),
   
-  deleteExpense: (id: string) => api.delete(`/finance/expenses/${id}`),
-  
-  // Transactions
-  getTransactions: () => api.get('/finance/transactions'),
+  deleteExpense: (id: string) => api.delete(`/finance/expenses/${id}/`),
   
   // Dashboard
-  getDashboardStats: () => api.get('/finance/dashboard/stats'),
+  getDashboardStats: () => api.get('/finance/dashboard/'),
   
   // Reports
-  generateReport: (data: any) => api.post('/finance/reports/financial', data),
+  generateReport: (data: any) => api.post('/finance/accounts/', data),
   
-  // Customers (alias for companies)
-  getCustomers: (page = 1, limit = 50) => api.get('/crm/companies', { params: { page, limit } }),
+  // Customers (in finance module)
+  getCustomers: (page = 1, limit = 50) => api.get('/finance/customers/', { params: { page, limit } }),
   
-  createCustomer: (data: any) => api.post('/crm/companies', data),
+  createCustomer: (data: any) => api.post('/finance/customers/', data),
   
-  updateCustomer: (id: string, data: any) => api.put(`/crm/companies/${id}`, data),
+  updateCustomer: (id: string, data: any) => api.put(`/finance/customers/${id}/`, data),
   
-  deleteCustomer: (id: string) => api.delete(`/crm/companies/${id}`),
+  deleteCustomer: (id: string) => api.delete(`/finance/customers/${id}/`),
   
-  // Products
-  getProducts: (page = 1, limit = 50) => api.get('/inventory/products', { params: { page, limit } }),
+  // Products (in inventory module)
+  getProducts: (page = 1, limit = 50) => api.get('/inventory/products/', { params: { page, limit } }),
   
-  createProduct: (data: any) => api.post('/inventory/products', data),
+  createProduct: (data: any) => api.post('/inventory/products/', data),
   
-  updateProduct: (id: string, data: any) => api.put(`/inventory/products/${id}`, data),
+  updateProduct: (id: string, data: any) => api.put(`/inventory/products/${id}/`, data),
   
-  deleteProduct: (id: string) => api.delete(`/inventory/products/${id}`),
+  deleteProduct: (id: string) => api.delete(`/inventory/products/${id}/`),
   
-  // Receipts
-  getReceipts: (page = 1, limit = 50) => api.get('/finance/receipts', { params: { page, limit } }),
+  // Bills
+  getReceipts: (page = 1, limit = 50) => api.get('/finance/bills/', { params: { page, limit } }),
   
-  createReceipt: (data: any) => api.post('/finance/receipts', data),
+  createReceipt: (data: any) => api.post('/finance/bills/', data),
   
-  updateReceipt: (id: string, data: any) => api.put(`/finance/receipts/${id}`, data),
+  updateReceipt: (id: string, data: any) => api.put(`/finance/bills/${id}/`, data),
   
-  deleteReceipt: (id: string) => api.delete(`/finance/receipts/${id}`),
+  deleteReceipt: (id: string) => api.delete(`/finance/bills/${id}/`),
   
   // Sales
-  getSales: (page = 1, limit = 50) => api.get('/finance/sales', { params: { page, limit } }),
+  getSales: (page = 1, limit = 50) => api.get('/finance/invoices/', { params: { page, limit } }),
 };
 
 // Customers API (Finance Module)
 export const customersApi = {
-  getAll: () => api.get('/crm/companies'),
+  getAll: () => api.get('/finance/customers/'),
   
-  getById: (id: string) => api.get(`/crm/companies/${id}`),
+  getById: (id: string) => api.get(`/finance/customers/${id}/`),
   
   create: (data: {
     name: string;
@@ -383,22 +372,22 @@ export const customersApi = {
     city?: string;
     country?: string;
     service_type?: string;
-  }) => api.post('/crm/companies', data),
+  }) => api.post('/finance/customers/', data),
 
-  update: (id: string, data: any) => api.put(`/crm/companies/${id}`, data),
+  update: (id: string, data: any) => api.put(`/finance/customers/${id}/`, data),
   
-  delete: (id: string) => api.delete(`/crm/companies/${id}`),
+  delete: (id: string) => api.delete(`/finance/customers/${id}/`),
 
-  toggleActive: (id: string) => api.post(`/crm/companies/${id}/toggle_active/`),
+  toggleActive: (id: string) => api.post(`/finance/customers/${id}/toggle_active/`),
 
-  getTransactions: (id: string) => api.get(`/crm/companies/${id}/transactions/`),
+  getTransactions: (id: string) => api.get(`/finance/customers/${id}/transactions/`),
 };
 
-// Products API (Finance Module)
+// Products API (Inventory Module)
 export const productsApi = {
-  getAll: () => api.get('/inventory/products'),
+  getAll: () => api.get('/inventory/products/'),
   
-  getById: (id: string) => api.get(`/inventory/products/${id}`),
+  getById: (id: string) => api.get(`/inventory/products/${id}/`),
   
   create: (data: {
     name: string;
@@ -409,18 +398,18 @@ export const productsApi = {
     unit_price?: number;
     quantity?: number;
     min_quantity?: number;
-  }) => api.post('/inventory/products', data),
+  }) => api.post('/inventory/products/', data),
 
-  update: (id: string, data: any) => api.put(`/inventory/products/${id}`, data),
+  update: (id: string, data: any) => api.put(`/inventory/products/${id}/`, data),
   
-  delete: (id: string) => api.delete(`/inventory/products/${id}`),
+  delete: (id: string) => api.delete(`/inventory/products/${id}/`),
 };
 
 // Invoices API (Finance Module)
 export const invoicesApi = {
-  getAll: () => api.get('/finance/invoices'),
+  getAll: () => api.get('/finance/invoices/'),
   
-  getById: (id: string) => api.get(`/finance/invoices/${id}`),
+  getById: (id: string) => api.get(`/finance/invoices/${id}/`),
   
   create: (data: {
     customer_id?: string;
@@ -435,16 +424,16 @@ export const invoicesApi = {
     }>;
     due_date?: string;
     notes?: string;
-  }) => api.post('/finance/invoices', data),
+  }) => api.post('/finance/invoices/', data),
 
-  update: (id: string, data: any) => api.put(`/finance/invoices/${id}`, data),
+  update: (id: string, data: any) => api.put(`/finance/invoices/${id}/`, data),
   
   updateStatus: (id: string, status: string) => 
-    api.patch(`/finance/invoices/${id}/status`, { status }),
+    api.post(`/finance/invoices/${id}/void/`, { status }),
   
-  delete: (id: string) => api.delete(`/finance/invoices/${id}`),
+  delete: (id: string) => api.delete(`/finance/invoices/${id}/`),
   
-  getStats: () => api.get('/finance/dashboard/stats'),
+  getStats: () => api.get('/finance/dashboard/'),
 
   sendEmail: (id: string, emailSubject: string, emailBody: string) =>
     api.post(`/finance/invoices/${id}/send_email/`, {
@@ -458,15 +447,15 @@ export const invoicesApi = {
 
 // Quotations API (Finance Module)
 export const quotationsApi = {
-  getAll: () => api.get('/finance/quotations'),
+  getAll: () => api.get('/finance/quotations/'),
   
-  getById: (id: string) => api.get(`/finance/quotations/${id}`),
+  getById: (id: string) => api.get(`/finance/quotations/${id}/`),
   
-  create: (data: any) => api.post('/finance/quotations', data),
+  create: (data: any) => api.post('/finance/quotations/', data),
 
-  update: (id: string, data: any) => api.put(`/finance/quotations/${id}`, data),
+  update: (id: string, data: any) => api.put(`/finance/quotations/${id}/`, data),
   
-  delete: (id: string) => api.delete(`/finance/quotations/${id}`),
+  delete: (id: string) => api.delete(`/finance/quotations/${id}/`),
 
   sendEmail: (id: string, emailSubject: string, emailBody: string) =>
     api.post(`/finance/quotations/${id}/send_email/`, {
@@ -485,9 +474,9 @@ export const quotationsApi = {
 
 // Leads API (CRM Module)
 export const leadsApi = {
-  getAll: () => api.get('/crm/leads'),
+  getAll: () => api.get('/crm/leads/'),
   
-  getById: (id: string) => api.get(`/crm/leads/${id}`),
+  getById: (id: string) => api.get(`/crm/leads/${id}/`),
   
   create: (data: {
     name: string;
@@ -497,58 +486,58 @@ export const leadsApi = {
     source?: string;
     value?: number;
     notes?: string;
-  }) => api.post('/crm/leads', data),
+  }) => api.post('/crm/leads/', data),
 
-  update: (id: string, data: any) => api.put(`/crm/leads/${id}`, data),
+  update: (id: string, data: any) => api.put(`/crm/leads/${id}/`, data),
   
   updateStatus: (id: string, status: string) => 
-    api.patch(`/crm/leads/${id}/status`, { status }),
+    api.patch(`/crm/leads/${id}/`, { status }),
   
-  delete: (id: string) => api.delete(`/crm/leads/${id}`),
+  delete: (id: string) => api.delete(`/crm/leads/${id}/`),
   
-  getStats: () => api.get('/crm/dashboard/stats'),
+  getStats: () => api.get('/crm/analytics/'),
 };
 
-// Deals API (CRM Module)
+// Deals API (CRM Module) - uses opportunities endpoint
 export const dealsApi = {
-  getAll: () => api.get('/crm/deals'),
+  getAll: () => api.get('/crm/opportunities/'),
   
-  getById: (id: string) => api.get(`/crm/deals/${id}`),
+  getById: (id: string) => api.get(`/crm/opportunities/${id}/`),
   
-  create: (data: any) => api.post('/crm/deals', data),
+  create: (data: any) => api.post('/crm/opportunities/', data),
 
-  update: (id: string, data: any) => api.put(`/crm/deals/${id}`, data),
+  update: (id: string, data: any) => api.put(`/crm/opportunities/${id}/`, data),
   
-  delete: (id: string) => api.delete(`/crm/deals/${id}`),
+  delete: (id: string) => api.delete(`/crm/opportunities/${id}/`),
 };
 
 // Contacts API (CRM Module)
 export const contactsApi = {
-  getAll: () => api.get('/crm/contacts'),
+  getAll: () => api.get('/crm/contacts/'),
   
-  getById: (id: string) => api.get(`/crm/contacts/${id}`),
+  getById: (id: string) => api.get(`/crm/contacts/${id}/`),
   
-  create: (data: any) => api.post('/crm/contacts', data),
+  create: (data: any) => api.post('/crm/contacts/', data),
 
-  update: (id: string, data: any) => api.put(`/crm/contacts/${id}`, data),
+  update: (id: string, data: any) => api.put(`/crm/contacts/${id}/`, data),
   
-  delete: (id: string) => api.delete(`/crm/contacts/${id}`),
+  delete: (id: string) => api.delete(`/crm/contacts/${id}/`),
 };
 
 // Activities API (CRM Module)
 export const activitiesApi = {
-  getAll: () => api.get('/crm/activities'),
+  getAll: () => api.get('/crm/lead-activities/'),
   
-  create: (data: any) => api.post('/crm/activities', data),
+  create: (data: any) => api.post('/crm/lead-activities/', data),
 
-  update: (id: string, data: any) => api.put(`/crm/activities/${id}`, data),
+  update: (id: string, data: any) => api.put(`/crm/lead-activities/${id}/`, data),
 };
 
 // Inventory API (Supply Chain Module)
 export const inventoryApi = {
-  getAll: () => api.get('/supply-chain/inventory'),
+  getAll: () => api.get('/inventory/products/'),
   
-  getById: (id: string) => api.get(`/supply-chain/inventory/${id}`),
+  getById: (id: string) => api.get(`/inventory/products/${id}/`),
   
   create: (data: {
     name: string;
@@ -558,57 +547,57 @@ export const inventoryApi = {
     min_quantity?: number;
     unit_price?: number;
     supplier?: string;
-  }) => api.post('/supply-chain/inventory', data),
+  }) => api.post('/inventory/products/', data),
 
-  update: (id: string, data: any) => api.put(`/supply-chain/inventory/${id}`, data),
+  update: (id: string, data: any) => api.put(`/inventory/products/${id}/`, data),
   
-  delete: (id: string) => api.delete(`/supply-chain/inventory/${id}`),
+  delete: (id: string) => api.delete(`/inventory/products/${id}/`),
   
-  getStats: () => api.get('/supply-chain/dashboard/stats'),
+  getStats: () => api.get('/inventory/stock/'),
 };
 
 // Payroll API
 export const payrollApi = {
   // Salary Structures
-  getStructures: () => api.get('/payroll/structures'),
+  getStructures: () => api.get('/payroll/salary-components/'),
   
-  createStructure: (data: any) => api.post('/payroll/structures', data),
+  createStructure: (data: any) => api.post('/payroll/salary-components/', data),
   
   // Salaries
-  getSalaries: () => api.get('/payroll/salaries'),
+  getSalaries: () => api.get('/payroll/employee-salaries/'),
   
-  getSalary: (id: string) => api.get(`/payroll/salaries/${id}`),
+  getSalary: (id: string) => api.get(`/payroll/employee-salaries/${id}/`),
   
   getEmployeeSalaries: (employeeId: string) => 
-    api.get(`/payroll/salaries/employee/${employeeId}`),
+    api.get(`/payroll/employee-salaries/`, { params: { employee: employeeId } }),
   
-  createSalary: (data: any) => api.post('/payroll/salaries', data),
+  createSalary: (data: any) => api.post('/payroll/employee-salaries/', data),
   
-  updateSalary: (id: string, data: any) => api.put(`/payroll/salaries/${id}`, data),
+  updateSalary: (id: string, data: any) => api.put(`/payroll/employee-salaries/${id}/`, data),
   
   // Tax Configs
-  getTaxConfigs: () => api.get('/payroll/tax-configs'),
+  getTaxConfigs: () => api.get('/payroll/tax-brackets/'),
   
-  getActiveTaxConfig: () => api.get('/payroll/tax-configs/active'),
+  getActiveTaxConfig: () => api.get('/payroll/tax-brackets/', { params: { is_active: true } }),
   
-  createTaxConfig: (data: any) => api.post('/payroll/tax-configs', data),
+  createTaxConfig: (data: any) => api.post('/payroll/tax-brackets/', data),
   
   // Payroll Runs
-  getRuns: () => api.get('/payroll/runs'),
+  getRuns: () => api.get('/payroll/runs/'),
   
-  getRun: (id: string) => api.get(`/payroll/runs/${id}`),
+  getRun: (id: string) => api.get(`/payroll/runs/${id}/`),
   
-  createRun: (data: any) => api.post('/payroll/runs', data),
+  createRun: (data: any) => api.post('/payroll/runs/', data),
   
-  approveRun: (id: string) => api.post(`/payroll/runs/${id}/approve`, {}),
+  approveRun: (id: string) => api.post(`/payroll/runs/${id}/approve/`),
   
-  markPaid: (id: string) => api.post(`/payroll/runs/${id}/mark-paid`, {}),
+  markPaid: (id: string) => api.post(`/payroll/payslips/${id}/`),
   
   // Payroll Records
   getPayroll: (params?: { employee_id?: string; status?: string }) => 
-    api.get('/payroll/payroll', { params }),
+    api.get('/payroll/payslips/', { params }),
   
-  getPayrollRecord: (id: string) => api.get(`/payroll/payroll/${id}`),
+  getPayrollRecord: (id: string) => api.get(`/payroll/payslips/${id}/`),
   
   createPayroll: (data: {
     employee_id: string;
@@ -619,154 +608,122 @@ export const payrollApi = {
     bonuses?: number;
     pay_period: string;
     pay_date?: string;
-  }) => api.post('/payroll/payroll', data),
+  }) => api.post('/payroll/payslips/', data),
   
-  updatePayroll: (id: string, data: any) => api.put(`/payroll/payroll/${id}`, data),
+  updatePayroll: (id: string, data: any) => api.put(`/payroll/payslips/${id}/`, data),
   
-  processAllPayroll: (pay_period: string) => api.post(`/payroll/payroll/process-all`, { pay_period }),
+  processAllPayroll: (pay_period: string) => api.post('/payroll/runs/', { pay_period }),
   
   // Payslips
   getPayslips: (params?: { employee_id?: string; pay_period?: string }) => 
-    api.get('/payroll/payslips', { params }),
+    api.get('/payroll/payslips/', { params }),
   
-  getPayslip: (id: string) => api.get(`/payroll/payslips/${id}`),
+  getPayslip: (id: string) => api.get(`/payroll/payslips/${id}/`),
   
   getEmployeePayslips: (employeeId: string) => 
-    api.get(`/payroll/payslips/employee/${employeeId}`),
+    api.get('/payroll/payslips/', { params: { employee: employeeId } }),
   
-  sendPayslip: (id: string) => api.post(`/payroll/payslips/${id}/send`),
+  sendPayslip: (id: string) => api.post(`/payroll/payslips/${id}/`),
   
   // Summary
-  getSummary: (pay_period?: string) => api.get('/payroll/summary', { params: { pay_period } }),
+  getSummary: (pay_period?: string) => api.get('/payroll/runs/'),
   
   // Dashboard
-  getDashboardStats: () => api.get('/payroll/dashboard/stats'),
+  getDashboardStats: () => api.get('/payroll/runs/'),
 };
 
 // CRM Dashboard Stats
 export const crmApi = {
-  getDashboardStats: () => api.get('/crm/dashboard/stats'),
+  getDashboardStats: () => api.get('/crm/analytics/'),
   
   // Companies
-  getCompanies: () => api.get('/crm/companies'),
+  getCompanies: () => api.get('/crm/contacts/'),
   
-  createCompany: (data: any) => api.post('/crm/companies', data),
+  createCompany: (data: any) => api.post('/crm/contacts/', data),
   
-  updateCompany: (id: string, data: any) => api.put(`/crm/companies/${id}`, data),
+  updateCompany: (id: string, data: any) => api.put(`/crm/contacts/${id}/`, data),
   
-  deleteCompany: (id: string) => api.delete(`/crm/companies/${id}`),
+  deleteCompany: (id: string) => api.delete(`/crm/contacts/${id}/`),
   
   // Leads
-  getLeads: () => api.get('/crm/leads'),
+  getLeads: () => api.get('/crm/leads/'),
   
-  createLead: (data: any) => api.post('/crm/leads', data),
+  createLead: (data: any) => api.post('/crm/leads/', data),
   
-  updateLead: (id: string, data: any) => api.put(`/crm/leads/${id}`, data),
+  updateLead: (id: string, data: any) => api.put(`/crm/leads/${id}/`, data),
   
-  deleteLead: (id: string) => api.delete(`/crm/leads/${id}`),
+  deleteLead: (id: string) => api.delete(`/crm/leads/${id}/`),
   
   // Deals
-  getDeals: (page = 1, limit = 50) => api.get('/crm/deals', { params: { page, limit } }),
+  getDeals: (page = 1, limit = 50) => api.get('/crm/opportunities/', { params: { page, limit } }),
   
-  createDeal: (data: any) => api.post('/crm/deals', data),
+  createDeal: (data: any) => api.post('/crm/opportunities/', data),
   
-  updateDeal: (id: string, data: any) => api.put(`/crm/deals/${id}`, data),
+  updateDeal: (id: string, data: any) => api.put(`/crm/opportunities/${id}/`, data),
   
-  deleteDeal: (id: string) => api.delete(`/crm/deals/${id}`),
+  deleteDeal: (id: string) => api.delete(`/crm/opportunities/${id}/`),
   
   // Activities
-  getActivities: () => api.get('/crm/activities'),
+  getActivities: () => api.get('/crm/lead-activities/'),
   
-  createActivity: (data: any) => api.post('/crm/activities', data),
+  createActivity: (data: any) => api.post('/crm/lead-activities/', data),
   
-  updateActivity: (id: string, data: any) => api.put(`/crm/activities/${id}`, data),
+  updateActivity: (id: string, data: any) => api.put(`/crm/lead-activities/${id}/`, data),
 
   // Contacts
-  getContacts: (page = 1, limit = 50) => api.get('/crm/contacts', { params: { page, limit } }),
+  getContacts: (page = 1, limit = 50) => api.get('/crm/contacts/', { params: { page, limit } }),
   
-  getContact: (id: string) => api.get(`/crm/contacts/${id}`),
+  getContact: (id: string) => api.get(`/crm/contacts/${id}/`),
   
-  createContact: (data: any) => api.post('/crm/contacts', data),
+  createContact: (data: any) => api.post('/crm/contacts/', data),
   
-  updateContact: (id: string, data: any) => api.put(`/crm/contacts/${id}`, data),
+  updateContact: (id: string, data: any) => api.put(`/crm/contacts/${id}/`, data),
   
-  deleteContact: (id: string) => api.delete(`/crm/contacts/${id}`),
-  
-  // Social Accounts
-  getSocialAccounts: () => api.get('/crm/social-accounts'),
-  
-  createSocialAccount: (data: any) => api.post('/crm/social-accounts', data),
-  
-  deleteSocialAccount: (id: string) => api.delete(`/crm/social-accounts/${id}`),
-  
-  // Campaigns
-  getCampaigns: () => api.get('/crm/campaigns'),
-  
-  createCampaign: (data: any) => api.post('/crm/campaigns', data),
-  
-  updateCampaign: (id: string, data: any) => api.put(`/crm/campaigns/${id}`, data),
-  
-  deleteCampaign: (id: string) => api.delete(`/crm/campaigns/${id}`),
-  
-  // Tasks
-  getTasks: () => api.get('/crm/tasks'),
-  
-  createTask: (data: any) => api.post('/crm/tasks', data),
-  
-  updateTask: (id: string, data: any) => api.put(`/crm/tasks/${id}`, data),
-  
-  deleteTask: (id: string) => api.delete(`/crm/tasks/${id}`),
-  
-  // Scheduled Posts
-  getScheduledPosts: () => api.get('/crm/scheduled-posts'),
-  
-  createScheduledPost: (data: any) => api.post('/crm/scheduled-posts', data),
-  
-  deleteScheduledPost: (id: string) => api.delete(`/crm/scheduled-posts/${id}`),
+  deleteContact: (id: string) => api.delete(`/crm/contacts/${id}/`),
 };
 
 // Supply Chain API
 export const supplyChainApi = {
   // Products
-  getProducts: () => api.get('/supply-chain/products'),
+  getProducts: () => api.get('/inventory/products/'),
   
-  getProduct: (id: string) => api.get(`/supply-chain/products/${id}`),
+  getProduct: (id: string) => api.get(`/inventory/products/${id}/`),
   
-  createProduct: (data: any) => api.post('/supply-chain/products', data),
+  createProduct: (data: any) => api.post('/inventory/products/', data),
   
-  updateProduct: (id: string, data: any) => api.put(`/supply-chain/products/${id}`, data),
+  updateProduct: (id: string, data: any) => api.put(`/inventory/products/${id}/`, data),
   
-  deleteProduct: (id: string) => api.delete(`/supply-chain/products/${id}`),
+  deleteProduct: (id: string) => api.delete(`/inventory/products/${id}/`),
   
   // Inventory
-  getInventory: () => api.get('/supply-chain/inventory'),
+  getInventory: () => api.get('/inventory/stock/'),
   
-  getInventoryItem: (id: string) => api.get(`/supply-chain/inventory/${id}`),
+  getInventoryItem: (id: string) => api.get(`/inventory/stock/${id}/`),
   
-  createInventoryItem: (data: any) => api.post('/supply-chain/inventory', data),
+  createInventoryItem: (data: any) => api.post('/inventory/stock/', data),
   
-  updateInventoryItem: (id: string, data: any) => api.put(`/supply-chain/inventory/${id}`, data),
+  updateInventoryItem: (id: string, data: any) => api.put(`/inventory/stock/${id}/`, data),
   
-  deleteInventoryItem: (id: string) => api.delete(`/supply-chain/inventory/${id}`),
+  deleteInventoryItem: (id: string) => api.delete(`/inventory/stock/${id}/`),
   
   // Vendors
-  getVendors: () => api.get('/supply-chain/vendors'),
+  getVendors: () => api.get('/inventory/vendors/'),
   
-  createVendor: (data: any) => api.post('/supply-chain/vendors', data),
+  createVendor: (data: any) => api.post('/inventory/vendors/', data),
   
-  updateVendor: (id: string, data: any) => api.put(`/supply-chain/vendors/${id}`, data),
+  updateVendor: (id: string, data: any) => api.put(`/inventory/vendors/${id}/`, data),
   
-  deleteVendor: (id: string) => api.delete(`/supply-chain/vendors/${id}`),
+  deleteVendor: (id: string) => api.delete(`/inventory/vendors/${id}/`),
   
   // Dashboard
-  getDashboardStats: () => api.get('/supply-chain/dashboard/stats'),
+  getDashboardStats: () => api.get('/inventory/stock/'),
 };
 
 // Users API (for admin user management)
 export const usersApi = {
-  getAll: () => api.get('/users'),
+  getAll: () => api.get('/auth/users/'),
   
-  getById: (id: string) => api.get(`/users/${id}`),
+  getById: (id: string) => api.get(`/auth/users/${id}/`),
   
   create: (data: {
     email: string;
@@ -776,13 +733,13 @@ export const usersApi = {
     role: string;
     department?: string;
     phone?: string;
-  }) => api.post('/users', data),
+  }) => api.post('/auth/users/', data),
   
-  update: (id: string, data: any) => api.put(`/users/${id}`, data),
+  update: (id: string, data: any) => api.put(`/auth/users/${id}/`, data),
   
-  delete: (id: string) => api.delete(`/users/${id}`),
+  delete: (id: string) => api.delete(`/auth/users/${id}/`),
   
-  invite: (data: { email: string; role: string }) => api.post('/users/invite', data),
+  invite: (data: { email: string; role: string }) => api.post('/auth/users/', data),
 };
 
 // Tenants API
@@ -795,26 +752,26 @@ export const tenantsApi = {
     city?: string;
     country: string;
     plan: string;
-  }) => api.post('/tenants/register', data),
+  }) => api.post('/auth/register/', data),
   
-  getAll: () => api.get('/tenants'),
+  getAll: () => api.get('/superadmin/tenants/'),
   
-  getById: (id: string) => api.get(`/tenants/${id}`),
+  getById: (id: string) => api.get(`/superadmin/tenants/${id}/`),
   
-  update: (id: string, data: any) => api.put(`/tenants/${id}`, data),
+  update: (id: string, data: any) => api.put(`/superadmin/tenants/${id}/`, data),
   
-  getSettings: (id: string) => api.get(`/tenants/${id}/settings`),
+  getSettings: (id: string) => api.get(`/superadmin/tenants/${id}/`),
   
-  getModules: (id: string) => api.get(`/tenants/${id}/modules`),
+  getModules: (id: string) => api.get(`/superadmin/tenants/${id}/`),
 };
 
 // Productivity API
 export const productivityApi = {
-  // Meetings
+  // Events (Meetings)
   getMeetings: (params?: { start_date?: string; end_date?: string }) => 
-    api.get('/productivity/meetings', { params }),
+    api.get('/productivity/events/', { params }),
   
-  getMeeting: (id: string) => api.get(`/productivity/meetings/${id}`),
+  getMeeting: (id: string) => api.get(`/productivity/events/${id}/`),
   
   createMeeting: (data: {
     title: string;
@@ -827,17 +784,17 @@ export const productivityApi = {
     attendee_ids?: string;
     attendee_emails?: string;
     reminder?: number;
-  }) => api.post('/productivity/meetings', data),
+  }) => api.post('/productivity/events/', data),
   
-  updateMeeting: (id: string, data: any) => api.put(`/productivity/meetings/${id}`, data),
+  updateMeeting: (id: string, data: any) => api.put(`/productivity/events/${id}/`, data),
   
-  deleteMeeting: (id: string) => api.delete(`/productivity/meetings/${id}`),
+  deleteMeeting: (id: string) => api.delete(`/productivity/events/${id}/`),
   
   // Calendar Events
   getCalendarEvents: (params?: { start_date?: string; end_date?: string }) => 
-    api.get('/productivity/calendar', { params }),
+    api.get('/productivity/events/', { params }),
   
-  getCalendarEvent: (id: string) => api.get(`/productivity/calendar/${id}`),
+  getCalendarEvent: (id: string) => api.get(`/productivity/events/${id}/`),
   
   createCalendarEvent: (data: {
     title: string;
@@ -850,15 +807,15 @@ export const productivityApi = {
     reminder?: number;
     color?: string;
     attendees?: string;
-  }) => api.post('/productivity/calendar', data),
+  }) => api.post('/productivity/events/', data),
   
-  updateCalendarEvent: (id: string, data: any) => api.put(`/productivity/calendar/${id}`, data),
+  updateCalendarEvent: (id: string, data: any) => api.put(`/productivity/events/${id}/`, data),
   
-  deleteCalendarEvent: (id: string) => api.delete(`/productivity/calendar/${id}`),
+  deleteCalendarEvent: (id: string) => api.delete(`/productivity/events/${id}/`),
   
   // Tasks
   getTasks: (params?: { status?: string; assigned_to?: string }) => 
-    api.get('/productivity/tasks', { params }),
+    api.get('/productivity/tasks/', { params }),
   
   createTask: (data: {
     title: string;
@@ -866,18 +823,18 @@ export const productivityApi = {
     project_id?: string;
     priority?: string;
     due_date?: string;
-  }) => api.post('/productivity/tasks', data),
+  }) => api.post('/productivity/tasks/', data),
   
-  updateTask: (id: string, data: any) => api.put(`/productivity/tasks/${id}`, data),
+  updateTask: (id: string, data: any) => api.put(`/productivity/tasks/${id}/`, data),
   
-  completeTask: (id: string) => api.put(`/productivity/tasks/${id}/complete`),
+  completeTask: (id: string) => api.post(`/productivity/tasks/${id}/complete/`),
   
-  deleteTask: (id: string) => api.delete(`/productivity/tasks/${id}`),
+  deleteTask: (id: string) => api.delete(`/productivity/tasks/${id}/`),
   
   // Projects
-  getProjects: () => api.get('/productivity/projects'),
+  getProjects: () => api.get('/productivity/projects/'),
   
-  getProject: (id: string) => api.get(`/productivity/projects/${id}`),
+  getProject: (id: string) => api.get(`/productivity/projects/${id}/`),
   
   createProject: (data: {
     name: string;
@@ -885,14 +842,14 @@ export const productivityApi = {
     start_date?: string;
     end_date?: string;
     budget?: number;
-  }) => api.post('/productivity/projects', data),
+  }) => api.post('/productivity/projects/', data),
   
-  updateProject: (id: string, data: any) => api.put(`/productivity/projects/${id}`, data),
+  updateProject: (id: string, data: any) => api.put(`/productivity/projects/${id}/`, data),
   
-  deleteProject: (id: string) => api.delete(`/productivity/projects/${id}`),
+  deleteProject: (id: string) => api.delete(`/productivity/projects/${id}/`),
   
   // Stats
-  getStats: () => api.get('/productivity/dashboard/stats'),
+  getStats: () => api.get('/productivity/tasks/'),
 };
 
 // Currency API
@@ -909,26 +866,26 @@ export const currencyApi = {
 export const financeApiExtra = {
   // Quotations
   getQuotations: (params?: { page?: number; limit?: number }) => 
-    api.get('/finance/quotations', { params }),
+    api.get('/finance/quotations/', { params }),
   
-  createQuotation: (data: any) => api.post('/finance/quotations', data),
+  createQuotation: (data: any) => api.post('/finance/quotations/', data),
   
-  updateQuotation: (id: string, data: any) => api.put(`/finance/quotations/${id}`, data),
+  updateQuotation: (id: string, data: any) => api.put(`/finance/quotations/${id}/`, data),
   
-  deleteQuotation: (id: string) => api.delete(`/finance/quotations/${id}`),
+  deleteQuotation: (id: string) => api.delete(`/finance/quotations/${id}/`),
   
   // Payments
-  getPayments: () => api.get('/finance/payments'),
+  getPayments: () => api.get('/finance/bank-accounts/'),
   
   createPayment: (data: {
     invoice_id?: string;
     amount: number;
     payment_method?: string;
     reference?: string;
-  }) => api.post('/finance/payments', data),
+  }) => api.post('/finance/bank-accounts/', data),
   
   // Expenses
-  getExpenses: () => api.get('/finance/expenses'),
+  getExpenses: () => api.get('/finance/expenses/'),
   
   createExpense: (data: {
     category: string;
@@ -937,10 +894,10 @@ export const financeApiExtra = {
     currency?: string;
     date?: string;
     vendor?: string;
-  }) => api.post('/finance/expenses', data),
+  }) => api.post('/finance/expenses/', data),
   
   // Transactions
-  getTransactions: () => api.get('/finance/transactions'),
+  getTransactions: () => api.get('/finance/journal-entries/'),
   
   createTransaction: (data: {
     type: string;
@@ -950,14 +907,14 @@ export const financeApiExtra = {
     currency?: string;
     date?: string;
     reference?: string;
-  }) => api.post('/finance/transactions', data),
+  }) => api.post('/finance/journal-entries/', data),
 };
 
 // Documents API
 export const documentsApi = {
-  getAll: () => api.get('/documents'),
+  getAll: () => api.get('/productivity/documents/'),
   
-  getById: (id: string) => api.get(`/documents/${id}`),
+  getById: (id: string) => api.get(`/productivity/documents/${id}/`),
   
   create: (data: {
     title: string;
@@ -971,13 +928,13 @@ export const documentsApi = {
     is_public?: boolean;
     folder?: string;
     tags?: string[];
-  }) => api.post('/documents', data),
+  }) => api.post('/productivity/documents/', data),
 
-  update: (id: string, data: any) => api.put(`/documents/${id}`, data),
+  update: (id: string, data: any) => api.put(`/productivity/documents/${id}/`, data),
   
-  delete: (id: string) => api.delete(`/documents/${id}`),
+  delete: (id: string) => api.delete(`/productivity/documents/${id}/`),
   
-  getFolders: () => api.get('/documents/folders'),
+  getFolders: () => api.get('/productivity/folders/'),
 };
 
 // Marketing API
@@ -1125,9 +1082,9 @@ export const marketingApi = {
 export const servicesApi = {
   // Tickets
   getTickets: (params?: { status?: string; priority?: string }) => 
-    api.get('/services/tickets', { params }),
+    api.get('/services/tickets/', { params }),
   
-  getTicket: (id: string) => api.get(`/services/tickets/${id}`),
+  getTicket: (id: string) => api.get(`/services/tickets/${id}/`),
   
   createTicket: (data: {
     subject: string;
@@ -1137,60 +1094,60 @@ export const servicesApi = {
     customer_id?: string;
     customer_name?: string;
     customer_email?: string;
-  }) => api.post('/services/tickets', data),
+  }) => api.post('/services/tickets/', data),
 
-  updateTicket: (id: string, data: any) => api.put(`/services/tickets/${id}`, data),
+  updateTicket: (id: string, data: any) => api.put(`/services/tickets/${id}/`, data),
   
-  closeTicket: (id: string) => api.post(`/services/tickets/${id}/close`, {}),
+  closeTicket: (id: string) => api.post(`/services/tickets/${id}/close/`, {}),
   
-  reopenTicket: (id: string) => api.post(`/services/tickets/${id}/reopen`, {}),
+  reopenTicket: (id: string) => api.post(`/services/tickets/${id}/reopen/`, {}),
   
-  deleteTicket: (id: string) => api.delete(`/services/tickets/${id}`),
+  deleteTicket: (id: string) => api.delete(`/services/tickets/${id}/`),
 
   // Ticket Replies
-  getTicketReplies: (ticketId: string) => api.get(`/services/tickets/${ticketId}/replies`),
+  getTicketReplies: (ticketId: string) => api.get(`/services/tickets/${ticketId}/`),
   
   createTicketReply: (ticketId: string, data: {
     content: string;
     is_internal?: boolean;
-  }) => api.post(`/services/tickets/${ticketId}/replies`, data),
+  }) => api.post(`/services/tickets/${ticketId}/reply/`, data),
 
   // SLA Configs
-  getSLAConfigs: () => api.get('/services/sla-configs'),
+  getSLAConfigs: () => api.get('/services/sla-configs/'),
   
-  getSLAConfig: (id: string) => api.get(`/services/sla-configs/${id}`),
+  getSLAConfig: (id: string) => api.get(`/services/sla-configs/${id}/`),
   
   createSLAConfig: (data: {
     name: string;
     response_time_hours?: number;
     resolution_time_hours?: number;
     priority?: string;
-  }) => api.post('/services/sla-configs', data),
+  }) => api.post('/services/sla-configs/', data),
 
-  updateSLAConfig: (id: string, data: any) => api.put(`/services/sla-configs/${id}`, data),
+  updateSLAConfig: (id: string, data: any) => api.put(`/services/sla-configs/${id}/`, data),
   
-  deleteSLAConfig: (id: string) => api.delete(`/services/sla-configs/${id}`),
+  deleteSLAConfig: (id: string) => api.delete(`/services/sla-configs/${id}/`),
 
   // Knowledge Base Categories
-  getKBCategories: () => api.get('/services/kb-categories'),
+  getKBCategories: () => api.get('/services/kb-categories/'),
   
-  getKBCategory: (id: string) => api.get(`/services/kb-categories/${id}`),
+  getKBCategory: (id: string) => api.get(`/services/kb-categories/${id}/`),
   
   createKBCategory: (data: {
     name: string;
     description?: string;
     parent_id?: string;
-  }) => api.post('/services/kb-categories', data),
+  }) => api.post('/services/kb-categories/', data),
 
-  updateKBCategory: (id: string, data: any) => api.put(`/services/kb-categories/${id}`, data),
+  updateKBCategory: (id: string, data: any) => api.put(`/services/kb-categories/${id}/`, data),
   
-  deleteKBCategory: (id: string) => api.delete(`/services/kb-categories/${id}`),
+  deleteKBCategory: (id: string) => api.delete(`/services/kb-categories/${id}/`),
 
   // Knowledge Base Articles
   getKBArticles: (params?: { category_id?: string }) => 
-    api.get('/services/kb-articles', { params }),
+    api.get('/services/kb-articles/', { params }),
   
-  getKBArticle: (id: string) => api.get(`/services/kb-articles/${id}`),
+  getKBArticle: (id: string) => api.get(`/services/kb-articles/${id}/`),
   
   createKBArticle: (data: {
     title: string;
@@ -1198,16 +1155,16 @@ export const servicesApi = {
     category_id?: string;
     status?: string;
     tags?: string[];
-  }) => api.post('/services/kb-articles', data),
+  }) => api.post('/services/kb-articles/', data),
 
-  updateKBArticle: (id: string, data: any) => api.put(`/services/kb-articles/${id}`, data),
+  updateKBArticle: (id: string, data: any) => api.put(`/services/kb-articles/${id}/`, data),
   
-  deleteKBArticle: (id: string) => api.delete(`/services/kb-articles/${id}`),
+  deleteKBArticle: (id: string) => api.delete(`/services/kb-articles/${id}/`),
 
   // Escalation Rules
-  getEscalationRules: () => api.get('/services/escalation-rules'),
+  getEscalationRules: () => api.get('/services/escalation-rules/'),
   
-  getEscalationRule: (id: string) => api.get(`/services/escalation-rules/${id}`),
+  getEscalationRule: (id: string) => api.get(`/services/escalation-rules/${id}/`),
   
   createEscalationRule: (data: {
     name: string;
@@ -1216,17 +1173,17 @@ export const servicesApi = {
     action_type?: string;
     action_target?: string;
     is_active?: boolean;
-  }) => api.post('/services/escalation-rules', data),
+  }) => api.post('/services/escalation-rules/', data),
 
-  updateEscalationRule: (id: string, data: any) => api.put(`/services/escalation-rules/${id}`, data),
+  updateEscalationRule: (id: string, data: any) => api.put(`/services/escalation-rules/${id}/`, data),
   
-  deleteEscalationRule: (id: string) => api.delete(`/services/escalation-rules/${id}`),
+  deleteEscalationRule: (id: string) => api.delete(`/services/escalation-rules/${id}/`),
 
   // Service Reports
   getReports: (params?: { start_date?: string; end_date?: string }) => 
-    api.get('/services/reports', { params }),
+    api.get('/services/reports/', { params }),
   
-  getReport: (id: string) => api.get(`/services/reports/${id}`),
+  getReport: (id: string) => api.get(`/services/reports/${id}/`),
   
   createReport: (data: {
     name: string;
@@ -1234,29 +1191,29 @@ export const servicesApi = {
     start_date?: string;
     end_date?: string;
     metrics?: any;
-  }) => api.post('/services/reports', data),
+  }) => api.post('/services/reports/', data),
 
-  updateReport: (id: string, data: any) => api.put(`/services/reports/${id}`, data),
+  updateReport: (id: string, data: any) => api.put(`/services/reports/${id}/`, data),
   
-  deleteReport: (id: string) => api.delete(`/services/reports/${id}`),
+  deleteReport: (id: string) => api.delete(`/services/reports/${id}/`),
 
   // Satisfaction Surveys
-  getSurveys: () => api.get('/services/surveys'),
+  getSurveys: () => api.get('/services/surveys/'),
   
-  getSurvey: (id: string) => api.get(`/services/surveys/${id}`),
+  getSurvey: (id: string) => api.get(`/services/surveys/${id}/`),
   
   createSurvey: (data: {
     name: string;
     questions?: any;
     is_active?: boolean;
-  }) => api.post('/services/surveys', data),
+  }) => api.post('/services/surveys/', data),
 
-  updateSurvey: (id: string, data: any) => api.put(`/services/surveys/${id}`, data),
+  updateSurvey: (id: string, data: any) => api.put(`/services/surveys/${id}/`, data),
   
-  deleteSurvey: (id: string) => api.delete(`/services/surveys/${id}`),
+  deleteSurvey: (id: string) => api.delete(`/services/surveys/${id}/`),
   
   sendSurvey: (id: string, ticketId: string) => 
-    api.post(`/services/surveys/${id}/send`, { ticket_id: ticketId }),
+    api.post(`/services/surveys/${id}/`, { ticket_id: ticketId }),
 };
 
 // Super Admin API
