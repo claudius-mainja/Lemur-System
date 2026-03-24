@@ -50,7 +50,6 @@ const INDUSTRIES = [
 const registerSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string().min(6, 'Password must be at least 6 characters'),
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   organizationName: z.string().min(1, 'Organization name is required'),
@@ -58,9 +57,6 @@ const registerSchema = z.object({
   country: z.string().min(1, 'Country is required'),
   currency: z.string().min(1, 'Currency is required'),
   plan: z.enum(['starter', 'professional', 'enterprise']),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
 });
 
 const planDetails = {
@@ -90,10 +86,14 @@ function CreateAccountContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [numUsers, setNumUsers] = useState(1);
+  const [mounted, setMounted] = useState(false);
   const { register: registerUser } = useAuthStore();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   const defaultPlan = (searchParams?.get('plan') as 'starter' | 'professional' | 'enterprise') || 'starter';
 
@@ -102,7 +102,6 @@ function CreateAccountContent() {
     defaultValues: {
       email: '',
       password: '',
-      confirmPassword: '',
       firstName: '',
       lastName: '',
       organizationName: '',
@@ -133,6 +132,7 @@ function CreateAccountContent() {
   };
 
   const onRegister = async (data: RegisterForm) => {
+    console.log('Form submitted with data:', data);
     setIsLoading(true);
     try {
       const result = await registerUser({
@@ -146,7 +146,8 @@ function CreateAccountContent() {
         currency: data.currency,
         plan: data.plan,
       });
-      
+
+      console.log('Registration result:', result);
       if (result.success) {
         toast.success(`Welcome to ${data.organizationName}!`);
         router.push(`/payment?plan=${data.plan}&users=${numUsers}&org=${encodeURIComponent(data.organizationName)}`);
@@ -154,14 +155,31 @@ function CreateAccountContent() {
         toast.error(result.error || 'Registration failed');
       }
     } catch (error: any) {
+      console.error('Registration error:', error);
       toast.error('Registration failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const onFormError = (errors: any) => {
+    console.log('Form validation errors:', errors);
+    const firstError = Object.values(errors)[0] as any;
+    if (firstError?.message) {
+      toast.error(firstError.message);
+    }
+  };
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]">
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex" suppressHydrationWarning>
       {/* Left Panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520] p-12 flex-col justify-between relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
@@ -231,7 +249,7 @@ function CreateAccountContent() {
             </p>
           </div>
 
-          <form onSubmit={form.handleSubmit(onRegister)} className="space-y-5">
+          <form onSubmit={form.handleSubmit(onRegister, onFormError)} className="space-y-5">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-bold text-white/60 mb-3 uppercase tracking-wider">First Name</label>

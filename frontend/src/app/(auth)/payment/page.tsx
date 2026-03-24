@@ -45,6 +45,11 @@ function PaymentContent() {
     expiry: '',
     cvv: '',
   });
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const planParam = (searchParams?.get('plan') as SubscriptionPlan) || user?.subscription || 'starter';
   const usersParam = parseInt(searchParams?.get('users') || '1');
@@ -125,8 +130,16 @@ function PaymentContent() {
     { id: 'bank', name: 'Bank Transfer', icon: Building2, desc: 'Direct bank payment' },
   ];
 
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]">
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520] flex items-center justify-center p-4" suppressHydrationWarning>
       <div className="w-full max-w-4xl">
         <button 
           onClick={() => router.back()} 

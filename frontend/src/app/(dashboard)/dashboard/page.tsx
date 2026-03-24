@@ -66,23 +66,6 @@ export default function DashboardPage() {
     }
   }, []);
 
-  const currency = user?.currency || 'USD';
-  const currencySymbol = CURRENCY_SYMBOLS[currency] || '$';
-  const userInitials = user ? `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase() : 'U';
-  
-  const isHydrated = hasHydrated && dataHydrated && isMounted;
-
-  if (!isHydrated) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-          <p className="text-white/60">Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
   useEffect(() => {
     const pendingLeaves = leaveRequests.filter((l: any) => l.status === 'pending').length;
     const overdueInvoices = invoices.filter((i: any) => i.status === 'overdue').length;
@@ -90,7 +73,7 @@ export default function DashboardPage() {
     const newLeads = leads.filter((l: any) => l.status === 'new').length;
 
     const newNotifications: Notification[] = [];
-    
+
     if (pendingLeaves > 0) {
       newNotifications.push({
         id: '1',
@@ -148,6 +131,23 @@ export default function DashboardPage() {
     }
     return () => clearInterval(interval);
   }, [timeTrackerActive, timerStart]);
+
+  const currency = user?.currency || 'USD';
+  const currencySymbol = CURRENCY_SYMBOLS[currency] || '$';
+  const userInitials = user ? `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase() : 'U';
+
+  const isHydrated = hasHydrated && dataHydrated && isMounted;
+
+  if (!isHydrated) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-white/60">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   const formatTime = (seconds: number) => {
     const hrs = Math.floor(seconds / 3600);
@@ -300,7 +300,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" suppressHydrationWarning>
       {/* Welcome Header */}
       <div className="bg-gradient-to-r from-primary via-secondary to-accent rounded-2xl p-6 text-white shadow-lg shadow-primary/20">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

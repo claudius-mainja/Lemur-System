@@ -756,7 +756,7 @@ export default function CRMDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]" suppressHydrationWarning>
       {/* Header */}
       <header className="bg-[#0b2535]/50 backdrop-blur-xl border-b border-white/10 sticky top-0 z-10">
         <div className="px-6 py-4 flex items-center justify-between">

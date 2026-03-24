@@ -49,8 +49,8 @@ class Account(models.Model):
 
     @property
     def balance(self):
-        credits = self.credit_entries.aggregate(total=models.Sum('amount'))['total'] or Decimal('0')
-        debits = self.debit_entries.aggregate(total=models.Sum('amount'))['total'] or Decimal('0')
+        credits = self.entry_lines.filter(credit__gt=0).aggregate(total=models.Sum('credit'))['total'] or Decimal('0')
+        debits = self.entry_lines.filter(debit__gt=0).aggregate(total=models.Sum('debit'))['total'] or Decimal('0')
         
         if self.balance_type == 'debit':
             return debits - credits

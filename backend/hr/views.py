@@ -520,6 +520,7 @@ class LeaveViewSet(viewsets.ModelViewSet):
         if leave.status not in ['pending', 'approved']:
             return Response({'error': 'Cannot cancel this leave'}, status=status.HTTP_400_BAD_REQUEST)
         
+        original_status = leave.status
         leave.status = 'cancelled'
         leave.save()
         
@@ -530,7 +531,7 @@ class LeaveViewSet(viewsets.ModelViewSet):
             year=year
         ).first()
         if balance:
-            if leave.status == 'approved':
+            if original_status == 'approved':
                 balance.used_days -= leave.total_days
             else:
                 balance.pending_days -= leave.total_days
@@ -737,7 +738,7 @@ class ReviewCycleViewSet(viewsets.ModelViewSet):
         org_id = get_org_id(self.request)
         if org_id:
             return ReviewCycle.objects.filter(organization_id=org_id)
-            return ReviewCycle.objects.none()
+        return ReviewCycle.objects.none()
 
     def perform_create(self, serializer):
         org = get_org(self.request)
@@ -811,7 +812,7 @@ class PerformanceReviewViewSet(viewsets.ModelViewSet):
             return PerformanceReview.objects.filter(organization_id=org_id).select_related(
                 'employee', 'reviewer', 'review_cycle'
             )
-            return PerformanceReview.objects.none()
+        return PerformanceReview.objects.none()
 
     def perform_create(self, serializer):
         org = get_org(self.request)
@@ -832,7 +833,7 @@ class Feedback360ViewSet(viewsets.ModelViewSet):
         org_id = get_org_id(self.request)
         if org_id:
             return Feedback360.objects.filter(organization_id=org_id).select_related('employee', 'reviewer', 'review_cycle')
-            return Feedback360.objects.none()
+        return Feedback360.objects.none()
 
     def perform_create(self, serializer):
         org = get_org(self.request)

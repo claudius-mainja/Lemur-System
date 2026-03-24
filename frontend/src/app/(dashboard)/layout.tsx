@@ -182,7 +182,7 @@ export default function DashboardLayout({
   const isDark = theme === 'dark';
 
   return (
-    <div className={`min-h-screen transition-all duration-500 bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]`}>
+    <div className={`min-h-screen transition-all duration-500 bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]`} suppressHydrationWarning>
       {/* Background Pattern */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 opacity-[0.02]">

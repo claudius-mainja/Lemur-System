@@ -165,10 +165,10 @@ export default function HRDashboard() {
     newHires: 0,
   });
   
-  // Data states
-  const [employees, setEmployees] = useState(storeEmployees as unknown as Employee[]);
-  const [departments, setDepartments] = useState(storeDepartments as unknown as Department[]);
-  const [leaveRequests, setLeaveRequests] = useState(storeLeaveRequests as unknown as LeaveRequest[]);
+  // Data states - ensure arrays
+  const [employees, setEmployees] = useState(Array.isArray(storeEmployees) ? storeEmployees as unknown as Employee[] : []);
+  const [departments, setDepartments] = useState(Array.isArray(storeDepartments) ? storeDepartments as unknown as Department[] : []);
+  const [leaveRequests, setLeaveRequests] = useState(Array.isArray(storeLeaveRequests) ? storeLeaveRequests as unknown as LeaveRequest[] : []);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [contractDocuments, setContractDocuments] = useState<Record<string, { url: string; name: string; type: string }>>({});
   const [reportDocuments, setReportDocuments] = useState<ReportDocument[]>([]);
@@ -263,11 +263,12 @@ export default function HRDashboard() {
     setIsLoading(true);
     try {
       const response = await hrApi.getDepartments();
-      const deptData = response.data.data || response.data || [];
-      setDepartments(deptData);
-      useDataStore.getState().setDepartments(deptData);
+      const deptData = response.data.data || response.data.results || response.data || [];
+      const safeData = Array.isArray(deptData) ? deptData : [];
+      setDepartments(safeData);
+      useDataStore.getState().setDepartments(safeData);
     } catch (error) {
-      setDepartments(storeDepartments as unknown as Department[]);
+      setDepartments(Array.isArray(storeDepartments) ? storeDepartments as unknown as Department[] : []);
     } finally {
       setIsLoading(false);
     }
@@ -338,15 +339,15 @@ export default function HRDashboard() {
 
   useEffect(() => {
     if (activeView === 'employees') {
-      setEmployees(storeEmployees);
+      setEmployees(Array.isArray(storeEmployees) ? storeEmployees as unknown as Employee[] : []);
       loadEmployees().catch(() => {});
     }
     if (activeView === 'departments') {
-      setDepartments(storeDepartments as unknown as Department[]);
+      setDepartments(Array.isArray(storeDepartments) ? storeDepartments as unknown as Department[] : []);
       loadDepartments().catch(() => {});
     }
     if (activeView === 'leave') {
-      setLeaveRequests(storeLeaveRequests);
+      setLeaveRequests(Array.isArray(storeLeaveRequests) ? storeLeaveRequests as unknown as LeaveRequest[] : []);
       loadLeaveRequests().catch(() => {});
     }
     if (activeView === 'contracts') loadContracts();
@@ -1278,7 +1279,7 @@ export default function HRDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]" suppressHydrationWarning>
       {/* Header */}
       <header className="bg-[#0b2535]/50 backdrop-blur-xl border-b border-white/10 sticky top-0 z-10">
         <div className="px-6 py-4 flex items-center justify-between">

@@ -155,7 +155,7 @@ export default function TeamChatPage() {
   const privateChannels = channels.filter(c => c.type === 'private');
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50 flex" suppressHydrationWarning>
       {/* Sidebar */}
       <aside className={`${showSidebar ? 'w-72' : 'w-0'} bg-slate-900 text-white transition-all duration-300 overflow-hidden`}>
         <div className="p-4">

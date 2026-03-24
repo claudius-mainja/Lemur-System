@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -107,7 +107,12 @@ export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { setAuth } = useAuthStore();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const loginForm = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -178,15 +183,23 @@ export default function LoginPage() {
     }
   };
 
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520]" suppressHydrationWarning>
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex" suppressHydrationWarning>
       {/* Left Panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0a1520] via-[#0b2535] to-[#061520] p-12 flex-col justify-between relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-72 h-72 bg-accent rounded-full blur-3xl"></div>
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary rounded-full blur-3xl"></div>
         </div>
-        
+
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-20">
             <div className="w-14 h-14 bg-gradient-to-br from-accent to-accentDark rounded-xl flex items-center justify-center shadow-lg">
@@ -197,14 +210,14 @@ export default function LoginPage() {
               <p className="text-white/50 text-xs tracking-[0.2em] uppercase">Enterprise ERP</p>
             </div>
           </div>
-          
+
           <h1 className="text-5xl font-bold text-white mb-6 leading-tight tracking-tight">
             ALL-IN-ONE<br/>
             BUSINESS<br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-[#9e79ef] to-accentDark">MANAGEMENT</span>
           </h1>
           <p className="text-white/40 text-lg mb-12 font-light">
-            Comprehensive ERP solution designed for African businesses. 
+            Comprehensive ERP solution designed for African businesses.
             Manage HR, Finance, CRM, Payroll, and more from a single platform.
           </p>
 

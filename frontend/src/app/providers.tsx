@@ -36,16 +36,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
         <ThemeInitializer>
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                borderRadius: '8px',
-                padding: '12px 16px',
-              },
-            }}
-          />
+          <div suppressHydrationWarning>
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  borderRadius: '8px',
+                  padding: '12px 16px',
+                },
+              }}
+            />
+          </div>
           {children}
           <ReactQueryDevtools initialIsOpen={false} />
         </ThemeInitializer>

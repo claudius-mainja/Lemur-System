@@ -134,15 +134,17 @@ class JournalEntryViewSet(viewsets.ModelViewSet):
         total_credits = Decimal('0')
         
         for account in accounts:
-            debits = account.debit_entries.filter(
+            debits = account.entry_lines.filter(
+                debit__gt=0,
                 journal_entry__date__lte=date_to,
                 journal_entry__status='posted'
-            ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+            ).aggregate(total=Sum('debit'))['total'] or Decimal('0')
             
-            credits = account.credit_entries.filter(
+            credits = account.entry_lines.filter(
+                credit__gt=0,
                 journal_entry__date__lte=date_to,
                 journal_entry__status='posted'
-            ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+            ).aggregate(total=Sum('credit'))['total'] or Decimal('0')
             
             if account.balance_type == 'debit':
                 balance = debits - credits
@@ -800,33 +802,35 @@ class BudgetViewSet(viewsets.ModelViewSet):
 class FinanceDashboardViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
-    def list(self, request):
-        org = getattr(request.user, 'organization', None)
-        if not org:
-            return Response({'error': 'Organization not found'}, status=status.HTTP_400_BAD_REQUEST)
-        
+    def _get_dashboard_data(self, org):
         today = timezone.now().date()
-        start_of_month = today.replace(day=1)
         
-        revenue_accounts = Account.objects.filter(organization=org, account_type='revenue')
-        expense_accounts = Account.objects.filter(organization=org, account_type='expense')
+        total_revenue = Invoice.objects.filter(
+            organization=org, status='paid'
+        ).aggregate(total=Sum('total'))['total'] or Decimal('0')
         
-        total_revenue = sum(acc.balance for acc in revenue_accounts)
-        total_expenses = sum(acc.balance for acc in expense_accounts)
+        total_expenses = Bill.objects.filter(
+            organization=org, status='paid'
+        ).aggregate(total=Sum('total'))['total'] or Decimal('0')
         
-        total_receivables = Invoice.objects.filter(
+        receivable_invoices = Invoice.objects.filter(
             organization=org,
             status__in=['sent', 'viewed', 'overdue', 'partially_paid']
-        ).aggregate(total=Sum('balance_due'))['total'] or Decimal('0')
+        )
+        total_receivables = sum(
+            (inv.total - inv.amount_paid) for inv in receivable_invoices
+        )
         
-        total_payables = Bill.objects.filter(
+        payable_bills = Bill.objects.filter(
             organization=org,
             status__in=['received', 'approved', 'partially_paid']
-        ).aggregate(total=Sum('balance_due'))['total'] or Decimal('0')
+        )
+        total_payables = sum(
+            (bill.total - bill.amount_paid) for bill in payable_bills
+        )
         
         cash_balance = BankAccount.objects.filter(
-            organization=org,
-            is_active=True
+            organization=org, is_active=True
         ).aggregate(total=Sum('current_balance'))['total'] or Decimal('0')
         
         invoices_overdue = Invoice.objects.filter(
@@ -841,7 +845,7 @@ class FinanceDashboardViewSet(viewsets.ViewSet):
             status__in=['received', 'approved']
         ).count()
         
-        return Response({
+        return {
             'total_revenue': total_revenue,
             'total_expenses': total_expenses,
             'net_profit': total_revenue - total_expenses,
@@ -850,7 +854,20 @@ class FinanceDashboardViewSet(viewsets.ViewSet):
             'cash_balance': cash_balance,
             'invoices_overdue': invoices_overdue,
             'bills_due_soon': bills_due_soon,
-        })
+        }
+
+    def list(self, request):
+        org = getattr(request.user, 'organization', None)
+        if not org:
+            return Response({'error': 'Organization not found'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self._get_dashboard_data(org))
+
+    @action(detail=False, methods=['get'])
+    def stats(self, request):
+        org = getattr(request.user, 'organization', None)
+        if not org:
+            return Response({'error': 'Organization not found'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self._get_dashboard_data(org))
 
     @action(detail=False, methods=['get'])
     def income_statement(self, request):
@@ -867,16 +884,18 @@ class FinanceDashboardViewSet(viewsets.ViewSet):
         revenue = []
         total_revenue = Decimal('0')
         for acc in revenue_accounts:
-            debits = acc.debit_entries.filter(
+            debits = acc.entry_lines.filter(
+                debit__gt=0,
                 journal_entry__date__gte=date_from,
                 journal_entry__date__lte=date_to,
                 journal_entry__status='posted'
-            ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
-            credits = acc.credit_entries.filter(
+            ).aggregate(total=Sum('debit'))['total'] or Decimal('0')
+            credits = acc.entry_lines.filter(
+                credit__gt=0,
                 journal_entry__date__gte=date_from,
                 journal_entry__date__lte=date_to,
                 journal_entry__status='posted'
-            ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+            ).aggregate(total=Sum('credit'))['total'] or Decimal('0')
             balance = credits - debits
             revenue.append({'name': acc.name, 'amount': balance})
             total_revenue += balance
@@ -884,16 +903,18 @@ class FinanceDashboardViewSet(viewsets.ViewSet):
         expenses = []
         total_expenses = Decimal('0')
         for acc in expense_accounts:
-            debits = acc.debit_entries.filter(
+            debits = acc.entry_lines.filter(
+                debit__gt=0,
                 journal_entry__date__gte=date_from,
                 journal_entry__date__lte=date_to,
                 journal_entry__status='posted'
-            ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
-            credits = acc.credit_entries.filter(
+            ).aggregate(total=Sum('debit'))['total'] or Decimal('0')
+            credits = acc.entry_lines.filter(
+                credit__gt=0,
                 journal_entry__date__gte=date_from,
                 journal_entry__date__lte=date_to,
                 journal_entry__status='posted'
-            ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+            ).aggregate(total=Sum('credit'))['total'] or Decimal('0')
             balance = debits - credits
             expenses.append({'name': acc.name, 'amount': balance})
             total_expenses += balance

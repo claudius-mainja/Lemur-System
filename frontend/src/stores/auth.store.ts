@@ -175,6 +175,9 @@ export const useAuthStore = create<AuthState>()(
         } catch (e) {
           // Ignore logout API errors
         }
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem(`erp-auth-${STORAGE_VERSION}`);
+        }
         set({
           user: null,
           accessToken: null,

@@ -67,17 +67,18 @@ class OrganizationSerializer(serializers.ModelSerializer):
         return float(obj.get_extra_users_cost())
 
 
-class RegisterSerializer(serializers.ModelSerializer):
+class RegisterSerializer(serializers.Serializer):
+    email = serializers.EmailField()
     password = serializers.CharField(write_only=True, min_length=8)
     password_confirm = serializers.CharField(write_only=True, required=False)
-    plan = serializers.CharField(required=False, write_only=True)
-
-    class Meta:
-        model = User
-        fields = [
-            'email', 'password', 'password_confirm', 'first_name', 'last_name',
-            'organization_name', 'industry', 'country', 'currency', 'subscription', 'plan'
-        ]
+    first_name = serializers.CharField(max_length=100)
+    last_name = serializers.CharField(max_length=100)
+    organization_name = serializers.CharField(max_length=200)
+    industry = serializers.CharField(max_length=100)
+    country = serializers.CharField(max_length=100)
+    currency = serializers.CharField(max_length=10)
+    subscription = serializers.CharField(required=False)
+    plan = serializers.CharField(required=False)
 
     def validate(self, data):
         password_confirm = data.get('password_confirm')

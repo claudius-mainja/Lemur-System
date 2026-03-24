@@ -89,7 +89,7 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a1a20] via-[#0b2f40] to-[#061c26] overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a1a20] via-[#0b2f40] to-[#061c26] overflow-x-hidden" suppressHydrationWarning>
       {/* Background Pattern */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-[0.03]">
